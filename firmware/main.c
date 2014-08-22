@@ -14,13 +14,14 @@
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
+PROCESS(debug_process, "Debug");
+
 void setup();
 void loop();
 void spi_setup();
 #ifdef NETWORK_ENABLED
 void network_setup();
 #endif
-void debug_tick();
 
 #ifdef NETWORK_ENABLED
 void enc28j60_spi_assert();
@@ -36,6 +37,7 @@ uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 
 PROCINIT(
   &etimer_process
+  , &debug_process
   #ifdef NETWORK_ENABLED
   , &tcpip_process
   , &dhcp_process
@@ -65,6 +67,7 @@ void setup() {
 
   process_init();
   process_start(&etimer_process, NULL);
+  process_start(&debug_process, NULL);
 
   spi_setup();
   #ifdef NETWORK_ENABLED
@@ -81,9 +84,9 @@ void loop() {
   #ifdef NETWORK_ENABLED
     network_tick();
   #endif
-  debug_tick();
   process_run();
   etimer_request_poll();
+  process_poll(&debug_process);
 
   //delay_ms(1000);
   //debug_led_set(0);
@@ -103,20 +106,27 @@ void assert_failed(uint8_t* file, uint32_t line) {
   }
 }
 
-void debug_tick() {
+PROCESS_THREAD(debug_process, ev, data) {
   char line[MAX_LINE_LENGTH];
 
-  while(dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
-    if(strcmp(line, "!CONNECT\n") == 0) {
-      debug_write_line("+OK");
-      debug_write_line("!clear");
-      debug_write_line("!set name,dc-electronic-load");
-      debug_write_line("!set description,'DC Electonic Load'");
-    } else {
-      debug_write("?Unknown command: ");
-      debug_write_line(line);
+  PROCESS_BEGIN();
+
+  while(1) {
+    PROCESS_YIELD();
+    while(dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
+      if(strcmp(line, "!CONNECT\n") == 0) {
+        debug_write_line("+OK");
+        debug_write_line("!clear");
+        debug_write_line("!set name,dc-electronic-load");
+        debug_write_line("!set description,'DC Electonic Load'");
+      } else {
+        debug_write("?Unknown command: ");
+        debug_write_line(line);
+      }
     }
   }
+
+  PROCESS_END();
 }
 
 void spi_setup() {
