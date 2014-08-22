@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="dc-electronic-load" />
+		<Option pch_mode="2" />
+		<Option compiler="arm-elf-gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="build/bin/Debug/dc-electronic-load" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="arm-elf-gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="build/bin/Release/dc-electronic-load" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/obj/Release/" />
+				<Option type="1" />
+				<Option compiler="arm-elf-gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename=".gitignore" />
+		<Unit filename="CMakeLists.txt" />
+		<Unit filename="README.md" />
+		<Unit filename="build.sh" />
+		<Unit filename="contiki-conf.h" />
+		<Unit filename="contiki/cfs/cfs-coffee.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs-coffee.h" />
+		<Unit filename="contiki/cfs/cfs-eeprom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs-posix-dir.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs-posix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs-ram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs-xmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/cfs/cfs.h" />
+		<Unit filename="contiki/contiki-default-conf.h" />
+		<Unit filename="contiki/contiki-lib.h" />
+		<Unit filename="contiki/contiki-net.h" />
+		<Unit filename="contiki/contiki-version.h" />
+		<Unit filename="contiki/contiki.h" />
+		<Unit filename="contiki/ctk/ctk-conio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/ctk-conio.h" />
+		<Unit filename="contiki/ctk/ctk-draw.h" />
+		<Unit filename="contiki/ctk/ctk-mouse.h" />
+		<Unit filename="contiki/ctk/ctk-vncarch.h" />
+		<Unit filename="contiki/ctk/ctk-vncfont.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/ctk-vncfont.h" />
+		<Unit filename="contiki/ctk/ctk-vncserver.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/ctk-vncserver.h" />
+		<Unit filename="contiki/ctk/ctk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/ctk.h" />
+		<Unit filename="contiki/ctk/vnc-out.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/vnc-out.h" />
+		<Unit filename="contiki/ctk/vnc-server.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/ctk/vnc-server.h" />
+		<Unit filename="contiki/dev/battery-sensor.h" />
+		<Unit filename="contiki/dev/button-sensor.h" />
+		<Unit filename="contiki/dev/cc2420-aes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/cc2420-aes.h" />
+		<Unit filename="contiki/dev/cc2420.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/cc2420.h" />
+		<Unit filename="contiki/dev/cc2420_const.h" />
+		<Unit filename="contiki/dev/cc2520.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/cc2520.h" />
+		<Unit filename="contiki/dev/cc2520_const.h" />
+		<Unit filename="contiki/dev/ds2411.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/ds2411.h" />
+		<Unit filename="contiki/dev/eeprom.h" />
+		<Unit filename="contiki/dev/leds.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/leds.h" />
+		<Unit filename="contiki/dev/nullradio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/nullradio.h" />
+		<Unit filename="contiki/dev/radio-sensor.h" />
+		<Unit filename="contiki/dev/radio.h" />
+		<Unit filename="contiki/dev/rom.h" />
+		<Unit filename="contiki/dev/serial-line.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/serial-line.h" />
+		<Unit filename="contiki/dev/sht11-sensor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/sht11-sensor.h" />
+		<Unit filename="contiki/dev/sht11.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/sht11.h" />
+		<Unit filename="contiki/dev/slip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/dev/slip.h" />
+		<Unit filename="contiki/dev/spi.h" />
+		<Unit filename="contiki/dev/watchdog.h" />
+		<Unit filename="contiki/dev/xmem.h" />
+		<Unit filename="contiki/lib/assert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/assert.h" />
+		<Unit filename="contiki/lib/checkpoint.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/checkpoint.h" />
+		<Unit filename="contiki/lib/crc16.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/crc16.h" />
+		<Unit filename="contiki/lib/ctk-filedialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ctk-filedialog.h" />
+		<Unit filename="contiki/lib/ctk-textentry-checkbox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ctk-textentry-checkbox.h" />
+		<Unit filename="contiki/lib/ctk-textentry-cmdline.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ctk-textentry-cmdline.h" />
+		<Unit filename="contiki/lib/ctk-textentry-multiline.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ctk-textentry-multiline.h" />
+		<Unit filename="contiki/lib/gcr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/gcr.h" />
+		<Unit filename="contiki/lib/ifft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ifft.h" />
+		<Unit filename="contiki/lib/libconio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/libconio.h" />
+		<Unit filename="contiki/lib/list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/list.h" />
+		<Unit filename="contiki/lib/me.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/me.h" />
+		<Unit filename="contiki/lib/me_tabs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/me_tabs.h" />
+		<Unit filename="contiki/lib/memb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/memb.h" />
+		<Unit filename="contiki/lib/mmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/mmem.h" />
+		<Unit filename="contiki/lib/petsciiconv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/petsciiconv.h" />
+		<Unit filename="contiki/lib/print-stats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/print-stats.h" />
+		<Unit filename="contiki/lib/random.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/random.h" />
+		<Unit filename="contiki/lib/ringbuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/ringbuf.h" />
+		<Unit filename="contiki/lib/sensors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/sensors.h" />
+		<Unit filename="contiki/lib/settings.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/settings.h" />
+		<Unit filename="contiki/lib/strncasecmp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/trickle-timer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/lib/trickle-timer.h" />
+		<Unit filename="contiki/loader/cle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/cle.h" />
+		<Unit filename="contiki/loader/cle_avr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/cle_msp430.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/cmod.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/cmod.h" />
+		<Unit filename="contiki/loader/dlloader.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/dlloader.h" />
+		<Unit filename="contiki/loader/elf32.h" />
+		<Unit filename="contiki/loader/elfloader-arch.h" />
+		<Unit filename="contiki/loader/elfloader-avr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader-msp430.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader-stub.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader-x86.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader.h" />
+		<Unit filename="contiki/loader/elfloader_compat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/elfloader_compat.h" />
+		<Unit filename="contiki/loader/sym.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/sym.h" />
+		<Unit filename="contiki/loader/symbols-def.h" />
+		<Unit filename="contiki/loader/symbols.h" />
+		<Unit filename="contiki/loader/symtab-avr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/symtab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/loader/symtab.h" />
+		<Unit filename="contiki/net/dhcpc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/dhcpc.h" />
+		<Unit filename="contiki/net/hc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/hc.h" />
+		<Unit filename="contiki/net/mac/contikimac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/contikimac.h" />
+		<Unit filename="contiki/net/mac/csma.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/csma.h" />
+		<Unit filename="contiki/net/mac/cxmac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/cxmac.h" />
+		<Unit filename="contiki/net/mac/frame802154.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/frame802154.h" />
+		<Unit filename="contiki/net/mac/framer-802154.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/framer-802154.h" />
+		<Unit filename="contiki/net/mac/framer-nullmac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/framer-nullmac.h" />
+		<Unit filename="contiki/net/mac/framer.h" />
+		<Unit filename="contiki/net/mac/lpp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/lpp.h" />
+		<Unit filename="contiki/net/mac/mac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/mac.h" />
+		<Unit filename="contiki/net/mac/nullmac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/nullmac.h" />
+		<Unit filename="contiki/net/mac/nullrdc-noframer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/nullrdc-noframer.h" />
+		<Unit filename="contiki/net/mac/nullrdc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/nullrdc.h" />
+		<Unit filename="contiki/net/mac/phase.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/phase.h" />
+		<Unit filename="contiki/net/mac/rdc.h" />
+		<Unit filename="contiki/net/mac/sicslowmac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/sicslowmac.h" />
+		<Unit filename="contiki/net/mac/xmac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/mac/xmac.h" />
+		<Unit filename="contiki/net/nbr-table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/nbr-table.h" />
+		<Unit filename="contiki/net/netstack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/netstack.h" />
+		<Unit filename="contiki/net/packetbuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/packetbuf.h" />
+		<Unit filename="contiki/net/packetqueue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/packetqueue.h" />
+		<Unit filename="contiki/net/psock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/psock.h" />
+		<Unit filename="contiki/net/queuebuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/queuebuf.h" />
+		<Unit filename="contiki/net/rawpacket-udp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rawpacket-udp.h" />
+		<Unit filename="contiki/net/rawpacket.h" />
+		<Unit filename="contiki/net/resolv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/resolv.h" />
+		<Unit filename="contiki/net/rime.h" />
+		<Unit filename="contiki/net/rime/abc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/abc.h" />
+		<Unit filename="contiki/net/rime/announcement.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/announcement.h" />
+		<Unit filename="contiki/net/rime/broadcast-announcement.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/broadcast-announcement.h" />
+		<Unit filename="contiki/net/rime/broadcast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/broadcast.h" />
+		<Unit filename="contiki/net/rime/chameleon-bitopt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/chameleon-bitopt.h" />
+		<Unit filename="contiki/net/rime/chameleon-raw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/chameleon-raw.h" />
+		<Unit filename="contiki/net/rime/chameleon.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/chameleon.h" />
+		<Unit filename="contiki/net/rime/channel.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/channel.h" />
+		<Unit filename="contiki/net/rime/collect-link-estimate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/collect-link-estimate.h" />
+		<Unit filename="contiki/net/rime/collect-neighbor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/collect-neighbor.h" />
+		<Unit filename="contiki/net/rime/collect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/collect.h" />
+		<Unit filename="contiki/net/rime/ipolite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/ipolite.h" />
+		<Unit filename="contiki/net/rime/mesh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/mesh.h" />
+		<Unit filename="contiki/net/rime/multihop.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/multihop.h" />
+		<Unit filename="contiki/net/rime/neighbor-discovery.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/neighbor-discovery.h" />
+		<Unit filename="contiki/net/rime/netflood.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/netflood.h" />
+		<Unit filename="contiki/net/rime/polite-announcement.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/polite-announcement.h" />
+		<Unit filename="contiki/net/rime/polite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/polite.h" />
+		<Unit filename="contiki/net/rime/rime-udp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rime-udp.h" />
+		<Unit filename="contiki/net/rime/rime.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rimeaddr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rimeaddr.h" />
+		<Unit filename="contiki/net/rime/rimestats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rimestats.h" />
+		<Unit filename="contiki/net/rime/rmh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rmh.h" />
+		<Unit filename="contiki/net/rime/route-discovery.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/route-discovery.h" />
+		<Unit filename="contiki/net/rime/route.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/route.h" />
+		<Unit filename="contiki/net/rime/rucb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rucb.h" />
+		<Unit filename="contiki/net/rime/rudolph0.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rudolph0.h" />
+		<Unit filename="contiki/net/rime/rudolph1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rudolph1.h" />
+		<Unit filename="contiki/net/rime/rudolph2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/rudolph2.h" />
+		<Unit filename="contiki/net/rime/runicast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/runicast.h" />
+		<Unit filename="contiki/net/rime/stbroadcast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/stbroadcast.h" />
+		<Unit filename="contiki/net/rime/stunicast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/stunicast.h" />
+		<Unit filename="contiki/net/rime/timesynch.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/timesynch.h" />
+		<Unit filename="contiki/net/rime/trickle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/trickle.h" />
+		<Unit filename="contiki/net/rime/unicast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rime/unicast.h" />
+		<Unit filename="contiki/net/rpl/rpl-conf.h" />
+		<Unit filename="contiki/net/rpl/rpl-dag.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl-ext-header.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl-icmp6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl-mrhof.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl-of0.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl-private.h" />
+		<Unit filename="contiki/net/rpl/rpl-timers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/rpl/rpl.h" />
+		<Unit filename="contiki/net/sicslowpan.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/sicslowpan.h" />
+		<Unit filename="contiki/net/simple-udp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/simple-udp.h" />
+		<Unit filename="contiki/net/slipdev.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/slipdev.h" />
+		<Unit filename="contiki/net/tcpdump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/tcpdump.h" />
+		<Unit filename="contiki/net/tcpip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/tcpip.h" />
+		<Unit filename="contiki/net/uaodv-def.h" />
+		<Unit filename="contiki/net/uaodv-rt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uaodv-rt.h" />
+		<Unit filename="contiki/net/uaodv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uaodv.h" />
+		<Unit filename="contiki/net/uip-debug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-debug.h" />
+		<Unit filename="contiki/net/uip-ds6-nbr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-ds6-nbr.h" />
+		<Unit filename="contiki/net/uip-ds6-route.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-ds6-route.h" />
+		<Unit filename="contiki/net/uip-ds6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-ds6.h" />
+		<Unit filename="contiki/net/uip-fw-drv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-fw-drv.h" />
+		<Unit filename="contiki/net/uip-fw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-fw.h" />
+		<Unit filename="contiki/net/uip-icmp6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-icmp6.h" />
+		<Unit filename="contiki/net/uip-nd6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-nd6.h" />
+		<Unit filename="contiki/net/uip-neighbor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-neighbor.h" />
+		<Unit filename="contiki/net/uip-over-mesh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-over-mesh.h" />
+		<Unit filename="contiki/net/uip-packetqueue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-packetqueue.h" />
+		<Unit filename="contiki/net/uip-split.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-split.h" />
+		<Unit filename="contiki/net/uip-udp-packet.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip-udp-packet.h" />
+		<Unit filename="contiki/net/uip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip.h" />
+		<Unit filename="contiki/net/uip6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip_arch.h" />
+		<Unit filename="contiki/net/uip_arp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uip_arp.h" />
+		<Unit filename="contiki/net/uiplib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/net/uiplib.h" />
+		<Unit filename="contiki/net/uipopt.h" />
+		<Unit filename="contiki/sys/arg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/arg.h" />
+		<Unit filename="contiki/sys/autostart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/autostart.h" />
+		<Unit filename="contiki/sys/cc.h" />
+		<Unit filename="contiki/sys/clock.h" />
+		<Unit filename="contiki/sys/compower.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/compower.h" />
+		<Unit filename="contiki/sys/ctimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/ctimer.h" />
+		<Unit filename="contiki/sys/dsc.h" />
+		<Unit filename="contiki/sys/energest.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/energest.h" />
+		<Unit filename="contiki/sys/etimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/etimer.h" />
+		<Unit filename="contiki/sys/lc-addrlabels.h" />
+		<Unit filename="contiki/sys/lc-switch.h" />
+		<Unit filename="contiki/sys/lc.h" />
+		<Unit filename="contiki/sys/loader.h" />
+		<Unit filename="contiki/sys/log.h" />
+		<Unit filename="contiki/sys/mt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/mt.h" />
+		<Unit filename="contiki/sys/node-id.h" />
+		<Unit filename="contiki/sys/process.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/process.h" />
+		<Unit filename="contiki/sys/procinit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/procinit.h" />
+		<Unit filename="contiki/sys/profile-aggregates.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/profile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/profile.h" />
+		<Unit filename="contiki/sys/pt-sem.h" />
+		<Unit filename="contiki/sys/pt.h" />
+		<Unit filename="contiki/sys/rtimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/rtimer.h" />
+		<Unit filename="contiki/sys/stimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/stimer.h" />
+		<Unit filename="contiki/sys/subprocess.h" />
+		<Unit filename="contiki/sys/timer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/timer.h" />
+		<Unit filename="contiki/sys/timetable-aggregate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/timetable-aggregate.h" />
+		<Unit filename="contiki/sys/timetable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="contiki/sys/timetable.h" />
+		<Unit filename="debug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="debug.h" />
+		<Unit filename="delay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="delay.h" />
+		<Unit filename="enc28j60.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="enc28j60.h" />
+		<Unit filename="enc28j60_constants.h" />
+		<Unit filename="gcc_stm32.cmake" />
+		<Unit filename="interrupts.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="network.h" />
+		<Unit filename="platform_config.h" />
+		<Unit filename="ring_buffer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ring_buffer.h" />
+		<Unit filename="rs232.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rs232.h" />
+		<Unit filename="run-cmake.sh" />
+		<Unit filename="stm32_flash.ld.in" />
+		<Unit filename="stm32f10x_conf.h" />
+		<Unit filename="system_stm32f10x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="time.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="time.h" />
+		<Extensions>
+			<code_completion>
+				<search_path add="contiki" />
+			</code_completion>
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
