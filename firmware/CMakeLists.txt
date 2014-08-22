@@ -69,6 +69,7 @@ SET(PROJECT_SOURCES
   time.c
   ring_buffer.c
   enc28j60.c
+  disp6800.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})

@@ -7,6 +7,7 @@
 #include "delay.h"
 #include "time.h"
 #include "ring_buffer.h"
+#include "disp6800.h"
 #include "platform_config.h"
 #ifdef NETWORK_ENABLED
 #include "network.h"
@@ -70,6 +71,7 @@ void setup() {
   process_start(&debug_process, NULL);
 
   spi_setup();
+  disp6800_setup();
   #ifdef NETWORK_ENABLED
     network_setup();
   #endif
@@ -119,6 +121,12 @@ PROCESS_THREAD(debug_process, ev, data) {
         debug_write_line("!clear");
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
+      } else if(strcmp(line, "!DISPON\n") == 0) {
+        disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
+        debug_write_line("+OK");
+      } else if(strcmp(line, "!DISPOFF\n") == 0) {
+        disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
+        debug_write_line("+OK");
       } else {
         debug_write("?Unknown command: ");
         debug_write_line(line);
