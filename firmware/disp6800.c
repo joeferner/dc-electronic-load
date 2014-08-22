@@ -70,8 +70,8 @@ void disp6800_setup() {
   disp6800_set_row_address(0x00, 0x4f);
 
   disp6800_begin_tx_data();
-  for(int i = 0; i < 8192; i++) {
-    disp6800_tx_data(i);
+  for(int i = 0; i < 5120; i++) {
+    disp6800_tx_data(0);
   }
 
   debug_write_line("?END disp6800_setup");
