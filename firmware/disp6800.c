@@ -14,6 +14,9 @@
 
 #define DISP6800_SET_COLUMN_ADDRESS   0x15
 #define DISP6800_SET_ROW_ADDRESS      0x75
+#define DISP6800_SET_REMAP            0xa0
+#define DISP6800_SET_DISPLAY_OFFSET   0xa2
+#define DISP6800_SET_START_LINE       0xa1
 
 void disp6800_setup_gpio();
 void disp6800_assert_reset();
@@ -27,14 +30,13 @@ void disp6800_write();
 void disp6800_command();
 void disp6800_data();
 void disp6800_tx_command(uint8_t d);
-void disp6800_begin_tx_data();
-void disp6800_tx_data(uint8_t d);
 void disp6800_set_data_port(uint8_t d);
 void disp6800_set_data_dir(int dir);
 void disp6800_set_display_mode(uint8_t mode);
 void disp6800_set_display_onoff(uint8_t onoff);
-void disp6800_set_column_address(uint8_t start, uint8_t end);
-void disp6800_set_row_address(uint8_t start, uint8_t end);
+void disp6800_set_remap_format(uint8_t remap);
+void disp6800_set_display_offset(uint8_t displayOffset);
+void disp6800_set_start_line(uint8_t startLine);
 
 void disp6800_setup() {
   debug_write_line("?BEGIN disp6800_setup");
@@ -48,10 +50,10 @@ void disp6800_setup() {
   disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
   //disp6800_set_display_clock(0x91);   // 135 Frames/second
   //disp6800_set_multiplex_ratio(0x3f); // 1/64th duty
-  //disp6800_set_display_offset(0x4c);  // shift mapping ram counter
-  //disp6800_set_start_line(0x00);      // set mapping start line
+  disp6800_set_display_offset(0x4c);  // shift mapping ram counter
+  disp6800_set_start_line(0x00);      // set mapping start line
   //disp6800_set_master_config(0x00);   // disable embedded dc/dc converter
-  //disp6800_set_remap_format(0x00);
+  disp6800_set_remap_format(0x50);
   //disp6800_set_current_range(0x02);   // set full current range
   //disp6800_set_gray_scale_table();    // set pulse width for gray scale table
   //disp6800_set_contrast_current(128); // set scale factor of segment output current
@@ -61,7 +63,7 @@ void disp6800_setup() {
   //disp6800_set_precharge_compensation(0x20, 0x20);
   //disp6800_set_vcomh(0x1c);           // set voltage high level
   //disp6800_set_vsl(0x0d);             // set voltage low level
-  //disp6800_set_display_mode(DISP6800_DISPLAY_MODE_REGULAR);
+  disp6800_set_display_mode(DISP6800_DISPLAY_MODE_REGULAR);
   //disp6800_fill_ram(0x00);            // clear screen
   disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
   delay_ms(200);
@@ -78,8 +80,6 @@ void disp6800_setup() {
 }
 
 void disp6800_setup_gpio() {
-  debug_write_line("?disp6800_setup_gpio");
-
   GPIO_InitTypeDef gpioInitStructure;
 
   RCC_APB2PeriphClockCmd(DISP6800_RCC, ENABLE);
@@ -176,12 +176,10 @@ void disp6800_deassert_en() {
 }
 
 void disp6800_assert_reset() {
-  debug_write_line("?disp6800_assert_reset");
   GPIO_ResetBits(DISP6800_RESET, DISP6800_RESET_PIN);
 }
 
 void disp6800_deassert_reset() {
-  debug_write_line("?disp6800_deassert_reset");
   GPIO_SetBits(DISP6800_RESET, DISP6800_RESET_PIN);
 }
 
@@ -224,28 +222,10 @@ void disp6800_set_data_port(uint8_t d) {
 }
 
 void disp6800_set_display_onoff(uint8_t onoff) {
-  debug_write("?disp6800_set_display_onoff: ");
-  debug_write_line(onoff == DISP6800_DISPLAY_ON ? "on" : "off");
   disp6800_tx_command(onoff);
 }
 
 void disp6800_set_display_mode(uint8_t mode) {
-  debug_write("?disp6800_set_display_mode: ");
-  switch(mode) {
-  case DISP6800_DISPLAY_MODE_REGULAR:
-    debug_write_line("regular");
-    break;
-  case DISP6800_DISPLAY_MODE_ALL_ON:
-    debug_write_line("all on");
-    break;
-  case DISP6800_DISPLAY_MODE_ALL_OFF:
-    debug_write_line("all off");
-    break;
-  case DISP6800_DISPLAY_MODE_INVERSE:
-    debug_write_line("inverse");
-    break;
-  }
-
   disp6800_tx_command(mode);
 }
 
@@ -259,4 +239,19 @@ void disp6800_set_row_address(uint8_t start, uint8_t end) {
   disp6800_tx_command(DISP6800_SET_ROW_ADDRESS);
   disp6800_tx_command(start);
   disp6800_tx_command(end);
+}
+
+void disp6800_set_remap_format(uint8_t remap) {
+  disp6800_tx_command(DISP6800_SET_REMAP);
+  disp6800_tx_command(remap);
+}
+
+void disp6800_set_display_offset(uint8_t displayOffset) {
+  disp6800_tx_command(DISP6800_SET_DISPLAY_OFFSET);
+  disp6800_tx_command(displayOffset);
+}
+
+void disp6800_set_start_line(uint8_t startLine) {
+  disp6800_tx_command(DISP6800_SET_START_LINE);
+  disp6800_tx_command(startLine);
 }

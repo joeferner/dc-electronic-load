@@ -7,5 +7,9 @@
 
 void disp6800_setup();
 void disp6800_set_display_onoff(uint8_t onoff);
+void disp6800_set_column_address(uint8_t start, uint8_t end);
+void disp6800_set_row_address(uint8_t start, uint8_t end);
+void disp6800_begin_tx_data();
+void disp6800_tx_data(uint8_t d);
 
 #endif // _DISP6800_H_

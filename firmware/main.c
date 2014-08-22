@@ -8,6 +8,7 @@
 #include "time.h"
 #include "ring_buffer.h"
 #include "disp6800.h"
+#include "gfx.h"
 #include "platform_config.h"
 #ifdef NETWORK_ENABLED
 #include "network.h"
@@ -72,6 +73,7 @@ void setup() {
 
   spi_setup();
   disp6800_setup();
+  gfx_setup();
   #ifdef NETWORK_ENABLED
     network_setup();
   #endif
