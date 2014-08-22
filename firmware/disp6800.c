@@ -26,12 +26,11 @@ void disp6800_read();
 void disp6800_write();
 void disp6800_command();
 void disp6800_data();
+void disp6800_tx_command(uint8_t d);
+void disp6800_begin_tx_data();
 void disp6800_tx_data(uint8_t d);
+void disp6800_set_data_port(uint8_t d);
 void disp6800_set_data_dir(int dir);
-void disp6800_begin_command();
-void disp6800_end_command();
-void disp6800_begin_data();
-void disp6800_end_data();
 void disp6800_set_display_mode(uint8_t mode);
 void disp6800_set_display_onoff(uint8_t onoff);
 void disp6800_set_column_address(uint8_t start, uint8_t end);
@@ -70,10 +69,9 @@ void disp6800_setup() {
   disp6800_set_column_address(0x00, 0x3f);
   disp6800_set_row_address(0x00, 0x4f);
 
+  disp6800_begin_tx_data();
   for(int i = 0; i < 8192; i++) {
-    disp6800_begin_data();
-    disp6800_tx_data(0);
-    disp6800_end_data();
+    disp6800_tx_data(i);
   }
 
   debug_write_line("?END disp6800_setup");
@@ -195,29 +193,28 @@ void disp6800_deassert_cs() {
   GPIO_SetBits(DISP6800_CS, DISP6800_CS_PIN);
 }
 
-void disp6800_begin_command() {
+void disp6800_tx_command(uint8_t d) {
   disp6800_assert_en();
   disp6800_command();
   disp6800_write();
   disp6800_assert_cs();
-}
-
-void disp6800_end_command() {
+  disp6800_set_data_port(d);
   disp6800_deassert_cs();
 }
 
-void disp6800_begin_data() {
+void disp6800_begin_tx_data() {
   disp6800_assert_en();
   disp6800_data();
   disp6800_write();
-  disp6800_assert_cs();
-}
-
-void disp6800_end_data() {
-  disp6800_deassert_cs();
 }
 
 void disp6800_tx_data(uint8_t d) {
+  disp6800_assert_cs();
+  disp6800_set_data_port(d);
+  disp6800_deassert_cs();
+}
+
+void disp6800_set_data_port(uint8_t d) {
   uint32_t dd = d;
   dd = ((~dd << 16) & 0x00ff0000) | dd;
   DISP6800_DATA->BSRR = dd;
@@ -229,9 +226,7 @@ void disp6800_tx_data(uint8_t d) {
 void disp6800_set_display_onoff(uint8_t onoff) {
   debug_write("?disp6800_set_display_onoff: ");
   debug_write_line(onoff == DISP6800_DISPLAY_ON ? "on" : "off");
-  disp6800_begin_command();
-  disp6800_tx_data(onoff);
-  disp6800_end_command();
+  disp6800_tx_command(onoff);
 }
 
 void disp6800_set_display_mode(uint8_t mode) {
@@ -251,23 +246,17 @@ void disp6800_set_display_mode(uint8_t mode) {
     break;
   }
 
-  disp6800_begin_command();
-  disp6800_tx_data(mode);
-  disp6800_end_command();
+  disp6800_tx_command(mode);
 }
 
 void disp6800_set_column_address(uint8_t start, uint8_t end) {
-  disp6800_begin_command();
-  disp6800_tx_data(DISP6800_SET_COLUMN_ADDRESS);
-  disp6800_tx_data(start);
-  disp6800_tx_data(end);
-  disp6800_end_command();
+  disp6800_tx_command(DISP6800_SET_COLUMN_ADDRESS);
+  disp6800_tx_command(start);
+  disp6800_tx_command(end);
 }
 
 void disp6800_set_row_address(uint8_t start, uint8_t end) {
-  disp6800_begin_command();
-  disp6800_tx_data(DISP6800_SET_ROW_ADDRESS);
-  disp6800_tx_data(start);
-  disp6800_tx_data(end);
-  disp6800_end_command();
+  disp6800_tx_command(DISP6800_SET_ROW_ADDRESS);
+  disp6800_tx_command(start);
+  disp6800_tx_command(end);
 }
