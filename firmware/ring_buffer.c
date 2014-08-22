@@ -137,8 +137,8 @@ uint16_t dma_ring_buffer_read(dma_ring_buffer* ring, uint8_t* buffer, uint16_t s
 }
 
 uint16_t dma_ring_buffer_readline(dma_ring_buffer* ring, char* line, uint16_t size) {
-  uint16_t bufferSize = ring->bufferEnd - ring->buffer;
-  uint16_t dataCounter = bufferSize - DMA_GetCurrDataCounter(ring->ch);
+  uint32_t bufferSize = ring->bufferEnd - ring->buffer;
+  uint32_t dataCounter = bufferSize - DMA_GetCurrDataCounter(ring->ch);
   uint8_t* dataEnd = ring->buffer + dataCounter;
   uint8_t* p = ring->currentPos;
   char ch;
