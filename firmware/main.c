@@ -74,6 +74,10 @@ void setup() {
   spi_setup();
   disp6800_setup();
   gfx_setup();
+
+  gfx_draw_string("1,230", &FONT_LARGE, 5, 5);
+  gfx_redraw();
+
   #ifdef NETWORK_ENABLED
     network_setup();
   #endif

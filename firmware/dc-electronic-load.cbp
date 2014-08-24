@@ -727,12 +727,24 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="delay.h" />
+		<Unit filename="disp6800.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="disp6800.h" />
 		<Unit filename="enc28j60.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="enc28j60.h" />
 		<Unit filename="enc28j60_constants.h" />
+		<Unit filename="font.h" />
+		<Unit filename="fontLarge.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="gcc_stm32.cmake" />
+		<Unit filename="gfx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="gfx.h" />
 		<Unit filename="interrupts.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -748,10 +760,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ring_buffer.h" />
-		<Unit filename="rs232.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="rs232.h" />
 		<Unit filename="run-cmake.sh" />
 		<Unit filename="stm32_flash.ld.in" />
 		<Unit filename="stm32f10x_conf.h" />
