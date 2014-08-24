@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "font.h"
 #include "fontLarge.c"
+#include <string.h>
 
 #define DISP6800_COLUMN_START 0x00
 #define DISP6800_COLUMN_END   0x40
@@ -81,11 +82,11 @@ int gfx_draw_char(char ch, const tFont* font, int x, int y) {
   x = x + (x % 2);
 
   int imageOffset = 0;
+  int widthInBytes = image->width / 2;
   for(int ly = 0; ly < image->height; ly++) {
     int vbufOffset = CLAMP(VBUF_OFFSET(x, y + ly), 0, DISP6800_VBUF_SIZE);
-    for(int lx = 0; lx < image->width / 2; lx++) {
-      vbuf[vbufOffset + lx] = image->data[imageOffset++];
-    }
+    memcpy(&vbuf[vbufOffset], &image->data[imageOffset], widthInBytes);
+    imageOffset += widthInBytes;
   }
 
   return image->width;

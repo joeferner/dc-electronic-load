@@ -40,12 +40,12 @@ uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 PROCINIT(
   &etimer_process
   , &debug_process
-  #ifdef NETWORK_ENABLED
+#ifdef NETWORK_ENABLED
   , &tcpip_process
   , &dhcp_process
   , &telnet_process
   , &resolv_process
-  #endif
+#endif
 );
 
 int main(void) {
@@ -75,12 +75,9 @@ void setup() {
   disp6800_setup();
   gfx_setup();
 
-  gfx_draw_string("1,230", &FONT_LARGE, 5, 5);
-  gfx_redraw();
-
-  #ifdef NETWORK_ENABLED
-    network_setup();
-  #endif
+#ifdef NETWORK_ENABLED
+  network_setup();
+#endif
 
   time_setup();
 
@@ -88,13 +85,24 @@ void setup() {
   debug_write_line("?END setup");
 }
 
+int count = 0;
+
 void loop() {
-  #ifdef NETWORK_ENABLED
-    network_tick();
-  #endif
+#ifdef NETWORK_ENABLED
+  network_tick();
+#endif
   process_run();
   etimer_request_poll();
   process_poll(&debug_process);
+
+  char temp[8];
+  uitoa(count, temp, 10);
+  gfx_draw_string(temp, &FONT_LARGE, 5, 5);
+  gfx_redraw();
+  count++;
+  if(count > 10000) {
+    count = 0;
+  }
 
   //delay_ms(1000);
   //debug_led_set(0);

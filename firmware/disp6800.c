@@ -189,11 +189,11 @@ void disp6800_write() {
 }
 
 void disp6800_assert_en() {
-  GPIO_SetBits(DISP6800_EN, DISP6800_EN_PIN);
+  DISP6800_EN->BSRR = DISP6800_EN_PIN;
 }
 
 void disp6800_deassert_en() {
-  GPIO_ResetBits(DISP6800_EN, DISP6800_EN_PIN);
+  DISP6800_EN->BRR = DISP6800_EN_PIN;
 }
 
 void disp6800_assert_reset() {
@@ -205,11 +205,11 @@ void disp6800_deassert_reset() {
 }
 
 void disp6800_assert_cs() {
-  GPIO_ResetBits(DISP6800_CS, DISP6800_CS_PIN);
+  DISP6800_CS->BRR = DISP6800_CS_PIN;
 }
 
 void disp6800_deassert_cs() {
-  GPIO_SetBits(DISP6800_CS, DISP6800_CS_PIN);
+  DISP6800_CS->BSRR = DISP6800_CS_PIN;
 }
 
 void disp6800_tx_command(uint8_t d) {
@@ -238,7 +238,6 @@ void disp6800_set_data_port(uint8_t d) {
   dd = ((~dd << 16) & 0x00ff0000) | dd;
   DISP6800_DATA->BSRR = dd;
   disp6800_deassert_en();
-  delay_us(1);
   disp6800_assert_en();
 }
 
