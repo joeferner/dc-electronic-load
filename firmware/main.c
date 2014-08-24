@@ -17,6 +17,7 @@
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 PROCESS(debug_process, "Debug");
+PROCESS(gfx_update_process, "GFX Update");
 
 void setup();
 void loop();
@@ -37,9 +38,12 @@ dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 #endif
 
+uint16_t readCurrent;
+
 PROCINIT(
   &etimer_process
   , &debug_process
+  , &gfx_update_process
 #ifdef NETWORK_ENABLED
   , &tcpip_process
   , &dhcp_process
@@ -70,6 +74,8 @@ void setup() {
   process_init();
   process_start(&etimer_process, NULL);
   process_start(&debug_process, NULL);
+  process_start(&gfx_update_process, NULL);
+  process_poll(&gfx_update_process);
 
   spi_setup();
   disp6800_setup();
@@ -85,8 +91,6 @@ void setup() {
   debug_write_line("?END setup");
 }
 
-int count = 0;
-
 void loop() {
 #ifdef NETWORK_ENABLED
   network_tick();
@@ -95,14 +99,11 @@ void loop() {
   etimer_request_poll();
   process_poll(&debug_process);
 
-  char temp[8];
-  uitoa(count, temp, 10);
-  gfx_draw_string(temp, &FONT_LARGE, 5, 5);
-  gfx_redraw();
-  count++;
-  if(count > 10000) {
-    count = 0;
+  readCurrent += 13;
+  if(readCurrent > 10000) {
+    readCurrent = 0;
   }
+  process_poll(&gfx_update_process);
 
   //delay_ms(1000);
   //debug_led_set(0);
@@ -120,6 +121,25 @@ void assert_failed(uint8_t* file, uint32_t line) {
   /* Infinite loop */
   while (1) {
   }
+}
+
+PROCESS_THREAD(gfx_update_process, ev, data) {
+  char temp1[20];
+  char temp2[20];
+  PROCESS_BEGIN();
+
+  while(1) {
+    PROCESS_YIELD();
+
+    uitoa(readCurrent, temp1, 10);
+    addCommas(temp1, temp2);
+    padLeft(temp2, temp1, 5);
+    gfx_draw_string(temp1, &FONT_LARGE, 0, 5);
+    gfx_draw_string("mA", &FONT_SMALL, 102, 18);
+    gfx_redraw();
+  }
+
+  PROCESS_END();
 }
 
 PROCESS_THREAD(debug_process, ev, data) {

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "contiki/net/uip_arp.h"
+#include "stringUtils.h"
 #include <stm32f10x_dma.h>
 
 #ifdef	__cplusplus
@@ -26,8 +27,6 @@ void debug_write_u32(uint32_t val, uint8_t base);
 void debug_write_i32(int32_t val, uint8_t base);
 void debug_write_uip_eth_addr(const struct uip_eth_addr* addr);
 void debug_write_uip_ip_addr(const uip_ipaddr_t* addr);
-
-char* uitoa(uint32_t value, char* result, int base);
 
 #ifdef	__cplusplus
 }

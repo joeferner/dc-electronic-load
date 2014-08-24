@@ -5,7 +5,7 @@
     <style>Medium</style>
     <widthType>monospaced</widthType>
     <antialiasing>true</antialiasing>
-    <string>0123456789,.</string>
+    <string>0123456789,. </string>
     <converted>/home/jferner/dev/dc-electronic-load/firmware/fontLarge.c</converted>
     <chars>
         <char character="0" code="0030">
@@ -43,6 +43,9 @@
         </char>
         <char character="." code="002e">
             <picture format="png">iVBORw0KGgoAAAANSUhEUgAAABQAAAAhCAIAAABWXBxEAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAkElEQVQ4jWP8//8/A7mAiWydo5pHNY9qHtVMFc0suCS2bt26e/duYWHh1NRUCQkJ7Ir+YwOtra1wBSIiIo8fP8aqDIvmv3//cnNzI1tQVlaGVTMWP//48ePbt2/IIu/evcPqaiyaubi4HBwckEV8fHxI8PPTp08DAgL4+PgUFBSmTp2KVc3///8ZR2uMoaIZAFKXouWTvtxBAAAAAElFTkSuQmCC</picture>
+        </char>
+        <char character=" " code="0020">
+            <picture format="png">iVBORw0KGgoAAAANSUhEUgAAABQAAAApCAIAAAC6D54pAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJUlEQVRIie3LMQEAAAgDILV/59lBX/jpJHU15ynLsizLsix/8gLHywNPmawSQQAAAABJRU5ErkJggg==</picture>
         </char>
     </chars>
 </data>

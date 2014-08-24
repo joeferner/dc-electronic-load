@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "font.h"
 #include "fontLarge.c"
+#include "fontSmall.c"
 #include <string.h>
 
 #define DISP6800_COLUMN_START 0x00

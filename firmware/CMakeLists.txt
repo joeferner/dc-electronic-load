@@ -65,6 +65,7 @@ SET(PROJECT_SOURCES
   network.c
   interrupts.c
   debug.c
+  stringUtils.c
   delay.c
   time.c
   ring_buffer.c
