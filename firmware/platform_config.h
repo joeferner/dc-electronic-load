@@ -1,6 +1,9 @@
 #ifndef PLATFORM_CONFIG_H_INCLUDED
 #define PLATFORM_CONFIG_H_INCLUDED
 
+#include <misc.h>
+#include <stm32f10x_rcc.h>
+
 #define MAX_LINE_LENGTH         50
 
 #define DEBUG_LED_RCC           RCC_APB2Periph_GPIOB
@@ -38,6 +41,19 @@
 #define DISP6800_CS_PIN         GPIO_Pin_11
 #define DISP6800_DC             GPIOB
 #define DISP6800_DC_PIN         GPIO_Pin_12
+
+#define ENCODER_CH_A_EXTI       EXTI_Line6
+#define ENCODER_CH_A_EXTI_PORT  GPIO_PortSourceGPIOB
+#define ENCODER_CH_A_EXTI_PIN   GPIO_PinSource6
+#define ENCODER_CH_A_RCC        RCC_APB2Periph_GPIOB
+#define ENCODER_CH_A_PORT       GPIOB
+#define ENCODER_CH_A_PIN        GPIO_Pin_6
+#define ENCODER_CH_B_EXTI       EXTI_Line7
+#define ENCODER_CH_B_EXTI_PORT  GPIO_PortSourceGPIOB
+#define ENCODER_CH_B_EXTI_PIN   GPIO_PinSource7
+#define ENCODER_CH_B_RCC        RCC_APB2Periph_GPIOB
+#define ENCODER_CH_B_PORT       GPIOB
+#define ENCODER_CH_B_PIN        GPIO_Pin_7
 
 // SPI1 pins: SCK (GPIOA - pin 5)
 // SPI1 pins: MOSI (GPIOA - pin 7)

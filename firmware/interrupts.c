@@ -3,6 +3,7 @@
 #include "debug.h"
 
 extern void time_SysTick_Handler();
+extern void encoder_exti_irq();
 
 static void HardFault_Handler( void ) __attribute__( ( naked ) );
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
@@ -49,6 +50,23 @@ void PendSV_Handler() {
 
 void SysTick_Handler() {
   time_SysTick_Handler();
+}
+
+void EXTI9_5_IRQHandler() {
+  uint8_t signal = 0;
+
+  if(EXTI_GetITStatus(ENCODER_CH_A_EXTI) != RESET) {
+    signal = 1;
+    EXTI_ClearITPendingBit(ENCODER_CH_A_EXTI);
+  }
+  if(EXTI_GetITStatus(ENCODER_CH_B_EXTI) != RESET) {
+    signal = 1;
+    EXTI_ClearITPendingBit(ENCODER_CH_B_EXTI);
+  }
+
+  if(signal) {
+    encoder_exti_irq();
+  }
 }
 
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress) {

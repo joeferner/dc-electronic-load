@@ -39,6 +39,7 @@ uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 #endif
 
 uint16_t readCurrent;
+uint16_t setCurrent;
 
 PROCINIT(
   &etimer_process
@@ -77,9 +78,13 @@ void setup() {
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
 
+  setCurrent = 0;
+  readCurrent = 0;
+
   spi_setup();
   disp6800_setup();
   gfx_setup();
+  encoder_setup();
 
 #ifdef NETWORK_ENABLED
   network_setup();
@@ -136,6 +141,13 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
     padLeft(temp2, temp1, 5);
     gfx_draw_string(temp1, &FONT_LARGE, 0, 5);
     gfx_draw_string("mA", &FONT_SMALL, 102, 18);
+
+    uitoa(setCurrent, temp1, 10);
+    addCommas(temp1, temp2);
+    padLeft(temp2, temp1, 5);
+    strcat(temp1, "mA");
+    gfx_draw_string(temp1, &FONT_SMALL, 0, 32);
+
     gfx_redraw();
   }
 

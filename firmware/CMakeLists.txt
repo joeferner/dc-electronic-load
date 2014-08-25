@@ -44,6 +44,7 @@ SET(PROJECT_SOURCES
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c
+  ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/misc.c
   system_stm32f10x.c
@@ -72,6 +73,7 @@ SET(PROJECT_SOURCES
   enc28j60.c
   disp6800.c
   gfx.c
+  encoder.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})
