@@ -4,6 +4,7 @@
 #include "font.h"
 #include "fontLarge.c"
 #include "fontSmall.c"
+#include "fontSmallNumbers.c"
 #include <string.h>
 
 #define DISP6800_COLUMN_START 0x00
@@ -19,19 +20,23 @@
 #define MIN(x, y)             (((x) < (y)) ? (x) : (y))
 #define MAX(x, y)             (((x) > (y)) ? (x) : (y))
 #define CLAMP(x, min, max)    (MAX(MIN(x, max), min))
+#define TEST(a, b)            (((a) & (b)) == (b))
 
 uint8_t vbuf[DISP6800_VBUF_SIZE];
 
 void gfx_setup() {
   debug_write_line("?BEGIN gfx_setup");
 
-  for(int i = 0; i < DISP6800_VBUF_SIZE; i++) {
-    vbuf[i] = 0;
-  }
-
+  gfx_clear();
   gfx_redraw();
 
   debug_write_line("?END gfx_setup");
+}
+
+void gfx_clear() {
+  for(int i = 0; i < DISP6800_VBUF_SIZE; i++) {
+    vbuf[i] = 0;
+  }
 }
 
 void gfx_redraw() {
@@ -54,7 +59,23 @@ void gfx_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
   }
 }
 
-int gfx_draw_string(const char* str, const tFont* font, int x, int y) {
+int gfx_measure_string_width(const char* str, const tFont* font) {
+  int width =0;
+  while(*str) {
+    char ch = *str++;
+    const tChar* tch = gfx_get_char(ch, font);
+    if(tch != NULL) {
+      width += tch->image->width;
+    }
+  }
+  return width;
+}
+
+int gfx_draw_string(const char* str, const tFont* font, int x, int y, uint32_t opts) {
+  if(TEST(opts, GFX_ALIGN_RIGHT)) {
+    x -= gfx_measure_string_width(str, font);
+  }
+
   int cx = 0;
   while(*str) {
     char ch = *str++;
@@ -83,7 +104,7 @@ int gfx_draw_char(char ch, const tFont* font, int x, int y) {
   x = x + (x % 2);
 
   int imageOffset = 0;
-  int widthInBytes = image->width / 2;
+  int widthInBytes = (image->width / 2) + (image->width % 2);
   for(int ly = 0; ly < image->height; ly++) {
     int vbufOffset = CLAMP(VBUF_OFFSET(x, y + ly), 0, DISP6800_VBUF_SIZE);
     memcpy(&vbuf[vbufOffset], &image->data[imageOffset], widthInBytes);

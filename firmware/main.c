@@ -131,17 +131,19 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   while(1) {
     PROCESS_YIELD();
 
+    gfx_clear();
+
     uitoa(readCurrent, temp1, 10);
     addCommas(temp1, temp2);
     padLeft(temp2, temp1, 5);
-    gfx_draw_string(temp1, &FONT_LARGE, 0, 5);
-    gfx_draw_string("mA", &FONT_SMALL, 102, 18);
+    gfx_draw_string(temp1, &FONT_LARGE, 100, 5, GFX_ALIGN_RIGHT);
+    gfx_draw_string("mA", &FONT_SMALL, 102, 18, GFX_ALIGN_LEFT);
 
     uitoa(setCurrent, temp1, 10);
     addCommas(temp1, temp2);
     padLeft(temp2, temp1, 5);
-    strcat(temp1, "mA");
-    gfx_draw_string(temp1, &FONT_SMALL, 0, 32);
+    gfx_draw_string(temp1, &FONT_SMALL_NUMBERS, 50, 32, GFX_ALIGN_RIGHT);
+    gfx_draw_string("mA", &FONT_SMALL, 52, 32, GFX_ALIGN_LEFT);
 
     gfx_redraw();
   }

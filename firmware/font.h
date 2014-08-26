@@ -19,5 +19,6 @@ typedef struct {
 
 extern const tFont FONT_LARGE;
 extern const tFont FONT_SMALL;
+extern const tFont FONT_SMALL_NUMBERS;
 
 #endif // FONT_H
