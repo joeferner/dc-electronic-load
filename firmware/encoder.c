@@ -57,7 +57,7 @@ void encoder_setup() {
 void encoder_exti_irq() {
   uint8_t a = GPIO_ReadInputDataBit(ENCODER_CH_A_PORT, ENCODER_CH_A_PIN);
   uint8_t b = GPIO_ReadInputDataBit(ENCODER_CH_B_PORT, ENCODER_CH_B_PIN);
-  uint8_t p = (a ? 0x10 : 0x00) | (b ? 0x01 : 0x00);
+  uint8_t p = (a ? 0x00 : 0x10) | (b ? 0x00 : 0x01);
 
   if(encoder_last_p == ENCODER_P_INIT) {
     if(p == 0x00) {

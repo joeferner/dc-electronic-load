@@ -45,37 +45,37 @@ void mock_encoder_setPinState(uint8_t chA, uint8_t chB) {
 
 void testEncoder() {
   encoderValue = 0;
-  mock_encoder_setPinState(0, 0);
+  mock_encoder_setPinState(1, 1);
   encoder_setup();
 
   // Clockwise 1
-  mock_encoder_setPinState(1, 0);
-  assertEquals(0, encoderValue, "Encoder CW");
-  mock_encoder_setPinState(1, 1);
-  assertEquals(0, encoderValue, "Encoder CW");
   mock_encoder_setPinState(0, 1);
   assertEquals(0, encoderValue, "Encoder CW");
   mock_encoder_setPinState(0, 0);
+  assertEquals(0, encoderValue, "Encoder CW");
+  mock_encoder_setPinState(1, 0);
+  assertEquals(0, encoderValue, "Encoder CW");
+  mock_encoder_setPinState(1, 1);
   assertEquals(1, encoderValue, "Encoder CW");
 
   // Clockwise 2
-  mock_encoder_setPinState(1, 0);
-  assertEquals(1, encoderValue, "Encoder CW");
-  mock_encoder_setPinState(1, 1);
-  assertEquals(1, encoderValue, "Encoder CW");
   mock_encoder_setPinState(0, 1);
   assertEquals(1, encoderValue, "Encoder CW");
   mock_encoder_setPinState(0, 0);
+  assertEquals(1, encoderValue, "Encoder CW");
+  mock_encoder_setPinState(1, 0);
+  assertEquals(1, encoderValue, "Encoder CW");
+  mock_encoder_setPinState(1, 1);
   assertEquals(2, encoderValue, "Encoder CW");
 
   // Counter Clockwise 3
-  mock_encoder_setPinState(0, 1);
-  assertEquals(2, encoderValue, "Encoder CCW");
-  mock_encoder_setPinState(1, 1);
-  assertEquals(2, encoderValue, "Encoder CCW");
   mock_encoder_setPinState(1, 0);
   assertEquals(2, encoderValue, "Encoder CCW");
   mock_encoder_setPinState(0, 0);
+  assertEquals(2, encoderValue, "Encoder CCW");
+  mock_encoder_setPinState(0, 1);
+  assertEquals(2, encoderValue, "Encoder CCW");
+  mock_encoder_setPinState(1, 1);
   assertEquals(1, encoderValue, "Encoder CCW");
 }
 
