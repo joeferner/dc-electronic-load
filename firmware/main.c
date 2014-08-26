@@ -9,6 +9,7 @@
 #include "ring_buffer.h"
 #include "disp6800.h"
 #include "gfx.h"
+#include "encoder.h"
 #include "platform_config.h"
 #ifdef NETWORK_ENABLED
 #include "network.h"
@@ -104,12 +105,6 @@ void loop() {
   etimer_request_poll();
   process_poll(&debug_process);
 
-  readCurrent += 13;
-  if(readCurrent > 10000) {
-    readCurrent = 0;
-  }
-  process_poll(&gfx_update_process);
-
   //delay_ms(1000);
   //debug_led_set(0);
   //delay_ms(1000);
@@ -152,6 +147,15 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   }
 
   PROCESS_END();
+}
+
+void encoder_irq(ENCODER_DIR dir) {
+  if(dir == ENCODER_DIR_CW) {
+    setCurrent++;
+  } else {
+    setCurrent--;
+  }
+  process_poll(&gfx_update_process);
 }
 
 PROCESS_THREAD(debug_process, ev, data) {
