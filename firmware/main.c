@@ -40,6 +40,7 @@ uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 #endif
 
 uint16_t readCurrent;
+uint16_t readMilliVolts;
 uint16_t setCurrent;
 
 PROCINIT(
@@ -79,8 +80,9 @@ void setup() {
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
 
-  setCurrent = 0;
-  readCurrent = 0;
+  setCurrent = 850;
+  readCurrent = 825;
+  readMilliVolts = 15234;
 
   spi_setup();
   disp6800_setup();
@@ -135,15 +137,25 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
     uitoa(readCurrent, temp1, 10);
     addCommas(temp1, temp2);
-    padLeft(temp2, temp1, 5);
-    gfx_draw_string(temp1, &FONT_LARGE, 100, 5, GFX_ALIGN_RIGHT);
-    gfx_draw_string("mA", &FONT_SMALL, 102, 18, GFX_ALIGN_LEFT);
+    gfx_draw_string(temp2, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
+    gfx_draw_string("mA", &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
 
     uitoa(setCurrent, temp1, 10);
     addCommas(temp1, temp2);
-    padLeft(temp2, temp1, 5);
-    gfx_draw_string(temp1, &FONT_SMALL_NUMBERS, 50, 32, GFX_ALIGN_RIGHT);
-    gfx_draw_string("mA", &FONT_SMALL, 52, 32, GFX_ALIGN_LEFT);
+    gfx_draw_string("SET", &FONT_XSMALL, 2, 2, GFX_ALIGN_LEFT);
+    gfx_draw_string(temp2, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
+    gfx_draw_string("mA", &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
+
+    uitoa(readMilliVolts % 1000, temp1, 10);
+    padLeft(temp1, temp2, 3, '0');
+    uitoa(readMilliVolts / 1000, temp1, 10);
+    strcat(temp1, ".");
+    strcat(temp1, temp2);
+    gfx_draw_string(temp1, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
+    gfx_draw_string("V", &FONT_XSMALL, 110, 42, GFX_ALIGN_LEFT);
+
+    // TODO the next line is for the menu
+    // TODO gfx_draw_string("POWER", &FONT_XSMALL, 2, 54, GFX_ALIGN_LEFT);
 
     gfx_redraw();
   }
@@ -153,9 +165,9 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
 void encoder_irq(ENCODER_DIR dir) {
   if(dir == ENCODER_DIR_CW) {
-    setCurrent++;
+    setCurrent += 10;
   } else {
-    setCurrent--;
+    setCurrent -= 10;
   }
   process_poll(&gfx_update_process);
 }

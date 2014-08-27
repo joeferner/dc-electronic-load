@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 void addCommas(const char* in, char* out);
-void padLeft(const char* in, char* out, int len);
+void padLeft(const char* in, char* out, int len, char ch);
 char* itoa(int32_t value, char* result, int base);
 char* uitoa(uint32_t value, char* result, int base);
 

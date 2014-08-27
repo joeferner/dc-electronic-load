@@ -4,6 +4,7 @@
 #include "font.h"
 #include "fontLarge.c"
 #include "fontSmall.c"
+#include "fontXSmall.c"
 #include "fontSmallNumbers.c"
 #include <string.h>
 
@@ -101,14 +102,17 @@ int gfx_draw_char(char ch, const tFont* font, int x, int y) {
   }
   const tImage* image = tchar->image;
 
-  x = x + (x % 2);
-
   int imageOffset = 0;
-  int widthInBytes = (image->width / 2) + (image->width % 2);
-  for(int ly = 0; ly < image->height; ly++) {
-    int vbufOffset = CLAMP(VBUF_OFFSET(x, y + ly), 0, DISP6800_VBUF_SIZE);
-    memcpy(&vbuf[vbufOffset], &image->data[imageOffset], widthInBytes);
-    imageOffset += widthInBytes;
+  int ly, lx, b;
+  uint8_t color;
+  for(ly = 0; ly < image->height; ly++) {
+    for(lx = 0; lx < image->width;) {
+      for(b = 7; b >= 0; b--, lx++) {
+        color = (image->data[imageOffset] & (1 << b)) ? 0xf : 0x0;
+        gfx_set_pixel(x + lx, y + ly, color);
+      }
+      imageOffset++;
+    }
   }
 
   return image->width;

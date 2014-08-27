@@ -17,14 +17,14 @@ void addCommas(const char* in, char* out) {
   }
 }
 
-void padLeft(const char* in, char* out, int len) {
+void padLeft(const char* in, char* out, int len, char ch) {
   int i;
   int inlen = strlen(in);
   const char* pin = in;
   char* pout = out;
   int spacesNeeded = len - inlen;
   for(i = 0; i < spacesNeeded; i++) {
-    *pout++ = ' ';
+    *pout++ = ch;
   }
   while(*pin) {
     *pout++ = *pin++;
