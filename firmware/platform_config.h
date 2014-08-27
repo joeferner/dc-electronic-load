@@ -8,7 +8,7 @@
 
 #define DEBUG_LED_RCC           RCC_APB2Periph_GPIOB
 #define DEBUG_LED_PORT          GPIOB
-#define DEBUG_LED_PIN           GPIO_Pin_15
+#define DEBUG_LED_PIN           GPIO_Pin_0
 
 #define DEBUG_USART             USART1
 #define DEBUG_USART_BAUD        9600
@@ -55,9 +55,20 @@
 #define ENCODER_CH_B_PORT       GPIOB
 #define ENCODER_CH_B_PIN        GPIO_Pin_7
 
+#define ADC_CS_RCC              RCC_APB2Periph_GPIOB
+#define ADC_CS_PORT             GPIOB
+#define ADC_CS_PIN              GPIO_Pin_1
+#define ADC_SPI                 SPI2
+
+// #define SPI1_ENABLE
 // SPI1 pins: SCK (GPIOA - pin 5)
-// SPI1 pins: MOSI (GPIOA - pin 7)
 // SPI1 pins: MISO (GPIOA - pin 6)
+// SPI1 pins: MOSI (GPIOA - pin 7)
+
+#define SPI2_ENABLE
+// SPI2 pins: SCK (GPIOA - pin 13)
+// SPI2 pins: MISO (GPIOA - pin 14)
+// SPI2 pins: MOSI (GPIOA - pin 15)
 
 #undef NETWORK_ENABLED
 

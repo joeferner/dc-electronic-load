@@ -3,7 +3,6 @@
 #include "debug.h"
 #include "font.h"
 #include "fontLarge.c"
-#include "fontSmall.c"
 #include "fontXSmall.c"
 #include "fontSmallNumbers.c"
 #include <string.h>

@@ -744,13 +744,19 @@
 		<Unit filename="fontLarge.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="fontLarge.xml" />
 		<Unit filename="fontSmall.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="fontSmall.xml" />
 		<Unit filename="fontSmallNumbers.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="fontSmallNumbers.xml" />
+		<Unit filename="fontXSmall.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fontXSmall.xml" />
 		<Unit filename="gcc_stm32.cmake" />
 		<Unit filename="gfx.c">
 			<Option compilerVar="CC" />
@@ -771,7 +777,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ring_buffer.h" />
+		<Unit filename="rtimer-arch.h" />
 		<Unit filename="run-cmake.sh" />
+		<Unit filename="run-gdb.sh" />
 		<Unit filename="run-tests.sh" />
 		<Unit filename="stm32_flash.ld.in" />
 		<Unit filename="stm32f10x_conf.h" />
@@ -805,6 +813,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="time.h" />
+		<Unit filename="util.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="contiki" />

@@ -10,6 +10,7 @@
 #include "disp6800.h"
 #include "gfx.h"
 #include "encoder.h"
+#include "adc.h"
 #include "platform_config.h"
 #ifdef NETWORK_ENABLED
 #include "network.h"
@@ -23,15 +24,6 @@ PROCESS(gfx_update_process, "GFX Update");
 void setup();
 void loop();
 void spi_setup();
-#ifdef NETWORK_ENABLED
-void network_setup();
-#endif
-
-#ifdef NETWORK_ENABLED
-void enc28j60_spi_assert();
-void enc28j60_spi_deassert();
-uint8_t enc28j60_spi_transfer(uint8_t d);
-#endif
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
@@ -47,6 +39,7 @@ PROCINIT(
   &etimer_process
   , &debug_process
   , &gfx_update_process
+  , &adc_process
 #ifdef NETWORK_ENABLED
   , &tcpip_process
   , &dhcp_process
@@ -88,6 +81,7 @@ void setup() {
   disp6800_setup();
   gfx_setup();
   encoder_setup();
+  adc_setup();
 
 #ifdef NETWORK_ENABLED
   network_setup();
@@ -106,6 +100,7 @@ void loop() {
   process_run();
   etimer_request_poll();
   process_poll(&debug_process);
+  process_poll(&adc_process);
 
   //delay_ms(1000);
   //debug_led_set(0);
@@ -163,6 +158,11 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   PROCESS_END();
 }
 
+void adc_irq(uint8_t channel, uint16_t value) {
+  readMilliVolts = value;
+  process_poll(&gfx_update_process);
+}
+
 void encoder_irq(ENCODER_DIR dir) {
   if(dir == ENCODER_DIR_CW) {
     setCurrent += 10;
@@ -202,32 +202,12 @@ PROCESS_THREAD(debug_process, ev, data) {
 }
 
 void spi_setup() {
-  debug_write_line("?spi_setup");
-
   SPI_InitTypeDef spiInitStruct;
   GPIO_InitTypeDef gpioConfig;
 
+#ifdef SPI1_ENABLE
+  debug_write_line("?spi1_setup");
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_SPI1, ENABLE);
-
-#ifdef NETWORK_ENABLED
-  enc28j60_reset_deassert();
-  RCC_APB2PeriphClockCmd(ENC28J60_RESET_RCC, ENABLE);
-  gpioConfig.GPIO_Pin = ENC28J60_RESET_PIN;
-  gpioConfig.GPIO_Mode = GPIO_Mode_Out_PP;
-  gpioConfig.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(ENC28J60_RESET_PORT, &gpioConfig);
-  enc28j60_reset_deassert();
-#endif
-
-#ifdef NETWORK_ENABLED
-  enc28j60_spi_deassert(); // set pin high before initializing as output pin to not false trigger CS
-  RCC_APB2PeriphClockCmd(ENC28J60_CS_RCC, ENABLE);
-  gpioConfig.GPIO_Pin = ENC28J60_CS_PIN;
-  gpioConfig.GPIO_Mode = GPIO_Mode_Out_PP;
-  gpioConfig.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(ENC28J60_CS_PORT, &gpioConfig);
-  enc28j60_spi_deassert();
-#endif
 
   // Configure SPI1 pins: SCK (pin 5) and MOSI (pin 7)
   gpioConfig.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_7;
@@ -256,6 +236,41 @@ void spi_setup() {
   SPI_Init(SPI1, &spiInitStruct);
 
   SPI_Cmd(SPI1, ENABLE);
+#endif
+
+#ifdef SPI2_ENABLE
+  debug_write_line("?spi2_setup");
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+
+  // Configure SPI2 pins: SCK (pin 13) and MOSI (pin 15)
+  gpioConfig.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_15;
+  gpioConfig.GPIO_Speed = GPIO_Speed_50MHz;
+  gpioConfig.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_Init(GPIOB, &gpioConfig);
+
+  // Configure SPI2 pins: MISO (pin 14)
+  gpioConfig.GPIO_Pin = GPIO_Pin_14;
+  gpioConfig.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOB, &gpioConfig);
+
+  // init SPI
+  SPI_StructInit(&spiInitStruct);
+  spiInitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  spiInitStruct.SPI_Mode = SPI_Mode_Master;
+  spiInitStruct.SPI_DataSize = SPI_DataSize_8b;
+  spiInitStruct.SPI_NSS = SPI_NSS_Soft;
+  spiInitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
+  spiInitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
+
+  // Mode 0 (CPOL = 0, CPHA = 0)
+  spiInitStruct.SPI_CPOL = SPI_CPOL_Low;
+  spiInitStruct.SPI_CPHA = SPI_CPHA_1Edge;
+
+  SPI_Init(SPI2, &spiInitStruct);
+
+  SPI_Cmd(SPI2, ENABLE);
+#endif
 }
 
 CCIF unsigned long clock_seconds() {

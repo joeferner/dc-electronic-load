@@ -25,6 +25,22 @@ void network_setup() {
   uip_ipaddr_t gatewayAddr;
   uip_ipaddr_t netmaskAddr;
 
+  enc28j60_reset_deassert();
+  RCC_APB2PeriphClockCmd(ENC28J60_RESET_RCC, ENABLE);
+  gpioConfig.GPIO_Pin = ENC28J60_RESET_PIN;
+  gpioConfig.GPIO_Mode = GPIO_Mode_Out_PP;
+  gpioConfig.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(ENC28J60_RESET_PORT, &gpioConfig);
+  enc28j60_reset_deassert();
+
+  enc28j60_spi_deassert(); // set pin high before initializing as output pin to not false trigger CS
+  RCC_APB2PeriphClockCmd(ENC28J60_CS_RCC, ENABLE);
+  gpioConfig.GPIO_Pin = ENC28J60_CS_PIN;
+  gpioConfig.GPIO_Mode = GPIO_Mode_Out_PP;
+  gpioConfig.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(ENC28J60_CS_PORT, &gpioConfig);
+  enc28j60_spi_deassert();
+
   uip_lladdr.addr[0] = MAC_ADDRESS[0];
   uip_lladdr.addr[1] = MAC_ADDRESS[1];
   uip_lladdr.addr[2] = MAC_ADDRESS[2];
