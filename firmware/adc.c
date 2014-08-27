@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "platform_config.h"
 
+#ifdef ADC_ENABLE
 PROCESS(adc_process, "ADC");
 
 void adc_spi_assert();
@@ -57,3 +58,5 @@ PROCESS_THREAD(adc_process, ev, data) {
 
   PROCESS_END();
 }
+#endif
+

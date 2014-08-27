@@ -3,6 +3,7 @@
 #include <stm32f10x_rcc.h>
 #include <misc.h>
 #include <string.h>
+#include "platform_config.h"
 #include "debug.h"
 #include "delay.h"
 #include "time.h"
@@ -10,10 +11,11 @@
 #include "disp6800.h"
 #include "gfx.h"
 #include "encoder.h"
-#include "adc.h"
-#include "platform_config.h"
+#ifdef ADC_ENABLE
+  #include "adc.h"
+#endif
 #ifdef NETWORK_ENABLED
-#include "network.h"
+  #include "network.h"
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
@@ -39,7 +41,9 @@ PROCINIT(
   &etimer_process
   , &debug_process
   , &gfx_update_process
+#ifdef ADC_ENABLE
   , &adc_process
+#endif
 #ifdef NETWORK_ENABLED
   , &tcpip_process
   , &dhcp_process
@@ -73,16 +77,17 @@ void setup() {
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
 
-  setCurrent = 850;
-  readCurrent = 825;
-  readMilliVolts = 15234;
+  setCurrent = 0;
+  readCurrent = 0;
+  readMilliVolts = 0;
 
   spi_setup();
   disp6800_setup();
   gfx_setup();
   encoder_setup();
+#ifdef ADC_ENABLE
   adc_setup();
-
+#endif
 #ifdef NETWORK_ENABLED
   network_setup();
 #endif
@@ -100,7 +105,9 @@ void loop() {
   process_run();
   etimer_request_poll();
   process_poll(&debug_process);
+#ifdef ADC_ENABLE
   process_poll(&adc_process);
+#endif
 
   //delay_ms(1000);
   //debug_led_set(0);
@@ -158,10 +165,12 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   PROCESS_END();
 }
 
+#ifdef ADC_ENABLE
 void adc_irq(uint8_t channel, uint16_t value) {
   readMilliVolts = value;
   process_poll(&gfx_update_process);
 }
+#endif
 
 void encoder_irq(ENCODER_DIR dir) {
   if(dir == ENCODER_DIR_CW) {

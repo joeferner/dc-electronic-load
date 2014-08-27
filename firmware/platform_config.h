@@ -55,6 +55,7 @@
 #define ENCODER_CH_B_PORT       GPIOB
 #define ENCODER_CH_B_PIN        GPIO_Pin_7
 
+#define ADC_ENABLE
 #define ADC_CS_RCC              RCC_APB2Periph_GPIOB
 #define ADC_CS_PORT             GPIOB
 #define ADC_CS_PIN              GPIO_Pin_1
