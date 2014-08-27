@@ -49,7 +49,7 @@ PROCESS_THREAD(adc_process, ev, data) {
 
   etimer_set(&adc_etimer, CLOCK_SECOND / 10);
 
-  while(1) {
+  while (1) {
     PROCESS_YIELD();
     adc_spi_assert();
     adc_spi_transfer(0x06);
@@ -65,4 +65,6 @@ PROCESS_THREAD(adc_process, ev, data) {
   PROCESS_END();
 }
 #endif
+
+
 
