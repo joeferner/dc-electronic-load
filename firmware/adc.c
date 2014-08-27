@@ -5,6 +5,8 @@
 #ifdef ADC_ENABLE
 PROCESS(adc_process, "ADC");
 
+struct etimer adc_etimer;
+
 void adc_spi_assert();
 void adc_spi_deassert();
 uint8_t adc_spi_transfer(uint8_t d);
@@ -45,6 +47,8 @@ uint8_t adc_spi_transfer(uint8_t d) {
 PROCESS_THREAD(adc_process, ev, data) {
   PROCESS_BEGIN();
 
+  etimer_set(&adc_etimer, CLOCK_SECOND / 10);
+
   while(1) {
     PROCESS_YIELD();
     adc_spi_assert();
@@ -54,6 +58,8 @@ PROCESS_THREAD(adc_process, ev, data) {
     uint16_t value = (high << 8) | low;
     adc_irq(0, value);
     adc_spi_deassert();
+
+    etimer_reset(&adc_etimer);
   }
 
   PROCESS_END();

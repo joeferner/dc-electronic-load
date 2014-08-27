@@ -105,9 +105,6 @@ void loop() {
   process_run();
   etimer_request_poll();
   process_poll(&debug_process);
-#ifdef ADC_ENABLE
-  process_poll(&adc_process);
-#endif
 
   //delay_ms(1000);
   //debug_led_set(0);
