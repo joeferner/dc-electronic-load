@@ -12,10 +12,10 @@
 #include "gfx.h"
 #include "encoder.h"
 #ifdef ADC_ENABLE
-  #include "adc.h"
+#include "adc.h"
 #endif
 #ifdef NETWORK_ENABLED
-  #include "network.h"
+#include "network.h"
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
@@ -42,7 +42,8 @@ PROCINIT(
   , &debug_process
   , &gfx_update_process
 #ifdef ADC_ENABLE
-  , &adc_process
+  , &adc_volts_process
+  , &adc_current_process
 #endif
 #ifdef NETWORK_ENABLED
   , &tcpip_process
@@ -129,7 +130,7 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   char temp2[20];
   PROCESS_BEGIN();
 
-  while(1) {
+  while (1) {
     PROCESS_YIELD();
 
     gfx_clear();
@@ -164,13 +165,17 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
 #ifdef ADC_ENABLE
 void adc_irq(uint8_t channel, uint16_t value) {
-  readMilliVolts = value;
+  if (channel == ADC_VOLTAGE_CHANNEL) {
+    readMilliVolts = value;
+  } else if (channel == ADC_CURRENT_CHANNEL) {
+    readCurrent = value;
+  }
   process_poll(&gfx_update_process);
 }
 #endif
 
 void encoder_irq(ENCODER_DIR dir) {
-  if(dir == ENCODER_DIR_CW) {
+  if (dir == ENCODER_DIR_CW) {
     setCurrent += 10;
   } else {
     setCurrent -= 10;
@@ -183,18 +188,18 @@ PROCESS_THREAD(debug_process, ev, data) {
 
   PROCESS_BEGIN();
 
-  while(1) {
+  while (1) {
     PROCESS_YIELD();
-    while(dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
-      if(strcmp(line, "!CONNECT\n") == 0) {
+    while (dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
+      if (strcmp(line, "!CONNECT\n") == 0) {
         debug_write_line("+OK");
         debug_write_line("!clear");
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
-      } else if(strcmp(line, "!DISPON\n") == 0) {
+      } else if (strcmp(line, "!DISPON\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
         debug_write_line("+OK");
-      } else if(strcmp(line, "!DISPOFF\n") == 0) {
+      } else if (strcmp(line, "!DISPOFF\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
         debug_write_line("+OK");
       } else {

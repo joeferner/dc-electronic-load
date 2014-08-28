@@ -8,7 +8,8 @@
 
 #ifdef ADC_ENABLE
 
-PROCESS_NAME(adc_process);
+PROCESS_NAME(adc_volts_process);
+PROCESS_NAME(adc_current_process);
 
 void adc_setup();
 extern void adc_irq(uint8_t channel, uint16_t value);

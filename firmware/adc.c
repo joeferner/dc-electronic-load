@@ -3,9 +3,15 @@
 #include "platform_config.h"
 
 #ifdef ADC_ENABLE
-PROCESS(adc_process, "ADC");
 
-struct etimer adc_etimer;
+#define ADC_CH0_SINGLE  0x0600
+#define ADC_CH1_SINGLE  0x0640
+
+PROCESS(adc_volts_process, "ADC Volts");
+PROCESS(adc_current_process, "ADC Current");
+
+struct etimer adc_volts_etimer;
+struct etimer adc_current_etimer;
 
 void adc_spi_assert();
 void adc_spi_deassert();
@@ -26,7 +32,8 @@ void adc_setup() {
   GPIO_Init(ADC_CS_PORT, &gpioInitStructure);
   adc_spi_deassert();
 
-  process_start(&adc_process, NULL);
+  process_start(&adc_volts_process, NULL);
+  process_start(&adc_current_process, NULL);
 }
 
 void adc_spi_assert() {
@@ -44,26 +51,48 @@ uint8_t adc_spi_transfer(uint8_t d) {
   return SPI_I2S_ReceiveData(ADC_SPI);
 }
 
-PROCESS_THREAD(adc_process, ev, data) {
+uint16_t adc_sample(uint16_t ch) {
+  adc_spi_assert();
+  adc_spi_transfer((ch >> 8) & 0xff);
+  uint16_t high = adc_spi_transfer(ch & 0xff);
+  uint16_t low = adc_spi_transfer(0x00);
+  uint16_t value = (high << 8) | low;
+  adc_spi_deassert();
+  return value;
+}
+
+PROCESS_THREAD(adc_volts_process, ev, data) {
   PROCESS_BEGIN();
 
-  etimer_set(&adc_etimer, CLOCK_SECOND / 10);
+  etimer_set(&adc_volts_etimer, CLOCK_SECOND / 10);
 
   while (1) {
     PROCESS_YIELD();
-    adc_spi_assert();
-    adc_spi_transfer(0x06);
-    uint16_t high = adc_spi_transfer(0x00);
-    uint16_t low = adc_spi_transfer(0x00);
-    uint16_t value = (high << 8) | low;
+    uint16_t value = adc_sample(ADC_CH0_SINGLE);
     adc_irq(0, value);
-    adc_spi_deassert();
 
-    etimer_reset(&adc_etimer);
+    etimer_reset(&adc_volts_etimer);
   }
 
   PROCESS_END();
 }
+
+PROCESS_THREAD(adc_current_process, ev, data) {
+  PROCESS_BEGIN();
+
+  etimer_set(&adc_current_etimer, CLOCK_SECOND / 10);
+
+  while (1) {
+    PROCESS_YIELD();
+    uint16_t value = adc_sample(ADC_CH1_SINGLE);
+    adc_irq(1, value);
+
+    etimer_reset(&adc_current_etimer);
+  }
+
+  PROCESS_END();
+}
+
 #endif
 
 

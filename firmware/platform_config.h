@@ -61,6 +61,9 @@
 #define ADC_CS_PIN              GPIO_Pin_1
 #define ADC_SPI                 SPI2
 
+#define ADC_VOLTAGE_CHANNEL     0
+#define ADC_CURRENT_CHANNEL     1
+
 // #define SPI1_ENABLE
 // SPI1 pins: SCK (GPIOA - pin 5)
 // SPI1 pins: MISO (GPIOA - pin 6)
