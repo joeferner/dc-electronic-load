@@ -118,8 +118,8 @@ uint16_t dma_ring_buffer_read(dma_ring_buffer* ring, uint8_t* buffer, uint16_t s
   uint8_t* bufferEnd = buffer + size;
 
   // data counter wrapped so read to the end
-  if(dataEnd < ring->currentPos) {
-    while(p < ring->bufferEnd && out < bufferEnd) {
+  if (dataEnd < ring->currentPos) {
+    while (p < ring->bufferEnd && out < bufferEnd) {
       ch = *p++;
       *out++ = ch;
     }
@@ -127,7 +127,7 @@ uint16_t dma_ring_buffer_read(dma_ring_buffer* ring, uint8_t* buffer, uint16_t s
   }
 
   // read from p to dataEnd
-  while(p < dataEnd && out < bufferEnd) {
+  while (p < dataEnd && out < bufferEnd) {
     ch = *p++;
     *out++ = ch;
   }
@@ -146,11 +146,11 @@ uint16_t dma_ring_buffer_readline(dma_ring_buffer* ring, char* line, uint16_t si
   char* lineEnd = line + size;
 
   // data counter wrapped so read to the end
-  if(dataEnd < ring->currentPos) {
-    while(p < ring->bufferEnd && out < lineEnd) {
+  if (dataEnd < ring->currentPos) {
+    while (p < ring->bufferEnd && out < lineEnd) {
       ch = *p++;
       *out++ = ch;
-      if(ch == '\n') {
+      if (ch == '\n') {
         *out = '\0';
         ring->currentPos = p;
         return out - line;
@@ -160,10 +160,10 @@ uint16_t dma_ring_buffer_readline(dma_ring_buffer* ring, char* line, uint16_t si
   }
 
   // read from p to dataEnd
-  while(p < dataEnd && out < lineEnd) {
+  while (p < dataEnd && out < lineEnd) {
     ch = *p++;
     *out++ = ch;
-    if(ch == '\n') {
+    if (ch == '\n') {
       *out = '\0';
       ring->currentPos = p;
       return out - line;

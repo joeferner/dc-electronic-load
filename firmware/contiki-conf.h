@@ -49,8 +49,8 @@ typedef unsigned int uip_stats_t;
 #define UIP_UDP_APPCALL tcpip_uipcall
 
 struct tcpip_uipstate {
-  struct process *p;
-  void *state;
+  struct process* p;
+  void* state;
 };
 
 typedef struct tcpip_uipstate uip_tcp_appstate_t;

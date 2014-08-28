@@ -34,7 +34,7 @@ void gfx_setup() {
 }
 
 void gfx_clear() {
-  for(int i = 0; i < DISP6800_VBUF_SIZE; i++) {
+  for (int i = 0; i < DISP6800_VBUF_SIZE; i++) {
     vbuf[i] = 0;
   }
 }
@@ -44,7 +44,7 @@ void gfx_redraw() {
   disp6800_set_row_address(DISP6800_ROW_START, DISP6800_ROW_END - 1);
 
   disp6800_begin_tx_data();
-  for(int i = 0; i < DISP6800_VBUF_SIZE; i++) {
+  for (int i = 0; i < DISP6800_VBUF_SIZE; i++) {
     disp6800_tx_data(vbuf[i]);
   }
 }
@@ -52,7 +52,7 @@ void gfx_redraw() {
 void gfx_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
   int vbufOffset = CLAMP(VBUF_OFFSET(x, y), 0, DISP6800_VBUF_SIZE);
   int lh = VBUF_LOW_HIGH(x, y);
-  if(lh) {
+  if (lh) {
     vbuf[vbufOffset] = (vbuf[vbufOffset] & 0x0f) | ((color & 0x0f) << 4);
   } else {
     vbuf[vbufOffset] = (vbuf[vbufOffset] & 0xf0) | ((color & 0x0f) << 0);
@@ -60,11 +60,11 @@ void gfx_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
 }
 
 int gfx_measure_string_width(const char* str, const tFont* font) {
-  int width =0;
-  while(*str) {
+  int width = 0;
+  while (*str) {
     char ch = *str++;
     const tChar* tch = gfx_get_char(ch, font);
-    if(tch != NULL) {
+    if (tch != NULL) {
       width += tch->image->width;
     }
   }
@@ -72,12 +72,12 @@ int gfx_measure_string_width(const char* str, const tFont* font) {
 }
 
 int gfx_draw_string(const char* str, const tFont* font, int x, int y, uint32_t opts) {
-  if(TEST(opts, GFX_ALIGN_RIGHT)) {
+  if (TEST(opts, GFX_ALIGN_RIGHT)) {
     x -= gfx_measure_string_width(str, font);
   }
 
   int cx = 0;
-  while(*str) {
+  while (*str) {
     char ch = *str++;
     cx += gfx_draw_char(ch, font, x + cx, y);
   }
@@ -85,9 +85,9 @@ int gfx_draw_string(const char* str, const tFont* font, int x, int y, uint32_t o
 }
 
 const tChar* gfx_get_char(char ch, const tFont* font) {
-  for(int i = 0; i < font->length; i++) {
+  for (int i = 0; i < font->length; i++) {
     const tChar* tchar = &font->chars[i];
-    if(tchar->code == ch) {
+    if (tchar->code == ch) {
       return tchar;
     }
   }
@@ -96,7 +96,7 @@ const tChar* gfx_get_char(char ch, const tFont* font) {
 
 int gfx_draw_char(char ch, const tFont* font, int x, int y) {
   const tChar* tchar = gfx_get_char(ch, font);
-  if(tchar == NULL) {
+  if (tchar == NULL) {
     return 0;
   }
   const tImage* image = tchar->image;
@@ -104,9 +104,9 @@ int gfx_draw_char(char ch, const tFont* font, int x, int y) {
   int imageOffset = 0;
   int ly, lx, b;
   uint8_t color;
-  for(ly = 0; ly < image->height; ly++) {
-    for(lx = 0; lx < image->width;) {
-      for(b = 7; b >= 0; b--, lx++) {
+  for (ly = 0; ly < image->height; ly++) {
+    for (lx = 0; lx < image->width;) {
+      for (b = 7; b >= 0; b--, lx++) {
         color = (image->data[imageOffset] & (1 << b)) ? 0xf : 0x0;
         gfx_set_pixel(x + lx, y + ly, color);
       }

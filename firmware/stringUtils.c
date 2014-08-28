@@ -3,12 +3,12 @@
 
 void addCommas(const char* in, char* out) {
   int inlen = strlen(in);
-  const char *pin = in + inlen;
-  char *pout = out + inlen + ((inlen - 1) / 3);
+  const char* pin = in + inlen;
+  char* pout = out + inlen + ((inlen - 1) / 3);
   int count = 0;
   *pout-- = *pin--;
-  while(pin >= in) {
-    if(count == 3) {
+  while (pin >= in) {
+    if (count == 3) {
       *pout-- = ',';
       count = 0;
     }
@@ -23,10 +23,10 @@ void padLeft(const char* in, char* out, int len, char ch) {
   const char* pin = in;
   char* pout = out;
   int spacesNeeded = len - inlen;
-  for(i = 0; i < spacesNeeded; i++) {
+  for (i = 0; i < spacesNeeded; i++) {
     *pout++ = ch;
   }
-  while(*pin) {
+  while (*pin) {
     *pout++ = *pin++;
   }
   *pout++ = '\0';

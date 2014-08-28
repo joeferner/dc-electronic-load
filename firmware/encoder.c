@@ -59,49 +59,49 @@ void encoder_exti_irq() {
   uint8_t b = GPIO_ReadInputDataBit(ENCODER_CH_B_PORT, ENCODER_CH_B_PIN);
   uint8_t p = (a ? 0x00 : 0x10) | (b ? 0x00 : 0x01);
 
-  if(encoder_last_p == ENCODER_P_INIT) {
-    if(p == 0x00) {
+  if (encoder_last_p == ENCODER_P_INIT) {
+    if (p == 0x00) {
       encoder_last_p = p;
       encoder_success_count = 0;
     }
-  } else if(p != encoder_last_p) {
-    if(p == 0x00) {
-      if(encoder_success_count == 3 && encoder_last_p == 0x01) {
+  } else if (p != encoder_last_p) {
+    if (p == 0x00) {
+      if (encoder_success_count == 3 && encoder_last_p == 0x01) {
         encoder_irq(ENCODER_DIR_CW);
         encoder_last_p = p;
         encoder_success_count = 0;
-      } else if(encoder_success_count == -3 && encoder_last_p == 0x10) {
+      } else if (encoder_success_count == -3 && encoder_last_p == 0x10) {
         encoder_irq(ENCODER_DIR_CCW);
         encoder_last_p = p;
         encoder_success_count = 0;
       } else {
         encoder_last_p = ENCODER_P_INIT;
       }
-    } else if(p == 0x10) {
-      if(encoder_success_count == 0 && encoder_last_p == 0x00) {
+    } else if (p == 0x10) {
+      if (encoder_success_count == 0 && encoder_last_p == 0x00) {
         encoder_success_count++;
         encoder_last_p = p;
-      } else if(encoder_success_count == -2 && encoder_last_p == 0x11) {
+      } else if (encoder_success_count == -2 && encoder_last_p == 0x11) {
         encoder_success_count--;
         encoder_last_p = p;
       } else {
         encoder_last_p = ENCODER_P_INIT;
       }
-    } else if(p == 0x11) {
-      if(encoder_success_count == 1 && encoder_last_p == 0x10) {
+    } else if (p == 0x11) {
+      if (encoder_success_count == 1 && encoder_last_p == 0x10) {
         encoder_success_count++;
         encoder_last_p = p;
-      } else if(encoder_success_count == -1 && encoder_last_p == 0x01) {
+      } else if (encoder_success_count == -1 && encoder_last_p == 0x01) {
         encoder_success_count--;
         encoder_last_p = p;
       } else {
         encoder_last_p = ENCODER_P_INIT;
       }
-    } else if(p == 0x01) {
-      if(encoder_success_count == 2 && encoder_last_p == 0x11) {
+    } else if (p == 0x01) {
+      if (encoder_success_count == 2 && encoder_last_p == 0x11) {
         encoder_success_count++;
         encoder_last_p = p;
-      } else if(encoder_success_count == 0 && encoder_last_p == 0x00) {
+      } else if (encoder_success_count == 0 && encoder_last_p == 0x00) {
         encoder_success_count--;
         encoder_last_p = p;
       } else {

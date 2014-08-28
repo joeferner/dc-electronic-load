@@ -84,8 +84,8 @@ void debug_led_set(int v) {
 
 void debug_write_uip_eth_addr(const struct uip_eth_addr* addr) {
   int i;
-  for(i = 0; i < 6; i++) {
-    if(i > 0) {
+  for (i = 0; i < 6; i++) {
+    if (i > 0) {
       debug_write(":");
     }
     debug_write_u8(addr->addr[i], 16);
@@ -107,7 +107,7 @@ void debug_write_line(const char* str) {
   debug_write_ch('\n');
 }
 
-void debug_write_bytes(const uint8_t *data, uint16_t len) {
+void debug_write_bytes(const uint8_t* data, uint16_t len) {
   int i;
   for (i = 0; i < len; i++) {
     debug_write_ch((char) data[i]);
@@ -115,7 +115,7 @@ void debug_write_bytes(const uint8_t *data, uint16_t len) {
 }
 
 void debug_write(const char* str) {
-  const char *p = str;
+  const char* p = str;
   while (*p) {
     debug_write_ch(*p);
     p++;
@@ -179,7 +179,7 @@ void debug_write_i32(int32_t val, uint8_t base) {
   debug_write(buffer);
 }
 
-void debug_write_u8_array(uint8_t *p, int len) {
+void debug_write_u8_array(uint8_t* p, int len) {
   int i;
   for (i = 0; i < len; i++) {
     debug_write_u8(p[i], 16);
@@ -187,6 +187,6 @@ void debug_write_u8_array(uint8_t *p, int len) {
   }
 }
 
-void uip_log(char *msg) {
+void uip_log(char* msg) {
   debug_write_line(msg);
 }

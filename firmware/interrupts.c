@@ -5,7 +5,7 @@
 extern void time_SysTick_Handler();
 extern void encoder_exti_irq();
 
-static void HardFault_Handler( void ) __attribute__( ( naked ) );
+static void HardFault_Handler(void) __attribute__((naked));
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
 
 void NMI_Handler() {
@@ -23,7 +23,7 @@ static void HardFault_Handler() {
     " bx r2                                                     \n"
     " handler2_address_const: .word prvGetRegistersFromStack    \n"
   );
-  while(1);
+  while (1);
 }
 
 void MemManage_Handler() {
@@ -31,12 +31,12 @@ void MemManage_Handler() {
 
 void BusFault_Handler() {
   debug_write_line("BusFault_Handler");
-  while(1);
+  while (1);
 }
 
 void UsageFault_Handler() {
   debug_write_line("UsageFault_Handler");
-  while(1);
+  while (1);
 }
 
 void SVC_Handler() {
@@ -55,16 +55,16 @@ void SysTick_Handler() {
 void EXTI9_5_IRQHandler() {
   uint8_t signal = 0;
 
-  if(EXTI_GetITStatus(ENCODER_CH_A_EXTI) != RESET) {
+  if (EXTI_GetITStatus(ENCODER_CH_A_EXTI) != RESET) {
     signal = 1;
     EXTI_ClearITPendingBit(ENCODER_CH_A_EXTI);
   }
-  if(EXTI_GetITStatus(ENCODER_CH_B_EXTI) != RESET) {
+  if (EXTI_GetITStatus(ENCODER_CH_B_EXTI) != RESET) {
     signal = 1;
     EXTI_ClearITPendingBit(ENCODER_CH_B_EXTI);
   }
 
-  if(signal) {
+  if (signal) {
     encoder_exti_irq();
   }
 }
@@ -95,6 +95,6 @@ void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress) {
 
   /* When the following line is hit, the variables contain the register values. */
   debug_write_line("!!!!Fault!!!!");
-  for( ;; );
+  for (;;);
 }
 

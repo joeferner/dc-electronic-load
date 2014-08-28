@@ -93,7 +93,7 @@ void disp6800_setup() {
   disp6800_set_row_address(0x00, 0x4f);
 
   disp6800_begin_tx_data();
-  for(int i = 0; i < 5120; i++) {
+  for (int i = 0; i < 5120; i++) {
     disp6800_tx_data(0);
   }
 
@@ -138,7 +138,7 @@ void disp6800_set_data_dir(int dir) {
 
   GPIO_StructInit(&gpioInitStructure);
 
-  if(dir == DISP6800_DATA_DIR_OUT) {
+  if (dir == DISP6800_DATA_DIR_OUT) {
     gpioInitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   } else {
     gpioInitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
@@ -319,7 +319,7 @@ void disp6800_set_precharge_compensation(uint8_t a, uint8_t b) {
   disp6800_tx_command(DISP6800_SET_PRECHARGE_COMPENSATION);
   disp6800_tx_command(b);
 
-  if(a == 0x20) {
+  if (a == 0x20) {
     disp6800_tx_command(0xb0);
     disp6800_tx_command(0x08 | a);
   }

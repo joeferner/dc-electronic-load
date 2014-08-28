@@ -16,16 +16,16 @@ void EXTI_Init(EXTI_InitTypeDef* EXTI_InitStruct) {
 }
 
 void EXTI_GenerateSWInterrupt(uint32_t EXTI_Line) {
-  switch(EXTI_Line) {
-  case EXTI_Line5:
-  case EXTI_Line6:
-  case EXTI_Line7:
-  case EXTI_Line8:
-  case EXTI_Line9:
-    EXTI9_5_IRQHandler();
-    break;
-  default:
-    printf("TODO: EXTI_GenerateSWInterrupt: not implemented.");
-    break;
+  switch (EXTI_Line) {
+    case EXTI_Line5:
+    case EXTI_Line6:
+    case EXTI_Line7:
+    case EXTI_Line8:
+    case EXTI_Line9:
+      EXTI9_5_IRQHandler();
+      break;
+    default:
+      printf("TODO: EXTI_GenerateSWInterrupt: not implemented.");
+      break;
   }
 }

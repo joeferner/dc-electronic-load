@@ -77,16 +77,16 @@
 #undef NETWORK_ENABLED
 
 #ifdef NETWORK_ENABLED
-  #define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOB
-  #define ENC28J60_CS_PORT        GPIOB
-  #define ENC28J60_CS_PIN         GPIO_Pin_0
+#define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOB
+#define ENC28J60_CS_PORT        GPIOB
+#define ENC28J60_CS_PIN         GPIO_Pin_0
 
-  #define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOB
-  #define ENC28J60_RESET_PORT     GPIOB
-  #define ENC28J60_RESET_PIN      GPIO_Pin_1
+#define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOB
+#define ENC28J60_RESET_PORT     GPIOB
+#define ENC28J60_RESET_PIN      GPIO_Pin_1
 
-  // port 23 is the traditional telnet port
-  #define TELNET_PORT             23
+// port 23 is the traditional telnet port
+#define TELNET_PORT             23
 #endif
 
 #endif // PLATFORM_CONFIG_H_INCLUDED

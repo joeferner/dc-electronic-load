@@ -9,12 +9,12 @@ typedef struct {
 
 typedef struct {
   int code;
-  const tImage *image;
+  const tImage* image;
 } tChar;
 
 typedef struct {
   int length;
-  const tChar *chars;
+  const tChar* chars;
 } tFont;
 
 extern const tFont FONT_LARGE;

@@ -53,14 +53,14 @@ void enc28j60_setup(struct uip_eth_addr* macAddress) {
 
   // check CLKRDY bit to see if reset is complete
   // The CLKRDY does not work. See Rev. B4 Silicon Errata point. Just wait.
-  while(1) {
+  while (1) {
     uint8_t r = _enc28j60_readReg(ESTAT);
-    if(r & ESTAT_CLKRDY) {
+    if (r & ESTAT_CLKRDY) {
       break;
     }
 #ifdef ENC28J60_DEBUG
     debug_write("?ESTAT: 0x");
-    debug_write_u8(r,16);
+    debug_write_u8(r, 16);
     debug_write_line("");
 #endif
     delay_ms(100);
@@ -163,8 +163,8 @@ uint8_t _enc28j60_tcp_output() {
 
 void enc28j60_tick() {
   uip_len = _enc28j60_receivePacket(((uint8_t*)uip_buf), UIP_BUFSIZE);
-  if(uip_len > 0) {
-    struct uip_eth_hdr* header = ((struct uip_eth_hdr *)&uip_buf[0]);
+  if (uip_len > 0) {
+    struct uip_eth_hdr* header = ((struct uip_eth_hdr*)&uip_buf[0]);
     uint16_t packetType = header->type;
 
 #ifdef ENC28J60_DEBUG
@@ -178,7 +178,7 @@ void enc28j60_tick() {
     debug_write_u16(packetType, 10);
     debug_write_line("");
     for (int i = 0; i < uip_len; i++) {
-      debug_write_u8(uip_buf[i],16);
+      debug_write_u8(uip_buf[i], 16);
       debug_write(" ");
     }
     debug_write_line("");
@@ -367,10 +367,10 @@ uint16_t _enc28j60_receivePacket(uint8_t* buffer, uint16_t bufferLength) {
 }
 
 void _enc28j60_send() {
-  if(uip_len <= UIP_LLH_LEN + 40) {
-    _enc28j60_packetSend((uint8_t *)uip_buf, uip_len, 0, 0);
+  if (uip_len <= UIP_LLH_LEN + 40) {
+    _enc28j60_packetSend((uint8_t*)uip_buf, uip_len, 0, 0);
   } else {
-    _enc28j60_packetSend((uint8_t *)uip_buf, 54, (uint8_t*)uip_appdata, uip_len - UIP_LLH_LEN - 40);
+    _enc28j60_packetSend((uint8_t*)uip_buf, 54, (uint8_t*)uip_appdata, uip_len - UIP_LLH_LEN - 40);
   }
 }
 
@@ -399,7 +399,7 @@ void _enc28j60_phyWrite(uint8_t address, uint16_t data) {
   _enc28j60_writeRegPair(MIWRL, data);
 
   // wait until the PHY write completes
-  while(_enc28j60_readReg(MISTAT) & MISTAT_BUSY) {
+  while (_enc28j60_readReg(MISTAT) & MISTAT_BUSY) {
     delay_us(15);
   }
 }
@@ -412,7 +412,7 @@ uint16_t _enc28j60_phyRead(uint8_t address) {
   _enc28j60_writeReg(MICMD, MICMD_MIIRD);
 
   // wait until the PHY read completes
-  while(_enc28j60_readReg(MISTAT) & MISTAT_BUSY);
+  while (_enc28j60_readReg(MISTAT) & MISTAT_BUSY);
 
   // quit reading
   _enc28j60_writeReg(MICMD, 0x00);
@@ -425,7 +425,7 @@ uint16_t _enc28j60_phyRead(uint8_t address) {
 
 void _enc28j60_setBank(uint8_t address) {
   // set the bank (if needed)
-  if((address & BANK_MASK) != _enc28j60_bank) {
+  if ((address & BANK_MASK) != _enc28j60_bank) {
     _enc28j60_writeOp(ENC28J60_BIT_FIELD_CLR, ECON1, ECON1_BSEL1 | ECON1_BSEL0);
     _enc28j60_writeOp(ENC28J60_BIT_FIELD_SET, ECON1, (address & BANK_MASK) >> 5);
     _enc28j60_bank = (address & BANK_MASK);
@@ -447,7 +447,7 @@ void _enc28j60_packetSend(uint8_t* packet1, uint16_t packet1Length, uint8_t* pac
   debug_write("  packet1 ");
   debug_write_u16(packet1Length, 10);
   debug_write(": ");
-  for(i = 0; i < packet1Length; i++) {
+  for (i = 0; i < packet1Length; i++) {
     debug_write_u8(packet1[i], 16);
     debug_write(" ");
   }
@@ -455,7 +455,7 @@ void _enc28j60_packetSend(uint8_t* packet1, uint16_t packet1Length, uint8_t* pac
   debug_write("  packet2 ");
   debug_write_u16(packet2Length, 10);
   debug_write(": ");
-  for(i = 0; i < packet2Length; i++) {
+  for (i = 0; i < packet2Length; i++) {
     debug_write_u8(packet2[i], 16);
     debug_write(" ");
   }
@@ -479,7 +479,7 @@ void _enc28j60_packetSend(uint8_t* packet1, uint16_t packet1Length, uint8_t* pac
 
   // copy the packet into the transmit buffer
   _enc28j60_writeBuffer(packet1, packet1Length);
-  if(packet2Length > 0) {
+  if (packet2Length > 0) {
     _enc28j60_writeBuffer(packet2, packet2Length);
   }
 
@@ -496,7 +496,7 @@ uint8_t _enc28j60_readOp(uint8_t op, uint8_t address) {
   result = enc28j60_spi_transfer(0x00);
 
   // do dummy read if needed (for mac and mii, see datasheet page 29)
-  if(address & 0x80) {
+  if (address & 0x80) {
     result = enc28j60_spi_transfer(0x00);
   }
 
@@ -522,7 +522,7 @@ void _enc28j60_readBuffer(uint8_t* data, uint16_t len) {
   enc28j60_spi_assert();
 
   enc28j60_spi_transfer(ENC28J60_READ_BUF_MEM);
-  while(len--) {
+  while (len--) {
     *data++ = enc28j60_spi_transfer(0x00);
   }
 
@@ -533,7 +533,7 @@ void _enc28j60_writeBuffer(uint8_t* data, uint16_t len) {
   enc28j60_spi_assert();
 
   enc28j60_spi_transfer(ENC28J60_WRITE_BUF_MEM);
-  while(len--) {
+  while (len--) {
     enc28j60_spi_transfer(*data++);
   }
 

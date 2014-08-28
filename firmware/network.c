@@ -108,24 +108,24 @@ PROCESS_THREAD(telnet_process, ev, data) {
   PROCESS_BEGIN();
   tcp_listen(UIP_HTONS(TELNET_PORT));
 
-  while(1) {
+  while (1) {
     PROCESS_WAIT_EVENT();
-    if(ev == PROCESS_EVENT_EXIT) {
+    if (ev == PROCESS_EVENT_EXIT) {
       process_exit(&dhcp_process);
       LOADER_UNLOAD();
-    } else if(ev == PROCESS_EVENT_POLL) {
+    } else if (ev == PROCESS_EVENT_POLL) {
       for (i = 0; i < UIP_CONNS; i++) {
-        if(uip_conn_active(i)) {
+        if (uip_conn_active(i)) {
           uip_poll_conn(&uip_conns[i]);
         }
       }
-    } else if(ev == tcpip_event) {
-      if(uip_connected()) {
+    } else if (ev == tcpip_event) {
+      if (uip_connected()) {
         tcp_markconn(uip_conn, NULL);
-      } else if(uip_newdata()) {
+      } else if (uip_newdata()) {
         p = uip_appdata;
         debug_write("!netdata:");
-        for(i=0; i<uip_len; i++) {
+        for (i = 0; i < uip_len; i++) {
           debug_write_ch(p[i]);
         }
         debug_write_line("");
@@ -141,12 +141,12 @@ PROCESS_THREAD(dhcp_process, ev, data) {
   PROCESS_BEGIN();
   dhcpc_init(uip_lladdr.addr, sizeof(uip_lladdr.addr));
 
-  while(1) {
+  while (1) {
     PROCESS_WAIT_EVENT();
-    if(_network_request_dhcp) {
+    if (_network_request_dhcp) {
       _network_request_dhcp = 0;
       dhcpc_request();
-    } else if(ev == PROCESS_EVENT_EXIT) {
+    } else if (ev == PROCESS_EVENT_EXIT) {
       process_exit(&dhcp_process);
       LOADER_UNLOAD();
     } else {
@@ -157,7 +157,7 @@ PROCESS_THREAD(dhcp_process, ev, data) {
   PROCESS_END();
 }
 
-void dhcpc_configured(const struct dhcpc_state *s) {
+void dhcpc_configured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_configured");
   debug_write("?ipaddr");
   debug_write_uip_ip_addr(&s->ipaddr);
@@ -176,7 +176,7 @@ void dhcpc_configured(const struct dhcpc_state *s) {
   process_start(&resolv_process, NULL);
 }
 
-void dhcpc_unconfigured(const struct dhcpc_state *s) {
+void dhcpc_unconfigured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_unconfigured");
 }
 

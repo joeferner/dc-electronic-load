@@ -21,8 +21,8 @@ void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource) {
 }
 
 void MOCK_GPIO_SetPinState(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uint8_t state) {
-  if(GPIOx == GPIOB) {
-    if(gpioPinState[PIN_STATE_GPIOB][GPIO_Pin] != state) {
+  if (GPIOx == GPIOB) {
+    if (gpioPinState[PIN_STATE_GPIOB][GPIO_Pin] != state) {
       gpioPinState[PIN_STATE_GPIOB][GPIO_Pin] = state;
       EXTI9_5_IRQHandler();
     }
@@ -32,7 +32,7 @@ void MOCK_GPIO_SetPinState(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uint8_t state
 }
 
 uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) {
-  if(GPIOx == GPIOB) {
+  if (GPIOx == GPIOB) {
     return gpioPinState[PIN_STATE_GPIOB][GPIO_Pin];
   } else {
     printf("TODO: GPIO_ReadInputDataBit: not implemented.");

@@ -80,9 +80,9 @@ void testEncoder() {
 }
 
 void encoder_irq(ENCODER_DIR dir) {
-  if(dir == ENCODER_DIR_CW) {
+  if (dir == ENCODER_DIR_CW) {
     encoderValue++;
-  } else if(dir == ENCODER_DIR_CCW) {
+  } else if (dir == ENCODER_DIR_CCW) {
     encoderValue--;
   } else {
     printf("FAIL: Invalid encoder direction %d\n", dir);
@@ -93,7 +93,7 @@ void testAddCommas(const char* src, const char* expected) {
   char temp[20];
 
   addCommas(src, temp);
-  if(strcmp(temp, expected) == 0) {
+  if (strcmp(temp, expected) == 0) {
     printf("OK: %s -> %s\n", src, temp);
   } else {
     printf("FAIL: %s -> %s\n", src, temp);
@@ -104,7 +104,7 @@ void testPadLeft(const char* src, const char* expected, int totalLen) {
   char temp[20];
 
   padLeft(src, temp, totalLen);
-  if(strcmp(temp, expected) == 0) {
+  if (strcmp(temp, expected) == 0) {
     printf("OK: %s -> %s\n", src, temp);
   } else {
     printf("FAIL: %s -> %s\n", src, temp);
