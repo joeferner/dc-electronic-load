@@ -75,6 +75,7 @@ SET(PROJECT_SOURCES
   gfx.c
   encoder.c
   adc.c
+  dac.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})

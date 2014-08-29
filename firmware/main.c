@@ -1,6 +1,7 @@
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_usart.h>
 #include <stm32f10x_rcc.h>
+#include <stm32f10x_spi.h>
 #include <misc.h>
 #include <string.h>
 #include "platform_config.h"
@@ -13,6 +14,9 @@
 #include "encoder.h"
 #ifdef ADC_ENABLE
 #include "adc.h"
+#endif
+#ifdef DAC_ENABLE
+#include "dac.h"
 #endif
 #ifdef NETWORK_ENABLED
 #include "network.h"
@@ -88,6 +92,10 @@ void setup() {
   encoder_setup();
 #ifdef ADC_ENABLE
   adc_setup();
+#endif
+#ifdef DAC_ENABLE
+  dac_setup();
+  dac_set(0);
 #endif
 #ifdef NETWORK_ENABLED
   network_setup();
@@ -175,11 +183,19 @@ void adc_irq(uint8_t channel, uint16_t value) {
 #endif
 
 void encoder_irq(ENCODER_DIR dir) {
+  int32_t newValue;
   if (dir == ENCODER_DIR_CW) {
-    setCurrent += 10;
+    newValue = setCurrent + 10;
   } else {
-    setCurrent -= 10;
+    newValue = setCurrent - 10;
   }
+  if(newValue < 0) {
+    newValue = 0;
+  } else if(newValue > MAX_SET_CURRENT) {
+    newValue = MAX_SET_CURRENT;
+  }
+  setCurrent = newValue;
+  dac_set(setCurrent); // TODO convert from mA to DAC value
   process_poll(&gfx_update_process);
 }
 
@@ -271,7 +287,7 @@ void spi_setup() {
   spiInitStruct.SPI_Mode = SPI_Mode_Master;
   spiInitStruct.SPI_DataSize = SPI_DataSize_8b;
   spiInitStruct.SPI_NSS = SPI_NSS_Soft;
-  spiInitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
+  spiInitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
   spiInitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
 
   // Mode 0 (CPOL = 0, CPHA = 0)

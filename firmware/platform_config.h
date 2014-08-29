@@ -4,6 +4,7 @@
 #include <misc.h>
 #include <stm32f10x_rcc.h>
 
+#define MAX_SET_CURRENT         5000
 #define MAX_LINE_LENGTH         50
 
 #define DEBUG_LED_RCC           RCC_APB2Periph_GPIOB
@@ -63,6 +64,12 @@
 
 #define ADC_VOLTAGE_CHANNEL     0
 #define ADC_CURRENT_CHANNEL     1
+
+#define DAC_ENABLE
+#define DAC_CS_RCC              RCC_APB2Periph_GPIOB
+#define DAC_CS_PORT             GPIOB
+#define DAC_CS_PIN              GPIO_Pin_2
+#define DAC_SPI                 SPI2
 
 // #define SPI1_ENABLE
 // SPI1 pins: SCK (GPIOA - pin 5)
