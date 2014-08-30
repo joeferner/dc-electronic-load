@@ -30,6 +30,7 @@ PROCESS(gfx_update_process, "GFX Update");
 void setup();
 void loop();
 void spi_setup();
+void milli_to_string(uint16_t v, char* buffer, uint8_t display);
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
@@ -37,9 +38,15 @@ dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 #endif
 
-uint16_t readCurrent;
+#define DISPLAY_MILLI     1
+#define DISPLAY_1DECIMALS 2
+#define DISPLAY_2DECIMALS 3
+#define DISPLAY_3DECIMALS 4
+
 uint16_t readMilliVolts;
-uint16_t setCurrent;
+uint16_t readCurrentMilliamps;
+uint8_t readCurrentMilliampsDisplay;
+uint16_t setCurrentMilliamps;
 
 PROCINIT(
   &etimer_process
@@ -82,9 +89,10 @@ void setup() {
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
 
-  setCurrent = 0;
-  readCurrent = 0;
+  setCurrentMilliamps = 0;
+  readCurrentMilliamps = 0;
   readMilliVolts = 0;
+  readCurrentMilliampsDisplay = DISPLAY_MILLI;
 
   spi_setup();
   disp6800_setup();
@@ -134,8 +142,8 @@ void assert_failed(uint8_t* file, uint32_t line) {
 }
 
 PROCESS_THREAD(gfx_update_process, ev, data) {
-  char temp1[20];
-  char temp2[20];
+  char valueBuffer[20];
+  char suffix[5];
   PROCESS_BEGIN();
 
   while (1) {
@@ -143,23 +151,40 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
     gfx_clear();
 
-    uitoa(readCurrent, temp1, 10);
-    addCommas(temp1, temp2);
-    gfx_draw_string(temp2, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
-    gfx_draw_string("mA", &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
+    // draw read current
+    if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
+      if (readCurrentMilliamps >= 1000) {
+        readCurrentMilliampsDisplay = DISPLAY_2DECIMALS;
+      }
+    } else {
+      if (readCurrentMilliamps < 800) {
+        readCurrentMilliampsDisplay = DISPLAY_MILLI;
+      }
+    }
+    milli_to_string(readCurrentMilliamps, valueBuffer, readCurrentMilliampsDisplay);
+    if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
+      strcpy(suffix, "mA");
+    } else {
+      strcpy(suffix, "A");
+    }
+    gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
+    gfx_draw_string(suffix, &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
 
-    uitoa(setCurrent, temp1, 10);
-    addCommas(temp1, temp2);
+    // draw set current
+    if (setCurrentMilliamps < 1000) {
+      milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_MILLI);
+      strcpy(suffix, "mA");
+    } else {
+      milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_2DECIMALS);
+      strcpy(suffix, "A");
+    }
     gfx_draw_string("SET", &FONT_XSMALL, 2, 2, GFX_ALIGN_LEFT);
-    gfx_draw_string(temp2, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
-    gfx_draw_string("mA", &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
+    gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
+    gfx_draw_string(suffix, &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
 
-    uitoa(readMilliVolts % 1000, temp1, 10);
-    padLeft(temp1, temp2, 3, '0');
-    uitoa(readMilliVolts / 1000, temp1, 10);
-    strcat(temp1, ".");
-    strcat(temp1, temp2);
-    gfx_draw_string(temp1, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
+    // read read volts
+    milli_to_string(readMilliVolts, valueBuffer, DISPLAY_3DECIMALS);
+    gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
     gfx_draw_string("V", &FONT_XSMALL, 110, 42, GFX_ALIGN_LEFT);
 
     // TODO the next line is for the menu
@@ -171,12 +196,36 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
   PROCESS_END();
 }
 
+void milli_to_string(uint16_t v, char* buffer, uint8_t display) {
+  char tempBuffer[20];
+  int decimals;
+
+  if (display == DISPLAY_MILLI) {
+    uitoa(v, tempBuffer, 10);
+    addCommas(tempBuffer, buffer);
+  } else {
+    if (display == DISPLAY_3DECIMALS) {
+      decimals = 3;
+    } else if (display == DISPLAY_2DECIMALS) {
+      decimals = 2;
+    } else if (display == DISPLAY_1DECIMALS) {
+      decimals = 1;
+    }
+    uitoa(v % 1000, buffer, 10);
+    padLeft(buffer, tempBuffer, decimals, '0');
+    tempBuffer[decimals] = '\0';
+    uitoa(v / 1000, buffer, 10);
+    strcat(buffer, ".");
+    strcat(buffer, tempBuffer);
+  }
+}
+
 #ifdef ADC_ENABLE
 void adc_irq(uint8_t channel, uint16_t value) {
   if (channel == ADC_VOLTAGE_CHANNEL) {
     readMilliVolts = value;
   } else if (channel == ADC_CURRENT_CHANNEL) {
-    readCurrent = value;
+    readCurrentMilliamps = value;
   }
   process_poll(&gfx_update_process);
 }
@@ -185,17 +234,17 @@ void adc_irq(uint8_t channel, uint16_t value) {
 void encoder_irq(ENCODER_DIR dir) {
   int32_t newValue;
   if (dir == ENCODER_DIR_CW) {
-    newValue = setCurrent + 10;
+    newValue = setCurrentMilliamps + 10;
   } else {
-    newValue = setCurrent - 10;
+    newValue = setCurrentMilliamps - 10;
   }
-  if(newValue < 0) {
+  if (newValue < 0) {
     newValue = 0;
-  } else if(newValue > MAX_SET_CURRENT) {
+  } else if (newValue > MAX_SET_CURRENT) {
     newValue = MAX_SET_CURRENT;
   }
-  setCurrent = newValue;
-  dac_set(setCurrent); // TODO convert from mA to DAC value
+  setCurrentMilliamps = newValue;
+  dac_set(setCurrentMilliamps); // TODO convert from mA to DAC value
   process_poll(&gfx_update_process);
 }
 
