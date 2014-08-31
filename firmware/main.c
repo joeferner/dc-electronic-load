@@ -31,6 +31,9 @@ void setup();
 void loop();
 void spi_setup();
 void milli_to_string(uint16_t v, char* buffer, uint8_t display);
+uint16_t adcVoltsToMillivolts(uint16_t value);
+uint16_t adcCurrentToMillamps(uint16_t value);
+uint16_t setMilliampsToDac(uint16_t value);
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
@@ -220,12 +223,24 @@ void milli_to_string(uint16_t v, char* buffer, uint8_t display) {
   }
 }
 
+uint16_t adcVoltsToMillivolts(uint16_t value) {
+  return value * 2;
+}
+
+uint16_t adcCurrentToMillamps(uint16_t value) {
+  return value * 11;
+}
+
+uint16_t setMilliampsToDac(uint16_t value) {
+  return value / 10;
+}
+
 #ifdef ADC_ENABLE
 void adc_irq(uint8_t channel, uint16_t value) {
   if (channel == ADC_VOLTAGE_CHANNEL) {
-    readMilliVolts = value;
+    readMilliVolts = adcVoltsToMillivolts(value);
   } else if (channel == ADC_CURRENT_CHANNEL) {
-    readCurrentMilliamps = value;
+    readCurrentMilliamps = adcCurrentToMillamps(value);
   }
   process_poll(&gfx_update_process);
 }
@@ -244,7 +259,7 @@ void encoder_irq(ENCODER_DIR dir) {
     newValue = MAX_SET_CURRENT;
   }
   setCurrentMilliamps = newValue;
-  dac_set(setCurrentMilliamps); // TODO convert from mA to DAC value
+  dac_set(setMilliampsToDac(setCurrentMilliamps));
   process_poll(&gfx_update_process);
 }
 
