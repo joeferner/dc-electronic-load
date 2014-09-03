@@ -12,6 +12,7 @@
 #include "disp6800.h"
 #include "gfx.h"
 #include "encoder.h"
+#include "fan.h"
 #ifdef ADC_ENABLE
 #include "adc.h"
 #endif
@@ -80,6 +81,8 @@ void setup() {
   // 2 bit for pre-emption priority, 2 bits for subpriority
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
+  GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+
   dma_ring_buffer_init(&g_debugUsartDmaInputRingBuffer, DEBUG_USART_RX_DMA_CH, g_debugUsartRxBuffer, DEBUG_USART_RX_BUFFER_SIZE);
 
   debug_setup();
@@ -110,6 +113,9 @@ void setup() {
 #endif
 #ifdef NETWORK_ENABLED
   network_setup();
+#endif
+#ifdef FAN_ENABLE
+  fan_setup();
 #endif
 
   time_setup();
@@ -241,6 +247,9 @@ void adc_irq(uint8_t channel, uint16_t value) {
     readMilliVolts = adcVoltsToMillivolts(value);
   } else if (channel == ADC_CURRENT_CHANNEL) {
     readCurrentMilliamps = adcCurrentToMillamps(value);
+  } else if (channel == ADC_TEMP1_CHANNEL) {
+    fan_set(value / 41);
+  } else if (channel == ADC_TEMP2_CHANNEL) {
   }
   process_poll(&gfx_update_process);
 }

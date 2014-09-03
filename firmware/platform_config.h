@@ -64,12 +64,24 @@
 
 #define ADC_VOLTAGE_CHANNEL     0
 #define ADC_CURRENT_CHANNEL     1
+#define ADC_TEMP1_CHANNEL       2
+#define ADC_TEMP2_CHANNEL       3
 
 #define DAC_ENABLE
 #define DAC_CS_RCC              RCC_APB2Periph_GPIOB
 #define DAC_CS_PORT             GPIOB
 #define DAC_CS_PIN              GPIO_Pin_2
 #define DAC_SPI                 SPI2
+
+#define FAN_ENABLE
+#define FAN_PWM_RCC1            RCC_APB1Periph_TIM3
+#define FAN_PWM_RCC2            RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO
+#define FAN_PWM_PORT            GPIOB
+#define FAN_PWM_PIN             GPIO_Pin_5
+#define FAN_PWM_TIMER           TIM3
+#define FAN_PWM_TIMER_REMAP             GPIO_PartialRemap_TIM3
+#define FAN_PWM_TIMER_CH_INIT           TIM_OC2Init
+#define FAN_PWM_TIMER_CH_PRELOAD_CONFIG TIM_OC2PreloadConfig
 
 // #define SPI1_ENABLE
 // SPI1 pins: SCK (GPIOA - pin 5)

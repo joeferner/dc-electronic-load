@@ -9,12 +9,16 @@
 
 #define ADC_CH0_SINGLE  0x0600
 #define ADC_CH1_SINGLE  0x0640
+#define ADC_CH2_SINGLE  0x0680
+#define ADC_CH3_SINGLE  0x06c0
 
 PROCESS(adc_volts_process, "ADC Volts");
 PROCESS(adc_current_process, "ADC Current");
+PROCESS(adc_temp_process, "ADC Temp");
 
 struct etimer adc_volts_etimer;
 struct etimer adc_current_etimer;
+struct etimer adc_temp_etimer;
 
 void adc_spi_assert();
 void adc_spi_deassert();
@@ -37,6 +41,7 @@ void adc_setup() {
 
   process_start(&adc_volts_process, NULL);
   process_start(&adc_current_process, NULL);
+  process_start(&adc_temp_process, NULL);
 }
 
 void adc_spi_assert() {
@@ -91,6 +96,24 @@ PROCESS_THREAD(adc_current_process, ev, data) {
     adc_irq(1, value);
 
     etimer_reset(&adc_current_etimer);
+  }
+
+  PROCESS_END();
+}
+
+PROCESS_THREAD(adc_temp_process, ev, data) {
+  PROCESS_BEGIN();
+
+  etimer_set(&adc_temp_etimer, CLOCK_SECOND);
+
+  while (1) {
+    PROCESS_YIELD();
+    uint16_t value = adc_sample(ADC_CH2_SINGLE);
+    adc_irq(2, value);
+    value = adc_sample(ADC_CH3_SINGLE);
+    adc_irq(3, value);
+
+    etimer_reset(&adc_temp_etimer);
   }
 
   PROCESS_END();

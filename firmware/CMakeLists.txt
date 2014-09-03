@@ -76,6 +76,7 @@ SET(PROJECT_SOURCES
   encoder.c
   adc.c
   dac.c
+  fan.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})
