@@ -1,0 +1,62 @@
+EESchema Schematic File Version 2
+LIBS:dc-electronic-load
+LIBS:dc-electronic-load-cache
+EELAYER 24 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MECH M1
+U 1 1 5409E996
+P 10200 6050
+F 0 "M1" H 10250 6050 60  0000 C CNN
+F 1 "Mounting Hole" H 10400 6050 60  0000 L CNN
+F 2 "klib:MTGNP565H328Z565P" H 10200 6050 60  0001 C CNN
+F 3 "" H 10200 6050 60  0000 C CNN
+	1    10200 6050
+	1    0    0    -1  
+$EndComp
+$Comp
+L MECH M2
+U 1 1 5409EAAA
+P 10200 6150
+F 0 "M2" H 10250 6150 60  0000 C CNN
+F 1 "Mounting Hole" H 10400 6150 60  0000 L CNN
+F 2 "klib:MTGNP565H328Z565P" H 10200 6150 60  0001 C CNN
+F 3 "" H 10200 6150 60  0000 C CNN
+	1    10200 6150
+	1    0    0    -1  
+$EndComp
+$Comp
+L MECH M3
+U 1 1 5409EAC0
+P 10200 6250
+F 0 "M3" H 10250 6250 60  0000 C CNN
+F 1 "Mounting Hole" H 10400 6250 60  0000 L CNN
+F 2 "klib:MTGNP565H328Z565P" H 10200 6250 60  0001 C CNN
+F 3 "" H 10200 6250 60  0000 C CNN
+	1    10200 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L MECH M4
+U 1 1 5409EAD7
+P 10200 6350
+F 0 "M4" H 10250 6350 60  0000 C CNN
+F 1 "Mounting Hole" H 10400 6350 60  0000 L CNN
+F 2 "klib:MTGNP565H328Z565P" H 10200 6350 60  0001 C CNN
+F 3 "" H 10200 6350 60  0000 C CNN
+	1    10200 6350
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

@@ -1,0 +1,31 @@
+Cmp-Mod V01 Created by Cvpcb (2014-08-04 BZR 5052)-product   date = Fri 05 Sep 2014 12:55:54 PM EDT
+
+BeginCmp
+TimeStamp = /5409E996;
+Reference = M1;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /5409EAAA;
+Reference = M2;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /5409EAC0;
+Reference = M3;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /5409EAD7;
+Reference = M4;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+EndListe

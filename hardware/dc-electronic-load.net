@@ -1,0 +1,37 @@
+(export (version D)
+  (design
+    (source /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.sch)
+    (date "Fri 05 Sep 2014 12:53:53 PM EDT")
+    (tool "Eeschema (2014-08-04 BZR 5052)-product"))
+  (components
+    (comp (ref M1)
+      (value "Mounting Hole")
+      (libsource (lib dc-electronic-load) (part MECH))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5409E996))
+    (comp (ref M2)
+      (value "Mounting Hole")
+      (libsource (lib dc-electronic-load) (part MECH))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5409EAAA))
+    (comp (ref M3)
+      (value "Mounting Hole")
+      (libsource (lib dc-electronic-load) (part MECH))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5409EAC0))
+    (comp (ref M4)
+      (value "Mounting Hole")
+      (libsource (lib dc-electronic-load) (part MECH))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5409EAD7)))
+  (libparts
+    (libpart (lib dc-electronic-load) (part MECH)
+      (footprints
+        (fp MTGNP565H328Z565P))
+      (fields
+        (field (name Reference) M)
+        (field (name Value) MECH))))
+  (libraries
+    (library (logical dc-electronic-load)
+      (uri /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.lib)))
+  (nets))
