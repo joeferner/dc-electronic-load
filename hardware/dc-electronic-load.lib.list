@@ -23,3 +23,5 @@ libs/P02.lib
 libs/P05.lib
 libs/P22.lib
 libs/PWR_FLAG.lib
+libs/MOSFET-N.lib
+libs/DIODE.lib
