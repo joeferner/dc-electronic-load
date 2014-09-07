@@ -189,11 +189,11 @@ void disp6800_write() {
 }
 
 void disp6800_assert_en() {
-  DISP6800_EN->BSRR = DISP6800_EN_PIN;
+  DISP6800_EN->BSRR = DISP6800_EN_PIN; // -> 1
 }
 
 void disp6800_deassert_en() {
-  DISP6800_EN->BRR = DISP6800_EN_PIN;
+  DISP6800_EN->BRR = DISP6800_EN_PIN; // -> 0
 }
 
 void disp6800_assert_reset() {
@@ -205,11 +205,11 @@ void disp6800_deassert_reset() {
 }
 
 void disp6800_assert_cs() {
-  DISP6800_CS->BRR = DISP6800_CS_PIN;
+  DISP6800_CS->BRR = DISP6800_CS_PIN; // -> 0
 }
 
 void disp6800_deassert_cs() {
-  DISP6800_CS->BSRR = DISP6800_CS_PIN;
+  DISP6800_CS->BSRR = DISP6800_CS_PIN; // -> 1
 }
 
 void disp6800_tx_command(uint8_t d) {

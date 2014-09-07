@@ -1,0 +1,32 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 25AA02EXXX-XOT
+D 2K SPI Bus Serial EEPROMs with EUI-48 or EUI-64 Node Identity (MAC)
+K MAC
+$ENDCMP
+#
+$CMP BELFUSE-08B0-1X1T-06-F
+D Ethernet Magjack 100Base-T
+$ENDCMP
+#
+$CMP ENC28J60
+D Stand-Alone Ethernet Controller with SPI Interface
+$ENDCMP
+#
+$CMP MCP3204
+D 4-Channel 12-Bit A/D Converters with SPI Serial Interface
+$ENDCMP
+#
+$CMP MCP49X1
+D 8/10/12-Bit Voltage Output Digital-to-Analog Converter with SPI Interface
+$ENDCMP
+#
+$CMP SST25VF032B-S2A
+D 32 Mbit SPI Serial Flash 8-SOIC
+$ENDCMP
+#
+$CMP TIREF30XX
+D 50ppm/°C Max, 50µA in SOT23-3 CMOS VOLTAGE REFERENCE
+$ENDCMP
+#
+#End Doc Library
