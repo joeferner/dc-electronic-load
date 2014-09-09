@@ -29,4 +29,8 @@ $CMP TIREF30XX
 D 50ppm/°C Max, 50µA in SOT23-3 CMOS VOLTAGE REFERENCE
 $ENDCMP
 #
+$CMP TSV631
+D Rail-to-rail input/output, 60 μA, 880 kHz, 5 V CMOS operational amplifier
+$ENDCMP
+#
 #End Doc Library
