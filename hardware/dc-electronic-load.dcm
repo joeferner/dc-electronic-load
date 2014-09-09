@@ -9,6 +9,10 @@ $CMP BELFUSE-08B0-1X1T-06-F
 D Ethernet Magjack 100Base-T
 $ENDCMP
 #
+$CMP CRYSTAL-14
+D Crystal in 4 pin package (pins 1 and 4)
+$ENDCMP
+#
 $CMP ENC28J60
 D Stand-Alone Ethernet Controller with SPI Interface
 $ENDCMP

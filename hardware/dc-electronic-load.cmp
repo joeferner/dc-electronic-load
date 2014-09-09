@@ -1,4 +1,214 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-04 BZR 5052)-product   date = Fri 05 Sep 2014 12:55:54 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Tue 09 Sep 2014 04:52:58 PM EDT
+
+BeginCmp
+TimeStamp = /540CDA20;
+Reference = C1;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CDA89;
+Reference = C2;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC011;
+Reference = C3;
+ValeurCmp = 10uF;
+IdModule  = klib:CAPCP2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A066D;
+Reference = C4;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A06DC;
+Reference = C5;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A070D;
+Reference = C6;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A073B;
+Reference = C7;
+ValeurCmp = 18pF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C84BC;
+Reference = C8;
+ValeurCmp = 10uF;
+IdModule  = klib:CAPAE660X790N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C857E;
+Reference = C9;
+ValeurCmp = 10uF;
+IdModule  = klib:CAPAE660X790N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC41B;
+Reference = C10;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC148;
+Reference = C11;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C9D8E;
+Reference = C12;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CBAC0;
+Reference = C13;
+ValeurCmp = 0.47uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C9F26;
+Reference = C14;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC5AD;
+Reference = C15;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC0C7;
+Reference = C16;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D3539;
+Reference = C17;
+ValeurCmp = 0.01uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D33EC;
+Reference = C18;
+ValeurCmp = 0.01uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC7A1;
+Reference = C19;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA47E;
+Reference = C20;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA534;
+Reference = C21;
+ValeurCmp = 1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CCA30;
+Reference = C22;
+ValeurCmp = 1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CB856;
+Reference = C23;
+ValeurCmp = 100uF;
+IdModule  = klib:CAPAE660X790N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DFC5B;
+Reference = C24;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CE9DE;
+Reference = C25;
+ValeurCmp = 100uF;
+IdModule  = klib:CAPAE660X790N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DB43D;
+Reference = C26;
+ValeurCmp = 22nF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CF240;
+Reference = C27;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540B6DA4;
+Reference = D1;
+ValeurCmp = LED;
+IdModule  = klib:LEDC3216X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAC99;
+Reference = D2;
+ValeurCmp = DIODE;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C9C3C;
+Reference = L1;
+ValeurCmp = >80mA;
+IdModule  = ;
+EndCmp
 
 BeginCmp
 TimeStamp = /5409E996;
@@ -26,6 +236,433 @@ TimeStamp = /5409EAD7;
 Reference = M4;
 ValeurCmp = Mounting Hole;
 IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CCF2A;
+Reference = M5;
+ValeurCmp = Heat Sink;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C9A03;
+Reference = P1;
+ValeurCmp = BELFUSE-08B0-1X1T-06-F;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5409F710;
+Reference = P2;
+ValeurCmp = FTDI-PLUG;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A1B52;
+Reference = P3;
+ValeurCmp = SWD;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA18B;
+Reference = P4;
+ValeurCmp = ENCODER;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CBD78;
+Reference = P5;
+ValeurCmp = BUTTONS;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA770;
+Reference = P6;
+ValeurCmp = POWER;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA48F;
+Reference = P7;
+ValeurCmp = LCD;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAC57;
+Reference = P8;
+ValeurCmp = FAN;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DD859;
+Reference = P9;
+ValeurCmp = LOAD;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540F6493;
+Reference = P10;
+ValeurCmp = TEMP1;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540F6543;
+Reference = P11;
+ValeurCmp = TEMP2;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC547;
+Reference = R1;
+ValeurCmp = 2.32K 1%;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540B7069;
+Reference = R2;
+ValeurCmp = 100R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAD3F;
+Reference = R3;
+ValeurCmp = 100R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CADAD;
+Reference = R4;
+ValeurCmp = 100R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA9A8;
+Reference = R5;
+ValeurCmp = 50R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAB2D;
+Reference = R6;
+ValeurCmp = 50R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAC88;
+Reference = R7;
+ValeurCmp = 50R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CACF8;
+Reference = R8;
+ValeurCmp = 50R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D3ACC;
+Reference = R9;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D3B19;
+Reference = R10;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D3757;
+Reference = R11;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D3A80;
+Reference = R12;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D541F;
+Reference = R13;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CBEB2;
+Reference = R14;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC879;
+Reference = R15;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC8CC;
+Reference = R16;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CC920;
+Reference = R17;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CCF98;
+Reference = R18;
+ValeurCmp = 470R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DA8E1;
+Reference = R19;
+ValeurCmp = 470R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DE517;
+Reference = R20;
+ValeurCmp = 820;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D990B;
+Reference = R21;
+ValeurCmp = 470R;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DA26F;
+Reference = R22;
+ValeurCmp = 1K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540DE482;
+Reference = R23;
+ValeurCmp = 9K1;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D286E;
+Reference = R24;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D1EBE;
+Reference = R25;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D252E;
+Reference = R26;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D2592;
+Reference = R27;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D25F7;
+Reference = R28;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D265D;
+Reference = R29;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D26C8;
+Reference = R30;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D2730;
+Reference = R31;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D2799;
+Reference = R32;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D2803;
+Reference = R33;
+ValeurCmp = 4R;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540F6696;
+Reference = R34;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540F7648;
+Reference = R35;
+ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C839B;
+Reference = U1;
+ValeurCmp = LD1086V33;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CB17B;
+Reference = U2;
+ValeurCmp = ENC28J60;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /5409FE86;
+Reference = U3;
+ValeurCmp = STM32-64PIN;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CB7C1;
+Reference = U4;
+ValeurCmp = TIREF30XX;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C9DF9;
+Reference = U5;
+ValeurCmp = SST25VF032B-S2A;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540C8E7D;
+Reference = U6;
+ValeurCmp = 25AA02EXXX-XOT;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CEE0A;
+Reference = U7;
+ValeurCmp = MCP3204;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CA8CD;
+Reference = U8;
+ValeurCmp = MCP49X1;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CAB6F;
+Reference = U9;
+ValeurCmp = FQT7N10LTF;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D67C3;
+Reference = U10;
+ValeurCmp = TSV631ILT;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540D074B;
+Reference = U11;
+ValeurCmp = BUK954R8-60E,127;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /540CD57E;
+Reference = X1;
+ValeurCmp = 25MHz;
+IdModule  = klib:XTAL8045X200N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540F706F;
+Reference = X2;
+ValeurCmp = 32.768kHZ;
+IdModule  = klib:SOJ550P370X240-4N;
+EndCmp
+
+BeginCmp
+TimeStamp = /540A0203;
+Reference = X3;
+ValeurCmp = 8MHz;
+IdModule  = klib:XTAL8045X200N;
 EndCmp
 
 EndListe

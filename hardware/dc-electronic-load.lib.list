@@ -6,6 +6,7 @@ libs/C.lib
 libs/CP.lib
 libs/INDUCTOR.lib
 libs/CRYSTAL.lib
+libs/CRYSTAL-14.lib
 libs/LED.lib
 libs/MECH.lib
 libs/SWD.lib
