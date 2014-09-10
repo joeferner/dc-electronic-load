@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Tue 09 Sep 2014 04:52:58 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Tue 09 Sep 2014 08:10:02 PM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -52,14 +52,14 @@ EndCmp
 BeginCmp
 TimeStamp = /540C84BC;
 Reference = C8;
-ValeurCmp = 10uF;
+ValeurCmp = 100uF;
 IdModule  = klib:CAPAE660X790N;
 EndCmp
 
 BeginCmp
 TimeStamp = /540C857E;
 Reference = C9;
-ValeurCmp = 10uF;
+ValeurCmp = 100uF;
 IdModule  = klib:CAPAE660X790N;
 EndCmp
 
@@ -246,6 +246,34 @@ IdModule  = ;
 EndCmp
 
 BeginCmp
+TimeStamp = /540F97BA;
+Reference = M6;
+ValeurCmp = Power Entry Connector;
+IdModule  = klib:EMPTY;
+EndCmp
+
+BeginCmp
+TimeStamp = /540FAE82;
+Reference = M7;
+ValeurCmp = Enclosure (8.36x9.11x3.15);
+IdModule  = klib:EMPTY;
+EndCmp
+
+BeginCmp
+TimeStamp = /540FCA99;
+Reference = M8;
+ValeurCmp = Fan (50mm x 10mm);
+IdModule  = klib:EMPTY;
+EndCmp
+
+BeginCmp
+TimeStamp = /540FD7B6;
+Reference = M9;
+ValeurCmp = Fan Guard;
+IdModule  = klib:EMPTY;
+EndCmp
+
+BeginCmp
 TimeStamp = /540C9A03;
 Reference = P1;
 ValeurCmp = BELFUSE-08B0-1X1T-06-F;
@@ -256,14 +284,14 @@ BeginCmp
 TimeStamp = /5409F710;
 Reference = P2;
 ValeurCmp = FTDI-PLUG;
-IdModule  = ;
+IdModule  = klib:HDRV6W66P254_1X6_1524X249X838P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540A1B52;
 Reference = P3;
 ValeurCmp = SWD;
-IdModule  = ;
+IdModule  = klib:HDRV6W66P254_1X6_1524X249X838P;
 EndCmp
 
 BeginCmp
@@ -298,7 +326,7 @@ BeginCmp
 TimeStamp = /540CAC57;
 Reference = P8;
 ValeurCmp = FAN;
-IdModule  = ;
+IdModule  = klib:EMPTY;
 EndCmp
 
 BeginCmp
@@ -326,7 +354,7 @@ BeginCmp
 TimeStamp = /540CC547;
 Reference = R1;
 ValeurCmp = 2.32K 1%;
-IdModule  = ;
+IdModule  = klib:RESC2012X100N;
 EndCmp
 
 BeginCmp
