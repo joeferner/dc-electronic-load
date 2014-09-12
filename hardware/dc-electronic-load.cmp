@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Tue 09 Sep 2014 08:10:02 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Thu 11 Sep 2014 08:12:29 PM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -207,7 +207,7 @@ BeginCmp
 TimeStamp = /540C9C3C;
 Reference = L1;
 ValeurCmp = >80mA;
-IdModule  = ;
+IdModule  = klib:RESC2012X100N;
 EndCmp
 
 BeginCmp
@@ -326,7 +326,7 @@ BeginCmp
 TimeStamp = /540CAC57;
 Reference = P8;
 ValeurCmp = FAN;
-IdModule  = klib:EMPTY;
+IdModule  = ;
 EndCmp
 
 BeginCmp
@@ -515,70 +515,70 @@ BeginCmp
 TimeStamp = /540D286E;
 Reference = R24;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D1EBE;
 Reference = R25;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D252E;
 Reference = R26;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D2592;
 Reference = R27;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D25F7;
 Reference = R28;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D265D;
 Reference = R29;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D26C8;
 Reference = R30;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D2730;
 Reference = R31;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D2799;
 Reference = R32;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D2803;
 Reference = R33;
 ValeurCmp = 4R;
-IdModule  = ;
+IdModule  = klib:RESAD1690W80L890D400P;
 EndCmp
 
 BeginCmp
@@ -599,7 +599,7 @@ BeginCmp
 TimeStamp = /540C839B;
 Reference = U1;
 ValeurCmp = LD1086V33;
-IdModule  = ;
+IdModule  = klib:TO255P460X1020X1925-3P;
 EndCmp
 
 BeginCmp

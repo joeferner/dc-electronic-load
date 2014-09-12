@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.sch)
-    (date "Tue 09 Sep 2014 08:08:58 PM EDT")
+    (date "Thu 11 Sep 2014 08:13:20 PM EDT")
     (tool "Eeschema (2014-09-04 BZR 5113)-product"))
   (components
     (comp (ref M1)
@@ -65,11 +65,13 @@
       (tstamp 540A073B))
     (comp (ref P3)
       (value SWD)
+      (footprint klib:HDRV6W66P254_1X6_1524X249X838P)
       (libsource (lib dc-electronic-load) (part SWD))
       (sheetpath (names /) (tstamps /))
       (tstamp 540A1B52))
     (comp (ref P2)
       (value FTDI-PLUG)
+      (footprint klib:HDRV6W66P254_1X6_1524X249X838P)
       (libsource (lib dc-electronic-load) (part FTDI-PLUG))
       (sheetpath (names /) (tstamps /))
       (tstamp 5409F710))
@@ -87,6 +89,7 @@
       (tstamp 540B7069))
     (comp (ref U1)
       (value LD1086V33)
+      (footprint klib:TO255P460X1020X1925-3P)
       (libsource (lib dc-electronic-load) (part VREG_VOUTCENTER))
       (sheetpath (names /) (tstamps /))
       (tstamp 540C839B))
@@ -271,6 +274,7 @@
       (tstamp 540CC41B))
     (comp (ref L1)
       (value >80mA)
+      (footprint klib:RESC2012X100N)
       (libsource (lib dc-electronic-load) (part INDUCTOR))
       (sheetpath (names /) (tstamps /))
       (tstamp 540C9C3C))
@@ -416,6 +420,7 @@
       (tstamp 540D074B))
     (comp (ref R25)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -423,6 +428,7 @@
       (tstamp 540D1EBE))
     (comp (ref R26)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -430,6 +436,7 @@
       (tstamp 540D252E))
     (comp (ref R27)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -437,6 +444,7 @@
       (tstamp 540D2592))
     (comp (ref R28)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -444,6 +452,7 @@
       (tstamp 540D25F7))
     (comp (ref R29)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -451,6 +460,7 @@
       (tstamp 540D265D))
     (comp (ref R30)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -458,6 +468,7 @@
       (tstamp 540D26C8))
     (comp (ref R31)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -465,6 +476,7 @@
       (tstamp 540D2730))
     (comp (ref R32)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -472,6 +484,7 @@
       (tstamp 540D2799))
     (comp (ref R33)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -479,6 +492,7 @@
       (tstamp 540D2803))
     (comp (ref R24)
       (value 4R)
+      (footprint klib:RESAD1690W80L890D400P)
       (fields
         (field (name MfgPartNumber) UB3C-4RF1))
       (libsource (lib dc-electronic-load) (part R))
@@ -568,7 +582,7 @@
       (tstamp 540F706F))
     (comp (ref M6)
       (value "Power Entry Connector")
-      (footprint klib:MTGNP565H328Z565P)
+      (footprint klib:EMPTY)
       (fields
         (field (name MfgPartNumber) 06AK2D))
       (libsource (lib dc-electronic-load) (part MECH))
@@ -576,7 +590,7 @@
       (tstamp 540F97BA))
     (comp (ref M7)
       (value "Enclosure (8.36x9.11x3.15)")
-      (footprint klib:MTGNP565H328Z565P)
+      (footprint klib:EMPTY)
       (fields
         (field (name Mfg) PacTec)
         (field (name MfgPartNumber) 616-63210-510-000))
@@ -585,7 +599,7 @@
       (tstamp 540FAE82))
     (comp (ref M8)
       (value "Fan (50mm x 10mm)")
-      (footprint klib:MTGNP565H328Z565P)
+      (footprint klib:EMPTY)
       (fields
         (field (name Mfg) "Sunon Fans")
         (field (name MfgPartNumber) MB50100V2-000U-A99))
@@ -594,7 +608,7 @@
       (tstamp 540FCA99))
     (comp (ref M9)
       (value "Fan Guard")
-      (footprint klib:MTGNP565H328Z565P)
+      (footprint klib:EMPTY)
       (fields
         (field (name Mfg) "Sunon Fans")
         (field (name MfgPartNumber) FG-5))
@@ -846,7 +860,8 @@
         (pin (num 22) (name ~) (type passive))))
     (libpart (lib dc-electronic-load) (part R)
       (footprints
-        (fp RESC2012X100N))
+        (fp RESC2012X100N)
+        (fp RESAD1690W80L890D400P))
       (fields
         (field (name Reference) R)
         (field (name Value) R))
@@ -971,7 +986,8 @@
         (pin (num 5) (name ~) (type power_in))))
     (libpart (lib dc-electronic-load) (part VREG_VOUTCENTER)
       (footprints
-        (fp SOT230P700X180-4N))
+        (fp SOT230P700X180-4N)
+        (fp TO255P460X1020X1925-3P))
       (fields
         (field (name Reference) U)
         (field (name Value) VREG_VOUTCENTER))
