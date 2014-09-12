@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Fri 12 Sep 2014 12:02:16 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Fri 12 Sep 2014 02:10:43 PM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -200,7 +200,7 @@ BeginCmp
 TimeStamp = /540CAC99;
 Reference = D2;
 ValeurCmp = DIODE;
-IdModule  = ;
+IdModule  = klib:DIOM5226X220N;
 EndCmp
 
 BeginCmp
@@ -277,7 +277,7 @@ BeginCmp
 TimeStamp = /540C9A03;
 Reference = P1;
 ValeurCmp = BELFUSE-08B0-1X1T-06-F;
-IdModule  = ;
+IdModule  = klib:BEL-FUSE-08B0-1X1T-06-F;
 EndCmp
 
 BeginCmp
