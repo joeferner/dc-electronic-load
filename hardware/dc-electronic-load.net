@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.sch)
-    (date "Thu 11 Sep 2014 08:13:20 PM EDT")
+    (date "Fri 12 Sep 2014 11:11:28 AM EDT")
     (tool "Eeschema (2014-09-04 BZR 5113)-product"))
   (components
     (comp (ref M1)
@@ -30,6 +30,7 @@
       (tstamp 5409EAD7))
     (comp (ref U3)
       (value STM32-64PIN)
+      (footprint klib:QFP50P1200X1200X160-64N)
       (libsource (lib dc-electronic-load) (part STM32-64PIN))
       (sheetpath (names /) (tstamps /))
       (tstamp 5409FE86))
@@ -112,6 +113,7 @@
       (tstamp 540C8E7D))
     (comp (ref U5)
       (value SST25VF032B-S2A)
+      (footprint klib:SOIC127P790X216-8N)
       (libsource (lib dc-electronic-load) (part SST25VF032B-S2A))
       (sheetpath (names /) (tstamps /))
       (tstamp 540C9DF9))
@@ -122,6 +124,7 @@
       (tstamp 540CA8CD))
     (comp (ref U4)
       (value TIREF30XX)
+      (footprint klib:SOT95P237X112_123-3N)
       (libsource (lib dc-electronic-load) (part TIREF30XX))
       (sheetpath (names /) (tstamps /))
       (tstamp 540CB7C1))
@@ -174,6 +177,7 @@
       (tstamp 540CA534))
     (comp (ref U2)
       (value ENC28J60)
+      (footprint klib:SOP65P780X200-28N)
       (libsource (lib dc-electronic-load) (part ENC28J60))
       (sheetpath (names /) (tstamps /))
       (tstamp 540CB17B))
@@ -378,7 +382,6 @@
       (tstamp 540CAB6F))
     (comp (ref P8)
       (value FAN)
-      (footprint klib:EMPTY)
       (libsource (lib dc-electronic-load) (part P02))
       (sheetpath (names /) (tstamps /))
       (tstamp 540CAC57))
@@ -616,134 +619,6 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 540FD7B6)))
   (libparts
-    (libpart (lib dc-electronic-load) (part 25AA02EXXX-XOT)
-      (description "2K SPI Bus Serial EEPROMs with EUI-48 or EUI-64 Node Identity (MAC)")
-      (fields
-        (field (name Reference) U)
-        (field (name Value) 25AA02EXXX-XOT))
-      (pins
-        (pin (num 1) (name SCK) (type input))
-        (pin (num 2) (name VSS) (type power_in))
-        (pin (num 3) (name SI) (type input))
-        (pin (num 4) (name SO) (type BiDi))
-        (pin (num 5) (name ~CS) (type input))
-        (pin (num 6) (name VCC) (type power_in))))
-    (libpart (lib dc-electronic-load) (part BELFUSE-08B0-1X1T-06-F)
-      (description "Ethernet Magjack 100Base-T")
-      (footprints
-        (fp BEL-FUSE-08B0-1X1T-06-F))
-      (fields
-        (field (name Reference) P)
-        (field (name Value) BELFUSE-08B0-1X1T-06-F))
-      (pins
-        (pin (num 1) (name TCT) (type passive))
-        (pin (num 2) (name TD+) (type passive))
-        (pin (num 3) (name TD-) (type passive))
-        (pin (num 4) (name RD+) (type passive))
-        (pin (num 5) (name RD-) (type passive))
-        (pin (num 6) (name RCT) (type passive))
-        (pin (num 7) (name LED1-YLW-) (type passive))
-        (pin (num 8) (name LED-YLW+) (type passive))
-        (pin (num 9) (name LED2-ORG) (type passive))
-        (pin (num 10) (name LED2-GRN) (type passive))))
-    (libpart (lib dc-electronic-load) (part C)
-      (footprints
-        (fp CAPC2012X100N))
-      (fields
-        (field (name Reference) C)
-        (field (name Value) C))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))))
-    (libpart (lib dc-electronic-load) (part CP)
-      (footprints
-        (fp CAPAE*)
-        (fp CAPCP*))
-      (fields
-        (field (name Reference) C)
-        (field (name Value) CP))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))))
-    (libpart (lib dc-electronic-load) (part CRYSTAL)
-      (aliases
-        (alias XTAL))
-      (footprints
-        (fp XTAL8045X200N))
-      (fields
-        (field (name Reference) X)
-        (field (name Value) CRYSTAL))
-      (pins
-        (pin (num 1) (name ~) (type BiDi))
-        (pin (num 2) (name ~) (type BiDi))))
-    (libpart (lib dc-electronic-load) (part CRYSTAL-14)
-      (description "Crystal in 4 pin package (pins 1 and 4)")
-      (footprints
-        (fp SOJ550P370X240-4N))
-      (fields
-        (field (name Reference) X)
-        (field (name Value) CRYSTAL-14))
-      (pins
-        (pin (num 1) (name ~) (type BiDi))
-        (pin (num 4) (name ~) (type BiDi))))
-    (libpart (lib dc-electronic-load) (part DIODE)
-      (footprints
-        (fp DIOM5226X220N))
-      (fields
-        (field (name Reference) D)
-        (field (name Value) DIODE))
-      (pins
-        (pin (num 1) (name A) (type passive))
-        (pin (num 2) (name K) (type passive))))
-    (libpart (lib dc-electronic-load) (part ENC28J60)
-      (description "Stand-Alone Ethernet Controller with SPI Interface")
-      (footprints
-        (fp SOP65P780X200-28N))
-      (fields
-        (field (name Reference) U)
-        (field (name Value) ENC28J60))
-      (pins
-        (pin (num 1) (name Vcap) (type passive))
-        (pin (num 2) (name Vss) (type passive))
-        (pin (num 3) (name CLKOUT) (type output))
-        (pin (num 4) (name ~INT) (type output))
-        (pin (num 5) (name NC) (type NotConnected))
-        (pin (num 6) (name MISO) (type output))
-        (pin (num 7) (name MOSI) (type input))
-        (pin (num 8) (name SCK) (type input))
-        (pin (num 9) (name ~CS) (type input))
-        (pin (num 10) (name ~RESET) (type input))
-        (pin (num 11) (name Vssrx) (type passive))
-        (pin (num 12) (name TPIN-) (type passive))
-        (pin (num 13) (name TPIN+) (type passive))
-        (pin (num 14) (name RBIAS) (type passive))
-        (pin (num 15) (name Vddtx) (type passive))
-        (pin (num 16) (name TPOUT-) (type passive))
-        (pin (num 17) (name TPOUT+) (type passive))
-        (pin (num 18) (name Vsstx) (type passive))
-        (pin (num 19) (name Vddrx) (type passive))
-        (pin (num 20) (name Vddpll) (type passive))
-        (pin (num 21) (name Vsspll) (type passive))
-        (pin (num 22) (name Vssosc) (type passive))
-        (pin (num 23) (name OSC1) (type passive))
-        (pin (num 24) (name OSC2) (type passive))
-        (pin (num 25) (name Vddosc) (type passive))
-        (pin (num 26) (name LEDA) (type output))
-        (pin (num 27) (name LEDB) (type output))
-        (pin (num 28) (name Vdd) (type power_in))))
-    (libpart (lib dc-electronic-load) (part FTDI-PLUG)
-      (footprints
-        (fp HDRV6W66P254_1X6_1524X249X838P))
-      (fields
-        (field (name Reference) P)
-        (field (name Value) FTDI-PLUG))
-      (pins
-        (pin (num 1) (name GND/BLACK) (type power_in))
-        (pin (num 2) (name CTS/BROWN) (type output))
-        (pin (num 3) (name VCC) (type power_out))
-        (pin (num 4) (name TXD/ORANGE) (type input))
-        (pin (num 5) (name RXD/YELLOW) (type output))
-        (pin (num 6) (name RTS/GREEN) (type input))))
     (libpart (lib dc-electronic-load) (part INDUCTOR)
       (footprints
         (fp IND_ASPI-8040S-680M-T))
@@ -870,6 +745,8 @@
         (pin (num 2) (name ~) (type passive))))
     (libpart (lib dc-electronic-load) (part SST25VF032B-S2A)
       (description "32 Mbit SPI Serial Flash 8-SOIC")
+      (footprints
+        (fp SOIC127P790X216-8N))
       (fields
         (field (name Reference) U)
         (field (name Value) SST25VF032B-S2A))
@@ -883,6 +760,8 @@
         (pin (num 7) (name ~HOLD) (type input))
         (pin (num 8) (name VDD) (type power_in))))
     (libpart (lib dc-electronic-load) (part STM32-64PIN)
+      (footprints
+        (fp QFP50P1200X1200X160-64N))
       (fields
         (field (name Reference) U)
         (field (name Value) STM32-64PIN))
@@ -966,6 +845,8 @@
         (pin (num 6) (name SWO) (type NotConnected))))
     (libpart (lib dc-electronic-load) (part TIREF30XX)
       (description "50ppm/°C Max, 50µA in SOT23-3 CMOS VOLTAGE REFERENCE")
+      (footprints
+        (fp SOT95P237X112_123-3N))
       (fields
         (field (name Reference) U)
         (field (name Value) TIREF30XX))
@@ -973,6 +854,122 @@
         (pin (num 1) (name IN) (type power_in))
         (pin (num 2) (name OUT) (type output))
         (pin (num 3) (name GND) (type power_in))))
+    (libpart (lib dc-electronic-load) (part C)
+      (footprints
+        (fp CAPC2012X100N))
+      (fields
+        (field (name Reference) C)
+        (field (name Value) C))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
+    (libpart (lib dc-electronic-load) (part CP)
+      (footprints
+        (fp CAPAE*)
+        (fp CAPCP*))
+      (fields
+        (field (name Reference) C)
+        (field (name Value) CP))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
+    (libpart (lib dc-electronic-load) (part CRYSTAL)
+      (aliases
+        (alias XTAL))
+      (footprints
+        (fp XTAL8045X200N))
+      (fields
+        (field (name Reference) X)
+        (field (name Value) CRYSTAL))
+      (pins
+        (pin (num 1) (name ~) (type BiDi))
+        (pin (num 2) (name ~) (type BiDi))))
+    (libpart (lib dc-electronic-load) (part CRYSTAL-14)
+      (description "Crystal in 4 pin package (pins 1 and 4)")
+      (footprints
+        (fp SOJ550P370X240-4N))
+      (fields
+        (field (name Reference) X)
+        (field (name Value) CRYSTAL-14))
+      (pins
+        (pin (num 1) (name ~) (type BiDi))
+        (pin (num 4) (name ~) (type BiDi))))
+    (libpart (lib dc-electronic-load) (part DIODE)
+      (footprints
+        (fp DIOM5226X220N))
+      (fields
+        (field (name Reference) D)
+        (field (name Value) DIODE))
+      (pins
+        (pin (num 1) (name A) (type passive))
+        (pin (num 2) (name K) (type passive))))
+    (libpart (lib dc-electronic-load) (part ENC28J60)
+      (description "Stand-Alone Ethernet Controller with SPI Interface")
+      (footprints
+        (fp SOP65P780X200-28N))
+      (fields
+        (field (name Reference) U)
+        (field (name Value) ENC28J60))
+      (pins
+        (pin (num 1) (name Vcap) (type passive))
+        (pin (num 2) (name Vss) (type passive))
+        (pin (num 3) (name CLKOUT) (type output))
+        (pin (num 4) (name ~INT) (type output))
+        (pin (num 5) (name NC) (type NotConnected))
+        (pin (num 6) (name MISO) (type output))
+        (pin (num 7) (name MOSI) (type input))
+        (pin (num 8) (name SCK) (type input))
+        (pin (num 9) (name ~CS) (type input))
+        (pin (num 10) (name ~RESET) (type input))
+        (pin (num 11) (name Vssrx) (type passive))
+        (pin (num 12) (name TPIN-) (type passive))
+        (pin (num 13) (name TPIN+) (type passive))
+        (pin (num 14) (name RBIAS) (type passive))
+        (pin (num 15) (name Vddtx) (type passive))
+        (pin (num 16) (name TPOUT-) (type passive))
+        (pin (num 17) (name TPOUT+) (type passive))
+        (pin (num 18) (name Vsstx) (type passive))
+        (pin (num 19) (name Vddrx) (type passive))
+        (pin (num 20) (name Vddpll) (type passive))
+        (pin (num 21) (name Vsspll) (type passive))
+        (pin (num 22) (name Vssosc) (type passive))
+        (pin (num 23) (name OSC1) (type passive))
+        (pin (num 24) (name OSC2) (type passive))
+        (pin (num 25) (name Vddosc) (type passive))
+        (pin (num 26) (name LEDA) (type output))
+        (pin (num 27) (name LEDB) (type output))
+        (pin (num 28) (name Vdd) (type power_in))))
+    (libpart (lib dc-electronic-load) (part FTDI-PLUG)
+      (footprints
+        (fp HDRV6W66P254_1X6_1524X249X838P))
+      (fields
+        (field (name Reference) P)
+        (field (name Value) FTDI-PLUG))
+      (pins
+        (pin (num 1) (name GND/BLACK) (type power_in))
+        (pin (num 2) (name CTS/BROWN) (type output))
+        (pin (num 3) (name VCC) (type power_out))
+        (pin (num 4) (name TXD/ORANGE) (type input))
+        (pin (num 5) (name RXD/YELLOW) (type output))
+        (pin (num 6) (name RTS/GREEN) (type input))))
+    (libpart (lib dc-electronic-load) (part BELFUSE-08B0-1X1T-06-F)
+      (description "Ethernet Magjack 100Base-T")
+      (footprints
+        (fp BEL-FUSE-08B0-1X1T-06-F))
+      (fields
+        (field (name Reference) P)
+        (field (name Value) BELFUSE-08B0-1X1T-06-F))
+      (pins
+        (pin (num 1) (name TCT) (type passive))
+        (pin (num 2) (name TD+) (type passive))
+        (pin (num 3) (name TD-) (type passive))
+        (pin (num 4) (name RD+) (type passive))
+        (pin (num 5) (name RD-) (type passive))
+        (pin (num 6) (name RCT) (type passive))
+        (pin (num 7) (name LED1-YLW-) (type passive))
+        (pin (num 8) (name LED-YLW+) (type passive))
+        (pin (num 9) (name LED2-ORG) (type passive))
+        (pin (num 10) (name LED2-GRN) (type passive))))
     (libpart (lib dc-electronic-load) (part TSV631)
       (description "Rail-to-rail input/output, 60 μA, 880 kHz, 5 V CMOS operational amplifier")
       (fields
@@ -995,7 +992,21 @@
         (pin (num 1) (name GND) (type input))
         (pin (num 2) (name VO) (type power_out))
         (pin (num 3) (name VI) (type input))
-        (pin (num 4) (name TAB) (type power_out)))))
+        (pin (num 4) (name TAB) (type power_out))))
+    (libpart (lib dc-electronic-load) (part 25AA02EXXX-XOT)
+      (description "2K SPI Bus Serial EEPROMs with EUI-48 or EUI-64 Node Identity (MAC)")
+      (footprints
+        (fp SOT95P270X145-6N))
+      (fields
+        (field (name Reference) U)
+        (field (name Value) 25AA02EXXX-XOT))
+      (pins
+        (pin (num 1) (name SCK) (type input))
+        (pin (num 2) (name VSS) (type power_in))
+        (pin (num 3) (name SI) (type input))
+        (pin (num 4) (name SO) (type BiDi))
+        (pin (num 5) (name ~CS) (type input))
+        (pin (num 6) (name VCC) (type power_in)))))
   (libraries
     (library (logical dc-electronic-load)
       (uri /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.lib)))
