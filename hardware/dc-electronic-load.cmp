@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Fri 12 Sep 2014 11:11:35 AM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Fri 12 Sep 2014 12:02:16 PM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -641,35 +641,35 @@ BeginCmp
 TimeStamp = /540CEE0A;
 Reference = U7;
 ValeurCmp = MCP3204;
-IdModule  = ;
+IdModule  = klib:SOIC127P600X175-14N;
 EndCmp
 
 BeginCmp
 TimeStamp = /540CA8CD;
 Reference = U8;
 ValeurCmp = MCP49X1;
-IdModule  = ;
+IdModule  = klib:SOP65P490X110-8N;
 EndCmp
 
 BeginCmp
-TimeStamp = /540CAB6F;
+TimeStamp = /54135A4A;
 Reference = U9;
 ValeurCmp = FQT7N10LTF;
-IdModule  = ;
+IdModule  = klib:SOT230P700X180-4N;
 EndCmp
 
 BeginCmp
 TimeStamp = /540D67C3;
 Reference = U10;
 ValeurCmp = TSV631ILT;
-IdModule  = ;
+IdModule  = klib:SOT95P280X100-5N;
 EndCmp
 
 BeginCmp
-TimeStamp = /540D074B;
+TimeStamp = /5413693A;
 Reference = U11;
 ValeurCmp = BUK954R8-60E,127;
-IdModule  = ;
+IdModule  = klib:TO255P460X1020X1925-3P;
 EndCmp
 
 BeginCmp
