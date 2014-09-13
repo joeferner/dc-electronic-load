@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-04 BZR 5113)-product   date = Fri 12 Sep 2014 02:10:43 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-11 BZR 5128)-product   date = Fri 12 Sep 2014 07:18:34 PM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -199,7 +199,7 @@ EndCmp
 BeginCmp
 TimeStamp = /540CAC99;
 Reference = D2;
-ValeurCmp = DIODE;
+ValeurCmp = GS1M-LTP;
 IdModule  = klib:DIOM5226X220N;
 EndCmp
 
@@ -241,8 +241,8 @@ EndCmp
 BeginCmp
 TimeStamp = /540CCF2A;
 Reference = M5;
-ValeurCmp = Heat Sink;
-IdModule  = ;
+ValeurCmp = Heat Sink (RA-T2X-38E);
+IdModule  = klib:OHMITE-R-SERIES;
 EndCmp
 
 BeginCmp

@@ -1,8 +1,8 @@
 (export (version D)
   (design
     (source /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.sch)
-    (date "Fri 12 Sep 2014 12:02:10 PM EDT")
-    (tool "Eeschema (2014-09-04 BZR 5113)-product"))
+    (date "Fri 12 Sep 2014 07:17:35 PM EDT")
+    (tool "Eeschema (2014-09-11 BZR 5128)-product"))
   (components
     (comp (ref M1)
       (value "Mounting Hole")
@@ -216,6 +216,7 @@
       (tstamp 540CDA89))
     (comp (ref P1)
       (value BELFUSE-08B0-1X1T-06-F)
+      (footprint klib:BEL-FUSE-08B0-1X1T-06-F)
       (libsource (lib dc-electronic-load) (part BELFUSE-08B0-1X1T-06-F))
       (sheetpath (names /) (tstamps /))
       (tstamp 540C9A03))
@@ -372,7 +373,8 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 540CA770))
     (comp (ref M5)
-      (value "Heat Sink")
+      (value "Heat Sink (RA-T2X-38E)")
+      (footprint klib:OHMITE-R-SERIES)
       (libsource (lib dc-electronic-load) (part MECH))
       (sheetpath (names /) (tstamps /))
       (tstamp 540CCF2A))
@@ -382,7 +384,10 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 540CAC57))
     (comp (ref D2)
-      (value DIODE)
+      (value GS1M-LTP)
+      (footprint klib:DIOM5226X220N)
+      (fields
+        (field (name MfgPartNumber) GS1M-LTP))
       (libsource (lib dc-electronic-load) (part DIODE))
       (sheetpath (names /) (tstamps /))
       (tstamp 540CAC99))
@@ -492,6 +497,7 @@
       (tstamp 540D286E))
     (comp (ref U10)
       (value TSV631ILT)
+      (footprint klib:SOT95P280X100-5N)
       (fields
         (field (name MfgPartNumber) TSV631ILT))
       (libsource (lib dc-electronic-load) (part TSV631))
@@ -1005,18 +1011,6 @@
         (pin (num 1) (name IN) (type power_in))
         (pin (num 2) (name OUT) (type output))
         (pin (num 3) (name GND) (type power_in))))
-    (libpart (lib dc-electronic-load) (part VREG_VOUTCENTER)
-      (footprints
-        (fp SOT230P700X180-4N)
-        (fp TO255P460X1020X1925-3P))
-      (fields
-        (field (name Reference) U)
-        (field (name Value) VREG_VOUTCENTER))
-      (pins
-        (pin (num 1) (name GND) (type input))
-        (pin (num 2) (name VO) (type power_out))
-        (pin (num 3) (name VI) (type input))
-        (pin (num 4) (name TAB) (type power_out))))
     (libpart (lib dc-electronic-load) (part TSV631)
       (description "Rail-to-rail input/output, 60 μA, 880 kHz, 5 V CMOS operational amplifier")
       (footprints
@@ -1029,7 +1023,19 @@
         (pin (num 2) (name ~) (type power_in))
         (pin (num 3) (name -) (type input))
         (pin (num 4) (name ~) (type output))
-        (pin (num 5) (name ~) (type power_in)))))
+        (pin (num 5) (name ~) (type power_in))))
+    (libpart (lib dc-electronic-load) (part VREG_VOUTCENTER)
+      (footprints
+        (fp SOT230P700X180-4N)
+        (fp TO255P460X1020X1925-3P))
+      (fields
+        (field (name Reference) U)
+        (field (name Value) VREG_VOUTCENTER))
+      (pins
+        (pin (num 1) (name GND) (type input))
+        (pin (num 2) (name VO) (type power_out))
+        (pin (num 3) (name VI) (type input))
+        (pin (num 4) (name TAB) (type power_out)))))
   (libraries
     (library (logical dc-electronic-load)
       (uri /home/jferner/dev/dc-electronic-load/hardware/dc-electronic-load.lib)))
