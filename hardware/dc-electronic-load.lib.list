@@ -20,9 +20,14 @@ libs/MCP3204.lib
 libs/MCP49X1.lib
 libs/SST25VF032B-S2A.lib
 libs/TIREF30XX.lib
+libs/P01.lib
 libs/P02.lib
 libs/P05.lib
 libs/P22.lib
 libs/PWR_FLAG.lib
 libs/MOSFET-N.lib
 libs/DIODE.lib
+libs/MOSFET-N-123.lib
+libs/MOSFET-N-134.lib
+libs/TSV631.lib
+libs/DIODEZENER.lib

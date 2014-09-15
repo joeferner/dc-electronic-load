@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-09-11 BZR 5128)-product   date = Fri 12 Sep 2014 07:18:34 PM EDT
+Cmp-Mod V01 Created by Cvpcb (2014-09-25 BZR 5147)-product   date = Mon 29 Sep 2014 08:18:51 AM EDT
 
 BeginCmp
 TimeStamp = /540CDA20;
@@ -155,13 +155,6 @@ IdModule  = klib:CAPC2012X100N;
 EndCmp
 
 BeginCmp
-TimeStamp = /540CB856;
-Reference = C23;
-ValeurCmp = 100uF;
-IdModule  = klib:CAPAE660X790N;
-EndCmp
-
-BeginCmp
 TimeStamp = /540DFC5B;
 Reference = C24;
 ValeurCmp = 0.1uF;
@@ -190,6 +183,41 @@ IdModule  = klib:CAPC2012X100N;
 EndCmp
 
 BeginCmp
+TimeStamp = /541F6E2F;
+Reference = C28;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541F588B;
+Reference = C29;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541F6BD8;
+Reference = C30;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541F6C58;
+Reference = C31;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541F6CD9;
+Reference = C32;
+ValeurCmp = 0.1uF;
+IdModule  = klib:CAPC2012X100N;
+EndCmp
+
+BeginCmp
 TimeStamp = /540B6DA4;
 Reference = D1;
 ValeurCmp = LED;
@@ -200,6 +228,13 @@ BeginCmp
 TimeStamp = /540CAC99;
 Reference = D2;
 ValeurCmp = GS1M-LTP;
+IdModule  = klib:DIOM5226X220N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541A3F10;
+Reference = D3;
+ValeurCmp = 24V;
 IdModule  = klib:DIOM5226X220N;
 EndCmp
 
@@ -298,56 +333,70 @@ BeginCmp
 TimeStamp = /540CA18B;
 Reference = P4;
 ValeurCmp = ENCODER;
-IdModule  = ;
+IdModule  = klib:JST-B5B-XH-A;
 EndCmp
 
 BeginCmp
 TimeStamp = /540CBD78;
 Reference = P5;
 ValeurCmp = BUTTONS;
-IdModule  = ;
+IdModule  = klib:JST-B5B-XH-A;
 EndCmp
 
 BeginCmp
 TimeStamp = /540CA770;
 Reference = P6;
 ValeurCmp = POWER;
-IdModule  = ;
+IdModule  = klib:TECONN-2-1445050-2;
 EndCmp
 
 BeginCmp
 TimeStamp = /540CA48F;
 Reference = P7;
 ValeurCmp = LCD;
-IdModule  = ;
+IdModule  = klib:SHDRV26W100P254_2X13_4052X880X910P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540CAC57;
 Reference = P8;
 ValeurCmp = FAN;
-IdModule  = ;
+IdModule  = klib:JST-B2B-XH-A;
 EndCmp
 
 BeginCmp
-TimeStamp = /540DD859;
+TimeStamp = /54174415;
 Reference = P9;
-ValeurCmp = LOAD;
-IdModule  = ;
+ValeurCmp = LOAD-VCC;
+IdModule  = klib:PAD205P;
 EndCmp
 
 BeginCmp
 TimeStamp = /540F6493;
 Reference = P10;
 ValeurCmp = TEMP1;
-IdModule  = ;
+IdModule  = klib:JST-B2B-XH-A;
 EndCmp
 
 BeginCmp
 TimeStamp = /540F6543;
 Reference = P11;
 ValeurCmp = TEMP2;
-IdModule  = ;
+IdModule  = klib:JST-B2B-XH-A;
+EndCmp
+
+BeginCmp
+TimeStamp = /541744A5;
+Reference = P12;
+ValeurCmp = LOAD-GND;
+IdModule  = klib:PAD205P;
+EndCmp
+
+BeginCmp
+TimeStamp = /542952DE;
+Reference = P13;
+ValeurCmp = VSENSE;
+IdModule  = klib:JST-B2B-XH-A;
 EndCmp
 
 BeginCmp
@@ -486,7 +535,7 @@ EndCmp
 BeginCmp
 TimeStamp = /540DE517;
 Reference = R20;
-ValeurCmp = 820;
+ValeurCmp = 1K;
 IdModule  = klib:RESC2012X100N;
 EndCmp
 
@@ -507,7 +556,7 @@ EndCmp
 BeginCmp
 TimeStamp = /540DE482;
 Reference = R23;
-ValeurCmp = 9K1;
+ValeurCmp = 10K;
 IdModule  = klib:RESC2012X100N;
 EndCmp
 
@@ -592,6 +641,13 @@ BeginCmp
 TimeStamp = /540F7648;
 Reference = R35;
 ValeurCmp = 10K;
+IdModule  = klib:RESC2012X100N;
+EndCmp
+
+BeginCmp
+TimeStamp = /541A4EDF;
+Reference = R36;
+ValeurCmp = 1K;
 IdModule  = klib:RESC2012X100N;
 EndCmp
 
