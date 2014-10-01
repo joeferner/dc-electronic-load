@@ -7,6 +7,8 @@
 #include "fontSmallNumbers.c"
 #include <string.h>
 
+#ifdef DISP6800_ENABLE
+
 #define DISP6800_COLUMN_START 0x00
 #define DISP6800_COLUMN_END   0x40
 #define DISP6800_COLUMNS      (DISP6800_COLUMN_END - DISP6800_COLUMN_START)
@@ -116,3 +118,5 @@ int gfx_draw_char(char ch, const tFont* font, int x, int y) {
 
   return image->width;
 }
+
+#endif

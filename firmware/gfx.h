@@ -2,6 +2,10 @@
 #ifndef _GFX_H_
 #define _GFX_H_
 
+#include "platform_config.h"
+
+#ifdef DISP6800_ENABLE
+
 #include <stdint.h>
 #include "font.h"
 
@@ -16,5 +20,7 @@ int gfx_draw_string(const char* str, const tFont* font, int x, int y, uint32_t o
 int gfx_draw_char(char ch, const tFont* font, int x, int y);
 int gfx_measure_string_width(const char* str, const tFont* font);
 const tChar* gfx_get_char(char ch, const tFont* font);
+
+#endif
 
 #endif // _GFX_H_

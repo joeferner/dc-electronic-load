@@ -1,7 +1,5 @@
 
 #include "platform_config.h"
-
-#ifdef NETWORK_ENABLED
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_rcc.h>
 #include <string.h>
@@ -11,6 +9,8 @@
 #include "contiki-conf.h"
 #include "debug.h"
 #include "ring_buffer.h"
+
+#ifdef NETWORK_ENABLE
 
 PROCESS(dhcp_process, "DHCP");
 PROCESS(telnet_process, "Telnet");
@@ -24,6 +24,7 @@ void network_setup() {
   uip_ipaddr_t ipaddr;
   uip_ipaddr_t gatewayAddr;
   uip_ipaddr_t netmaskAddr;
+  GPIO_InitTypeDef gpioConfig;
 
   enc28j60_reset_deassert();
   RCC_APB2PeriphClockCmd(ENC28J60_RESET_RCC, ENABLE);

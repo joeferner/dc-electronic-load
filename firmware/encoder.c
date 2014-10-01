@@ -1,8 +1,10 @@
-#include "encoder.h"
 #include "platform_config.h"
+#include "encoder.h"
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_exti.h>
 #include "debug.h"
+
+#ifdef ENCODER_ENABLE
 
 #define ENCODER_P_INIT 0xff
 uint8_t encoder_last_p;
@@ -110,3 +112,5 @@ void encoder_exti_irq() {
     }
   }
 }
+
+#endif

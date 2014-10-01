@@ -4,6 +4,8 @@
 #include "disp6800.h"
 #include "debug.h"
 
+#ifdef DISP6800_ENABLE
+
 #define DISP6800_DATA_DIR_IN   0
 #define DISP6800_DATA_DIR_OUT  1
 
@@ -334,3 +336,5 @@ void disp6800_set_vsl(uint8_t value) {
   disp6800_tx_command(DISP6800_SET_VSL);
   disp6800_tx_command(0x02 | value);
 }
+
+#endif

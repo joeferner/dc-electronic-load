@@ -1,8 +1,5 @@
 
 #include "platform_config.h"
-
-#ifdef NETWORK_ENABLED
-
 #include "enc28j60.h"
 #include "enc28j60_constants.h"
 #include "delay.h"
@@ -11,6 +8,8 @@
 #include "contiki/net/uip_arp.h"
 #include "contiki/sys/timer.h"
 #include "contiki/net/tcpip.h"
+
+#ifdef NETWORK_ENABLE
 
 #ifndef MIN
 #define MIN(a,b) ( ((a) < (b)) ? (a) : (b) )

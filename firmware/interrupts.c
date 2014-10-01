@@ -52,6 +52,7 @@ void SysTick_Handler() {
   time_SysTick_Handler();
 }
 
+#ifdef ENCODER_ENABLE
 void EXTI9_5_IRQHandler() {
   uint8_t signal = 0;
 
@@ -68,6 +69,7 @@ void EXTI9_5_IRQHandler() {
     encoder_exti_irq();
   }
 }
+#endif
 
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress) {
   /* These are volatile to try and prevent the compiler/linker optimising them

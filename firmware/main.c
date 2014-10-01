@@ -9,24 +9,33 @@
 #include "delay.h"
 #include "time.h"
 #include "ring_buffer.h"
-#include "disp6800.h"
-#include "gfx.h"
-#include "encoder.h"
-#include "fan.h"
+#ifdef DISP6800_ENABLE
+  #include "disp6800.h"
+  #include "gfx.h"
+#endif
+#ifdef ENCODER_ENABLE
+  #include "encoder.h"
+#endif
+#ifdef FAN_ENABLE
+  #include "fan.h"
+#endif
 #ifdef ADC_ENABLE
-#include "adc.h"
+  #include "adc.h"
 #endif
 #ifdef DAC_ENABLE
-#include "dac.h"
+  #include "dac.h"
 #endif
-#ifdef NETWORK_ENABLED
-#include "network.h"
+#ifdef NETWORK_ENABLE
+  #include "network.h"
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 PROCESS(debug_process, "Debug");
+  
+#ifdef DISP6800_ENABLE
 PROCESS(gfx_update_process, "GFX Update");
+#endif
 
 void setup();
 void loop();
@@ -38,7 +47,7 @@ uint16_t setMilliampsToDac(uint16_t value);
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
-#ifdef NETWORK_ENABLED
+#ifdef NETWORK_ENABLE
 uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
 #endif
 
@@ -55,12 +64,14 @@ uint16_t setCurrentMilliamps;
 PROCINIT(
   &etimer_process
   , &debug_process
+#ifdef DISP6800_ENABLE
   , &gfx_update_process
+#endif
 #ifdef ADC_ENABLE
   , &adc_volts_process
   , &adc_current_process
 #endif
-#ifdef NETWORK_ENABLED
+#ifdef NETWORK_ENABLE
   , &tcpip_process
   , &dhcp_process
   , &telnet_process
@@ -92,28 +103,40 @@ void setup() {
   process_init();
   process_start(&etimer_process, NULL);
   process_start(&debug_process, NULL);
+#ifdef DISP6800_ENABLE
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
-
+#endif
+  
   setCurrentMilliamps = 0;
   readCurrentMilliamps = 0;
   readMilliVolts = 0;
   readCurrentMilliampsDisplay = DISPLAY_MILLI;
 
   spi_setup();
+
+#ifdef DISP6800_ENABLE
   disp6800_setup();
   gfx_setup();
+#endif
+
+#ifdef ENCODER_ENABLE
   encoder_setup();
+#endif
+
 #ifdef ADC_ENABLE
   adc_setup();
 #endif
+  
 #ifdef DAC_ENABLE
   dac_setup();
   dac_set(0);
 #endif
-#ifdef NETWORK_ENABLED
+  
+#ifdef NETWORK_ENABLE
   network_setup();
 #endif
+  
 #ifdef FAN_ENABLE
   fan_setup();
 #endif
@@ -125,7 +148,7 @@ void setup() {
 }
 
 void loop() {
-#ifdef NETWORK_ENABLED
+#ifdef NETWORK_ENABLE
   network_tick();
 #endif
   process_run();
@@ -150,6 +173,7 @@ void assert_failed(uint8_t* file, uint32_t line) {
   }
 }
 
+#ifdef DISP6800_ENABLE
 PROCESS_THREAD(gfx_update_process, ev, data) {
   char valueBuffer[20];
   char suffix[5];
@@ -204,6 +228,7 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
   PROCESS_END();
 }
+#endif
 
 void milli_to_string(uint16_t v, char* buffer, uint8_t display) {
   char tempBuffer[20];
@@ -251,10 +276,13 @@ void adc_irq(uint8_t channel, uint16_t value) {
     fan_set(value / 41);
   } else if (channel == ADC_TEMP2_CHANNEL) {
   }
+#ifdef DISP6800_ENABLE
   process_poll(&gfx_update_process);
+#endif
 }
 #endif
 
+#ifdef ENCODER_ENABLE
 void encoder_irq(ENCODER_DIR dir) {
   int32_t newValue;
   if (dir == ENCODER_DIR_CW) {
@@ -268,9 +296,14 @@ void encoder_irq(ENCODER_DIR dir) {
     newValue = MAX_SET_CURRENT;
   }
   setCurrentMilliamps = newValue;
+#ifdef DAC_ENABLE
   dac_set(setMilliampsToDac(setCurrentMilliamps));
+#endif
+#ifdef DISP6800_ENABLE
   process_poll(&gfx_update_process);
+#endif
 }
+#endif
 
 PROCESS_THREAD(debug_process, ev, data) {
   char line[MAX_LINE_LENGTH];
@@ -285,13 +318,19 @@ PROCESS_THREAD(debug_process, ev, data) {
         debug_write_line("!clear");
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
-      } else if (strcmp(line, "!DISPON\n") == 0) {
+      } 
+      
+#ifdef DISP6800_ENABLE
+      else if (strcmp(line, "!DISPON\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
         debug_write_line("+OK");
       } else if (strcmp(line, "!DISPOFF\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
         debug_write_line("+OK");
-      } else {
+      } 
+#endif
+
+      else {
         debug_write("?Unknown command: ");
         debug_write_line(line);
       }

@@ -4,6 +4,23 @@
 #include <misc.h>
 #include <stm32f10x_rcc.h>
 
+// #define SPI1_ENABLE
+// #define SPI2_ENABLE
+// #define NETWORK_ENABLE
+// #define ADC_ENABLE
+// #define DAC_ENABLE
+// #define DISP6800_ENABLE
+// #define FAN_ENABLE
+// #define ENCODER_ENABLE
+
+// SPI1 pins: SCK (GPIOA - pin 5)
+// SPI1 pins: MISO (GPIOA - pin 6)
+// SPI1 pins: MOSI (GPIOA - pin 7)
+
+// SPI2 pins: SCK (GPIOA - pin 13)
+// SPI2 pins: MISO (GPIOA - pin 14)
+// SPI2 pins: MOSI (GPIOA - pin 15)
+
 #define MAX_SET_CURRENT         5000
 #define MAX_LINE_LENGTH         50
 
@@ -21,6 +38,7 @@
 #define DEBUG_USART_RX_DMA_CH   DMA1_Channel5
 #define DEBUG_USART_DR_BASE     ((uint32_t)&USART1->DR)
 
+#ifdef DISP6800_ENABLE
 #define DISP6800_RCC            RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB
 
 #define DISP6800_DATA           GPIOA
@@ -42,7 +60,9 @@
 #define DISP6800_CS_PIN         GPIO_Pin_11
 #define DISP6800_DC             GPIOB
 #define DISP6800_DC_PIN         GPIO_Pin_12
+#endif
 
+#ifdef ENCODER_ENABLE
 #define ENCODER_CH_A_EXTI       EXTI_Line6
 #define ENCODER_CH_A_EXTI_PORT  GPIO_PortSourceGPIOB
 #define ENCODER_CH_A_EXTI_PIN   GPIO_PinSource6
@@ -55,8 +75,9 @@
 #define ENCODER_CH_B_RCC        RCC_APB2Periph_GPIOB
 #define ENCODER_CH_B_PORT       GPIOB
 #define ENCODER_CH_B_PIN        GPIO_Pin_7
+#endif
 
-#define ADC_ENABLE
+#ifdef ADC_ENABLE
 #define ADC_CS_RCC              RCC_APB2Periph_GPIOB
 #define ADC_CS_PORT             GPIOB
 #define ADC_CS_PIN              GPIO_Pin_1
@@ -66,14 +87,16 @@
 #define ADC_CURRENT_CHANNEL     1
 #define ADC_TEMP1_CHANNEL       2
 #define ADC_TEMP2_CHANNEL       3
+#endif
 
-#define DAC_ENABLE
+#ifdef DAC_ENABLE
 #define DAC_CS_RCC              RCC_APB2Periph_GPIOB
 #define DAC_CS_PORT             GPIOB
 #define DAC_CS_PIN              GPIO_Pin_2
 #define DAC_SPI                 SPI2
+#endif
 
-#define FAN_ENABLE
+#ifdef FAN_ENABLE
 #define FAN_PWM_RCC1            RCC_APB1Periph_TIM3
 #define FAN_PWM_RCC2            RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO
 #define FAN_PWM_PORT            GPIOB
@@ -82,27 +105,16 @@
 #define FAN_PWM_TIMER_REMAP             GPIO_PartialRemap_TIM3
 #define FAN_PWM_TIMER_CH_INIT           TIM_OC2Init
 #define FAN_PWM_TIMER_CH_PRELOAD_CONFIG TIM_OC2PreloadConfig
+#endif
 
-// #define SPI1_ENABLE
-// SPI1 pins: SCK (GPIOA - pin 5)
-// SPI1 pins: MISO (GPIOA - pin 6)
-// SPI1 pins: MOSI (GPIOA - pin 7)
+#ifdef NETWORK_ENABLE
+#define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOA
+#define ENC28J60_CS_PORT        GPIOA
+#define ENC28J60_CS_PIN         GPIO_Pin_4
 
-#define SPI2_ENABLE
-// SPI2 pins: SCK (GPIOA - pin 13)
-// SPI2 pins: MISO (GPIOA - pin 14)
-// SPI2 pins: MOSI (GPIOA - pin 15)
-
-#undef NETWORK_ENABLED
-
-#ifdef NETWORK_ENABLED
-#define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOB
-#define ENC28J60_CS_PORT        GPIOB
-#define ENC28J60_CS_PIN         GPIO_Pin_0
-
-#define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOB
-#define ENC28J60_RESET_PORT     GPIOB
-#define ENC28J60_RESET_PIN      GPIO_Pin_1
+#define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOA
+#define ENC28J60_RESET_PORT     GPIOA
+#define ENC28J60_RESET_PIN      GPIO_Pin_3
 
 // port 23 is the traditional telnet port
 #define TELNET_PORT             23

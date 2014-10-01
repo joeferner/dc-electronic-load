@@ -6,6 +6,8 @@
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_tim.h>
 
+#ifdef FAN_ENABLE
+
 void fan_setup() {
   GPIO_InitTypeDef gpioInitStructure;
   TIM_TimeBaseInitTypeDef timeBaseInitStructure;
@@ -54,3 +56,5 @@ void fan_set(uint8_t percent) {
   ocInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
   FAN_PWM_TIMER_CH_INIT(FAN_PWM_TIMER, &ocInitStructure);
 }
+
+#endif
