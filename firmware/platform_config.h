@@ -4,9 +4,9 @@
 #include <misc.h>
 #include <stm32f10x_rcc.h>
 
-// #define SPI1_ENABLE
+#define SPI1_ENABLE
 // #define SPI2_ENABLE
-// #define NETWORK_ENABLE
+#define NETWORK_ENABLE
 // #define ADC_ENABLE
 // #define DAC_ENABLE
 // #define DISP6800_ENABLE
@@ -78,6 +78,9 @@
 #endif
 
 #ifdef ADC_ENABLE
+#ifndef SPI2_ENABLE
+  #error "SPI2 is required for adc"
+#endif
 #define ADC_CS_RCC              RCC_APB2Periph_GPIOB
 #define ADC_CS_PORT             GPIOB
 #define ADC_CS_PIN              GPIO_Pin_1
@@ -90,6 +93,9 @@
 #endif
 
 #ifdef DAC_ENABLE
+#ifndef SPI2_ENABLE
+  #error "SPI2 is required for dac"
+#endif
 #define DAC_CS_RCC              RCC_APB2Periph_GPIOB
 #define DAC_CS_PORT             GPIOB
 #define DAC_CS_PIN              GPIO_Pin_2
@@ -108,6 +114,9 @@
 #endif
 
 #ifdef NETWORK_ENABLE
+#ifndef SPI1_ENABLE
+  #error "SPI1 is required for network"
+#endif
 #define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOA
 #define ENC28J60_CS_PORT        GPIOA
 #define ENC28J60_CS_PIN         GPIO_Pin_4
