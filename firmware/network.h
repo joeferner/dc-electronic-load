@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "enc28j60.h"
 #include "contiki/net/ip/resolv.h"
+#include "httpd.h"
 
 PROCESS_NAME(dhcp_process);
 PROCESS_NAME(telnet_process);

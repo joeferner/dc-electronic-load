@@ -70,6 +70,9 @@ void network_setup() {
   debug_write_line("?Start Telnet Process");
   process_start(&telnet_process, NULL);
 
+  debug_write_line("?Start HTTPD Process");
+  process_start(&httpd_process, NULL);
+
   debug_write_line("?END network_setup");
 }
 
@@ -179,6 +182,20 @@ void dhcpc_configured(const struct dhcpc_state* s) {
 
 void dhcpc_unconfigured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_unconfigured");
+}
+
+PT_THREAD(httpd_script(struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sout);
+
+  strcpy(s->outbuf, "OK");
+  s->outbuf_pos = strlen(s->outbuf);
+  SEND_STRING(&s->sout, s->outbuf, s->outbuf_pos);
+
+  PSOCK_END(&s->sout);
+}
+
+httpd_script_t httpd_get_script(struct httpd_state* s) {
+  return httpd_script;
 }
 
 #endif
