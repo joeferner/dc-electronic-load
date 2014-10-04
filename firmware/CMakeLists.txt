@@ -49,13 +49,13 @@ SET(PROJECT_SOURCES
   ${STM32_USB_FS_DEVICE_LIB_DIR}/Libraries/STM32F10x_StdPeriph_Driver/src/misc.c
   system_stm32f10x.c
 
-  contiki/net/uip.c
-  contiki/net/uip_arp.c
-  contiki/net/psock.c
-  contiki/net/dhcpc.c
-  contiki/net/tcpip.c
-  contiki/net/resolv.c
-  contiki/net/uip-udp-packet.c
+  contiki/net/ipv4/uip.c
+  contiki/net/ipv4/uip_arp.c
+  contiki/net/ip/psock.c
+  contiki/net/ip/dhcpc.c
+  contiki/net/ip/tcpip.c
+  contiki/net/ip/resolv.c
+  contiki/net/ip/uip-udp-packet.c
   contiki/sys/timer.c
   contiki/sys/etimer.c
   contiki/sys/process.c

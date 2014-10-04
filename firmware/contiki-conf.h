@@ -26,6 +26,8 @@ typedef unsigned int uip_stats_t;
 #define BV(x) (1<<(x))
 #endif
 
+#define UIP_CONF_IPV6_RPL 0
+
 #define UIP_CONF_UDP     1
 #define UIP_CONF_TCP     1
 #define UIP_CONF_LLH_LEN 14
@@ -47,11 +49,6 @@ typedef unsigned int uip_stats_t;
 
 #define UIP_APPCALL     tcpip_uipcall
 #define UIP_UDP_APPCALL tcpip_uipcall
-
-struct tcpip_uipstate {
-  struct process* p;
-  void* state;
-};
 
 typedef struct tcpip_uipstate uip_tcp_appstate_t;
 typedef struct tcpip_uipstate uip_udp_appstate_t;

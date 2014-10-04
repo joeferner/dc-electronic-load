@@ -4,8 +4,8 @@
 #include <stm32f10x_rcc.h>
 #include <string.h>
 #include "network.h"
-#include "contiki/net/uip_arp.h"
-#include "contiki/net/dhcpc.h"
+#include "contiki/net/ipv4/uip_arp.h"
+#include "contiki/net/ip/dhcpc.h"
 #include "contiki-conf.h"
 #include "debug.h"
 #include "ring_buffer.h"

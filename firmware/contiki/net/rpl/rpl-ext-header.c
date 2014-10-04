@@ -42,13 +42,13 @@
  *         Nicolas Tsiftes <nvt@sics.se>.
  */
 
-#include "net/uip.h"
-#include "net/tcpip.h"
-#include "net/uip-ds6.h"
+#include "net/ip/uip.h"
+#include "net/ip/tcpip.h"
+#include "net/ipv6/uip-ds6.h"
 #include "net/rpl/rpl-private.h"
 
 #define DEBUG DEBUG_NONE
-#include "net/uip-debug.h"
+#include "net/ip/uip-debug.h"
 
 #include <limits.h>
 #include <string.h>
@@ -68,7 +68,19 @@ rpl_verify_header(int uip_ext_opt_offset)
 {
   rpl_instance_t *instance;
   int down;
+  uint16_t sender_rank;
   uint8_t sender_closer;
+  uip_ds6_route_t *route;
+
+  if(UIP_HBHO_BUF->len != RPL_HOP_BY_HOP_LEN - 8) {
+    PRINTF("RPL: Hop-by-hop extension header has wrong size\n");
+    return 1;
+  }
+
+  if(UIP_EXT_HDR_OPT_RPL_BUF->opt_type != UIP_EXT_HDR_OPT_RPL) {
+    PRINTF("RPL: Non RPL Hop-by-hop option\n");
+    return 1;
+  }
 
   if(UIP_EXT_HDR_OPT_RPL_BUF->opt_len != RPL_HDR_OPT_LEN) {
     PRINTF("RPL: Bad header option! (wrong length)\n");
@@ -83,11 +95,11 @@ rpl_verify_header(int uip_ext_opt_offset)
   }
 
   if(UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_FWD_ERR) {
+    PRINTF("RPL: Forward error!\n");
     /* We should try to repair it by removing the neighbor that caused
        the packet to be forwareded in the first place. We drop any
        routes that go through the neighbor that sent the packet to
        us. */
-    uip_ds6_route_t *route;
     route = uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr);
     if(route != NULL) {
       uip_ds6_route_rm(route);
@@ -116,17 +128,18 @@ rpl_verify_header(int uip_ext_opt_offset)
     down = 1;
   }
 
-  sender_closer = UIP_EXT_HDR_OPT_RPL_BUF->senderrank < instance->current_dag->rank;
+  sender_rank = UIP_HTONS(UIP_EXT_HDR_OPT_RPL_BUF->senderrank);
+  sender_closer = sender_rank < instance->current_dag->rank;
 
   PRINTF("RPL: Packet going %s, sender closer %d (%d < %d)\n", down == 1 ? "down" : "up",
 	 sender_closer,
-	 UIP_EXT_HDR_OPT_RPL_BUF->senderrank,
+	 sender_rank,
 	 instance->current_dag->rank
 	 );
 
   if((down && !sender_closer) || (!down && sender_closer)) {
     PRINTF("RPL: Loop detected - senderrank: %d my-rank: %d sender_closer: %d\n",
-	   UIP_EXT_HDR_OPT_RPL_BUF->senderrank, instance->current_dag->rank,
+	   sender_rank, instance->current_dag->rank,
 	   sender_closer);
     if(UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_RANK_ERR) {
       PRINTF("RPL: Rank error signalled in RPL option!\n");
@@ -184,7 +197,17 @@ rpl_update_header_empty(void)
   switch(UIP_IP_BUF->proto) {
   case UIP_PROTO_HBHO:
     if(UIP_HBHO_BUF->len != RPL_HOP_BY_HOP_LEN - 8) {
-      PRINTF("RPL: Non RPL Hop-by-hop options support not implemented\n");
+      PRINTF("RPL: Hop-by-hop extension header has wrong size\n");
+      uip_ext_len = last_uip_ext_len;
+      return;
+    }
+    if(UIP_EXT_HDR_OPT_RPL_BUF->opt_type != UIP_EXT_HDR_OPT_RPL) {
+      PRINTF("RPL: Non RPL Hop-by-hop option support not implemented\n");
+      uip_ext_len = last_uip_ext_len;
+      return;
+    }
+    if(UIP_EXT_HDR_OPT_RPL_BUF->opt_len != RPL_HDR_OPT_LEN) {
+      PRINTF("RPL: RPL Hop-by-hop option has wrong length\n");
       uip_ext_len = last_uip_ext_len;
       return;
     }
@@ -209,7 +232,7 @@ rpl_update_header_empty(void)
   switch(UIP_EXT_HDR_OPT_BUF->type) {
   case UIP_EXT_HDR_OPT_RPL:
     PRINTF("RPL: Updating RPL option\n");
-    UIP_EXT_HDR_OPT_RPL_BUF->senderrank = instance->current_dag->rank;
+    UIP_EXT_HDR_OPT_RPL_BUF->senderrank = UIP_HTONS(instance->current_dag->rank);
 
     /* Check the direction of the down flag, as per Section 11.2.2.3,
        which states that if a packet is going down it should in
@@ -275,8 +298,7 @@ rpl_update_header_final(uip_ipaddr_t *addr)
           UIP_EXT_HDR_OPT_RPL_BUF->flags = RPL_HDR_OPT_DOWN;
         }
         UIP_EXT_HDR_OPT_RPL_BUF->instance = default_instance->instance_id;
-        UIP_EXT_HDR_OPT_RPL_BUF->senderrank = default_instance->current_dag->rank;
-        uip_ext_len = last_uip_ext_len;
+        UIP_EXT_HDR_OPT_RPL_BUF->senderrank = UIP_HTONS(default_instance->current_dag->rank);
       }
     }
   }
@@ -333,7 +355,7 @@ rpl_invert_header(void)
     PRINTF("RPL: Updating RPL option (switching direction)\n");
     UIP_EXT_HDR_OPT_RPL_BUF->flags &= RPL_HDR_OPT_DOWN;
     UIP_EXT_HDR_OPT_RPL_BUF->flags ^= RPL_HDR_OPT_DOWN;
-    UIP_EXT_HDR_OPT_RPL_BUF->senderrank = rpl_get_instance(UIP_EXT_HDR_OPT_RPL_BUF->instance)->current_dag->rank;
+    UIP_EXT_HDR_OPT_RPL_BUF->senderrank = UIP_HTONS(rpl_get_instance(UIP_EXT_HDR_OPT_RPL_BUF->instance)->current_dag->rank);
     uip_ext_len = last_uip_ext_len;
     return RPL_HOP_BY_HOP_LEN;
   default:
@@ -346,13 +368,11 @@ rpl_invert_header(void)
 void
 rpl_insert_header(void)
 {
-  uint8_t uip_ext_opt_offset;
-  if(default_instance != NULL) {
-    uip_ext_opt_offset = 2;
-    if(UIP_EXT_HDR_OPT_BUF->type == UIP_EXT_HDR_OPT_RPL) {
-      rpl_update_header_empty();
-    }
+  if(default_instance != NULL && !uip_is_addr_mcast(&UIP_IP_BUF->destipaddr)) {
+    rpl_update_header_empty();
   }
 }
 /*---------------------------------------------------------------------------*/
 #endif /* UIP_CONF_IPV6 */
+
+/** @}*/

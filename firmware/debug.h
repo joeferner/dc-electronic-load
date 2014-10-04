@@ -2,7 +2,7 @@
 #define	DEBUG_H
 
 #include <stdint.h>
-#include "contiki/net/uip_arp.h"
+#include "contiki/net/ipv4/uip_arp.h"
 #include "stringUtils.h"
 #include <stm32f10x_dma.h>
 

@@ -50,8 +50,8 @@
  *         Adam Dunkels <adam@sics.se>
  */
 
-#ifndef __RINGBUF_H__
-#define __RINGBUF_H__
+#ifndef RINGBUF_H_
+#define RINGBUF_H_
 
 #include "contiki-conf.h"
 
@@ -67,7 +67,7 @@
 struct ringbuf {
   uint8_t *data;
   uint8_t mask;
-  
+
   /* XXX these must be 8-bit quantities to avoid race conditions. */
   uint8_t put_ptr, get_ptr;
 };
@@ -128,4 +128,7 @@ int     ringbuf_size(struct ringbuf *r);
  */
 int     ringbuf_elements(struct ringbuf *r);
 
-#endif /* __RINGBUF_H__ */
+#endif /* RINGBUF_H_ */
+
+/** @}*/
+/** @}*/

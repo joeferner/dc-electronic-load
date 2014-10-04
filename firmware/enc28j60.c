@@ -5,9 +5,9 @@
 #include "delay.h"
 #include "debug.h"
 #include "time.h"
-#include "contiki/net/uip_arp.h"
+#include "contiki/net/ipv4/uip_arp.h"
 #include "contiki/sys/timer.h"
-#include "contiki/net/tcpip.h"
+#include "contiki/net/ip/tcpip.h"
 
 #ifdef NETWORK_ENABLE
 

@@ -36,8 +36,8 @@
  *         Niclas Finne <nfi@sics.se>
  */
 
-#ifndef __SPI_H__
-#define __SPI_H__
+#ifndef SPI_H_
+#define SPI_H_
 
 /* Define macros to use for checking SPI transmission status depending
    on if it is possible to wait for TX buffer ready. This is possible
@@ -82,10 +82,11 @@ void spi_init(void);
   } while(0)
 
 /* Flush the SPI read register */
+#ifndef SPI_FLUSH
 #define SPI_FLUSH() \
   do {              \
     SPI_RXBUF;      \
   } while(0);
+#endif
 
-
-#endif /* __SPI_H__ */
+#endif /* SPI_H_ */

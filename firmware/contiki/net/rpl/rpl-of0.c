@@ -42,7 +42,7 @@
 #include "net/rpl/rpl-private.h"
 
 #define DEBUG DEBUG_NONE
-#include "net/uip-debug.h"
+#include "net/ip/uip-debug.h"
 
 static void reset(rpl_dag_t *);
 static rpl_parent_t *best_parent(rpl_parent_t *, rpl_parent_t *);
@@ -125,7 +125,7 @@ best_parent(rpl_parent_t *p1, rpl_parent_t *p2)
 {
   rpl_rank_t r1, r2;
   rpl_dag_t *dag;
-  
+
   PRINTF("RPL: Comparing parent ");
   PRINT6ADDR(rpl_get_parent_ipaddr(p1));
   PRINTF(" (confidence %d, rank %d) with parent ",
@@ -159,3 +159,5 @@ update_metric_container(rpl_instance_t *instance)
 {
   instance->mc.type = RPL_DAG_MC_NONE;
 }
+
+/** @}*/
