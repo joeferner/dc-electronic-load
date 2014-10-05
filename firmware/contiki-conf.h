@@ -45,8 +45,6 @@ typedef unsigned int uip_stats_t;
 
 #define CC_BYTE_ALIGNED __attribute__ ((packed, aligned(1)))
 
-#define RAND_MAX 0x7fff
-
 #define UIP_APPCALL     tcpip_uipcall
 #define UIP_UDP_APPCALL tcpip_uipcall
 

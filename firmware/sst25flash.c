@@ -85,7 +85,6 @@ void sst25flash_poll_until_write_complete() {
   sst25flash_spi_transfer(SST25FLASH_OP_READ_STATUS_REG);
   while (1) {
     r = sst25flash_spi_transfer(0x00);
-    debug_write_u8(r, 16);
     if ((r & SST25FLASH_STATUS_REG_BUSY) == 0x00) {
       break;
     }
