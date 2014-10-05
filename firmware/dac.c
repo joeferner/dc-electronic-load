@@ -50,9 +50,10 @@ void dac_spi_deassert() {
 }
 
 uint8_t dac_spi_transfer(uint8_t d) {
-  while (SPI_I2S_GetFlagStatus(DAC_SPI, SPI_I2S_FLAG_TXE) == RESET);
   SPI_I2S_SendData(DAC_SPI, d);
+  while (SPI_I2S_GetFlagStatus(DAC_SPI, SPI_I2S_FLAG_TXE) == RESET);
   while (SPI_I2S_GetFlagStatus(DAC_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+  while (SPI_I2S_GetFlagStatus(DAC_SPI, SPI_I2S_FLAG_BSY) == SET);
   return SPI_I2S_ReceiveData(DAC_SPI);
 }
 

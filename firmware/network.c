@@ -98,9 +98,10 @@ void enc28j60_spi_deassert() {
 }
 
 uint8_t enc28j60_spi_transfer(uint8_t d) {
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
   SPI_I2S_SendData(SPI1, d);
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
   return SPI_I2S_ReceiveData(SPI1);
 }
 

@@ -53,9 +53,10 @@ void adc_spi_deassert() {
 }
 
 uint8_t adc_spi_transfer(uint8_t d) {
-  while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_TXE) == RESET);
   SPI_I2S_SendData(ADC_SPI, d);
+  while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_TXE) == RESET);
   while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+  while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_BSY) == SET);
   return SPI_I2S_ReceiveData(ADC_SPI);
 }
 

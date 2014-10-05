@@ -10,29 +10,32 @@
 #include "time.h"
 #include "ring_buffer.h"
 #ifdef DISP6800_ENABLE
-  #include "disp6800.h"
-  #include "gfx.h"
+#include "disp6800.h"
+#include "gfx.h"
 #endif
 #ifdef ENCODER_ENABLE
-  #include "encoder.h"
+#include "encoder.h"
 #endif
 #ifdef FAN_ENABLE
-  #include "fan.h"
+#include "fan.h"
 #endif
 #ifdef ADC_ENABLE
-  #include "adc.h"
+#include "adc.h"
 #endif
 #ifdef DAC_ENABLE
-  #include "dac.h"
+#include "dac.h"
+#endif
+#ifdef FLASH_ENABLE
+#include "sst25flash.h"
 #endif
 #ifdef NETWORK_ENABLE
-  #include "network.h"
+#include "network.h"
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 PROCESS(debug_process, "Debug");
-  
+
 #ifdef DISP6800_ENABLE
 PROCESS(gfx_update_process, "GFX Update");
 #endif
@@ -88,6 +91,59 @@ int main(void) {
   return 0;
 }
 
+void test_read() {
+  uint32_t i;
+  uint8_t v, manufacturerId, deviceId;
+
+  delay_ms(1000);
+  
+  v = sst25flash_read_status_reg();
+  debug_write("st: ");
+  debug_write_u8(v, 16);
+  debug_write_line("");
+
+  sst25flash_write_status_reg(0x00);
+
+  v = sst25flash_read_status_reg();
+  debug_write("st: ");
+  debug_write_u8(v, 16);
+  debug_write_line("");
+
+  sst25flash_read_id(&manufacturerId, &deviceId);
+  debug_write("manufacturerId: ");
+  debug_write_u8(manufacturerId, 16);
+  debug_write_line("");
+  debug_write("deviceId: ");
+  debug_write_u8(deviceId, 16);
+  debug_write_line("");
+
+  sst25flash_erase_4k(0x000000);
+
+  sst25flash_read_begin(0x000000);
+  for (i = 0; i < 10; i++) {
+    v = sst25flash_read();
+    debug_write_u8(v, 16);
+    debug_write_ch(' ');
+  }
+  sst25flash_read_end();
+  debug_write_line("");
+
+  sst25flash_write_byte(0x000000, 0x01);
+  sst25flash_write_byte(0x000001, 0x02);
+  sst25flash_write_byte(0x000002, 0x03);
+  sst25flash_write_byte(0x000003, 0x04);
+  sst25flash_write_byte(0x000004, 0x05);
+
+  sst25flash_read_begin(0x000000);
+  for (i = 0; i < 10; i++) {
+    uint8_t v = sst25flash_read();
+    debug_write_u8(v, 16);
+    debug_write_ch(' ');
+  }
+  sst25flash_read_end();
+  debug_write_line("");
+}
+
 void setup() {
   // Configure the NVIC Preemption Priority Bits
   // 2 bit for pre-emption priority, 2 bits for subpriority
@@ -108,7 +164,7 @@ void setup() {
   process_start(&gfx_update_process, NULL);
   process_poll(&gfx_update_process);
 #endif
-  
+
   setCurrentMilliamps = 0;
   readCurrentMilliamps = 0;
   readMilliVolts = 0;
@@ -125,19 +181,23 @@ void setup() {
   encoder_setup();
 #endif
 
+#ifdef FLASH_ENABLE
+  sst25flash_setup();
+#endif
+
 #ifdef ADC_ENABLE
   adc_setup();
 #endif
-  
+
 #ifdef DAC_ENABLE
   dac_setup();
   dac_set(0);
 #endif
-  
+
 #ifdef NETWORK_ENABLE
   network_setup();
 #endif
-  
+
 #ifdef FAN_ENABLE
   fan_setup();
 #endif
@@ -146,6 +206,8 @@ void setup() {
 
   debug_led_set(0);
   debug_write_line("?END setup");
+
+  test_read();
 }
 
 void loop() {
@@ -274,7 +336,9 @@ void adc_irq(uint8_t channel, uint16_t value) {
   } else if (channel == ADC_CURRENT_CHANNEL) {
     readCurrentMilliamps = adcCurrentToMillamps(value);
   } else if (channel == ADC_TEMP1_CHANNEL) {
+#ifdef FAN_ENABLE
     fan_set(value / 41);
+#endif
   } else if (channel == ADC_TEMP2_CHANNEL) {
   }
 #ifdef DISP6800_ENABLE
@@ -319,8 +383,8 @@ PROCESS_THREAD(debug_process, ev, data) {
         debug_write_line("!clear");
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
-      } 
-      
+      }
+
 #ifdef DISP6800_ENABLE
       else if (strcmp(line, "!DISPON\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
@@ -328,7 +392,7 @@ PROCESS_THREAD(debug_process, ev, data) {
       } else if (strcmp(line, "!DISPOFF\n") == 0) {
         disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
         debug_write_line("+OK");
-      } 
+      }
 #endif
 
       else {

@@ -5,13 +5,14 @@
 #include <stm32f10x_rcc.h>
 
 #define SPI1_ENABLE
-// #define SPI2_ENABLE
+#define SPI2_ENABLE
 #define NETWORK_ENABLE
-// #define ADC_ENABLE
-// #define DAC_ENABLE
+#define ADC_ENABLE
+#define DAC_ENABLE
 // #define DISP6800_ENABLE
 // #define FAN_ENABLE
 // #define ENCODER_ENABLE
+#define FLASH_ENABLE
 
 // SPI1 pins: SCK (GPIOA - pin 5)
 // SPI1 pins: MISO (GPIOA - pin 6)
@@ -100,6 +101,16 @@
 #define DAC_CS_PORT             GPIOB
 #define DAC_CS_PIN              GPIO_Pin_2
 #define DAC_SPI                 SPI2
+#endif
+
+#ifdef FLASH_ENABLE
+#ifndef SPI2_ENABLE
+  #error "SPI2 is required for flash"
+#endif
+#define FLASH_CS_RCC              RCC_APB2Periph_GPIOB
+#define FLASH_CS_PORT             GPIOB
+#define FLASH_CS_PIN              GPIO_Pin_8
+#define FLASH_SPI                 SPI2
 #endif
 
 #ifdef FAN_ENABLE
