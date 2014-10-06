@@ -9,6 +9,9 @@
 #include "contiki-conf.h"
 #include "debug.h"
 #include "ring_buffer.h"
+#include "flashFiles.h"
+#include "sst25flash.h"
+#include "util.h"
 
 #ifdef NETWORK_ENABLE
 
@@ -186,17 +189,38 @@ void dhcpc_unconfigured(const struct dhcpc_state* s) {
 }
 
 PT_THREAD(httpd_script(struct httpd_state* s)) {
+  uint32_t i, readlen;
+
   PSOCK_BEGIN(&s->sout);
 
-  strcpy(s->outbuf, "OK");
-  s->outbuf_pos = strlen(s->outbuf);
-  SEND_STRING(&s->sout, s->outbuf, s->outbuf_pos);
+  struct flashFile* f = &flashFiles[s->file];
+  readlen = MIN(HTTPD_OUTBUF_SIZE, f->size - s->file_pos);
+  sst25flash_read_begin(f->offset + s->file_pos);
+  for (i = 0; i < readlen; i++) {
+    s->outbuf[i] = sst25flash_read();
+  }
+  sst25flash_read_end();
+  s->outbuf_pos = readlen;
+  PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
 
   PSOCK_END(&s->sout);
 }
 
 httpd_script_t httpd_get_script(struct httpd_state* s) {
   return httpd_script;
+}
+
+uint8_t httpd_get_filename_index(const char* filename) {
+  for (uint8_t i = 0; ; i++) {
+    struct flashFile* f = &flashFiles[i];
+    if (f->filename == NULL) {
+      break;
+    }
+    if (strcmp(filename, f->filename) == 0) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 #endif

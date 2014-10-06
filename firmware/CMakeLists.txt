@@ -79,6 +79,7 @@ SET(PROJECT_SOURCES
   fan.c
   httpd.c
   sst25flash.c
+  flashFiles.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})

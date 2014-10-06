@@ -43,25 +43,24 @@
 struct httpd_state;
 
 typedef char(*httpd_script_t)(struct httpd_state* s);
-typedef int (*httpd_output_headers_t)(struct httpd_state* s, char* buffer, int buf_size, int index);
 
 extern httpd_script_t httpd_get_script(struct httpd_state* s);
+extern uint8_t httpd_get_filename_index(const char* filename);
 
 struct httpd_state {
   struct timer timer;
   struct psock sin, sout;
   struct pt outputpt;
-  char inputbuf[HTTPD_INBUF_SIZE];
-  char filename[HTTPD_PATHLEN];
+  uint8_t inputbuf[HTTPD_INBUF_SIZE];
+  uint8_t file;
+  uint32_t file_pos;
   const char* content_type;
   uint16_t content_len;
-  char outbuf[HTTPD_OUTBUF_SIZE];
+  uint8_t outbuf[HTTPD_OUTBUF_SIZE];
   uint16_t outbuf_pos;
-  char state;
-  char request_type;
-  int response_index;
-
-  httpd_output_headers_t output_extra_headers;
+  uint8_t state;
+  uint8_t request_type;
+  
   httpd_script_t script;
 };
 

@@ -128,82 +128,27 @@ PT_THREAD(send_headers(struct httpd_state* s, const char* statushdr)) {
   PSOCK_BEGIN(&s->sout);
 
   SEND_STRING(&s->sout, statushdr, strlen(statushdr));
-  strcpy(s->outbuf, http_content_type);
-  strcat(s->outbuf, " ");
-  strcat(s->outbuf, s->content_type == NULL ? http_content_type_html : s->content_type);
-  strcat(s->outbuf, "\r\n\r\n");
-  s->outbuf_pos = strlen(s->outbuf);
+  strcpy((char*)s->outbuf, http_content_type);
+  strcat((char*)s->outbuf, " ");
+  strcat((char*)s->outbuf, s->content_type == NULL ? http_content_type_html : s->content_type);
+  strcat((char*)s->outbuf, "\r\n\r\n");
+  s->outbuf_pos = strlen((char*)s->outbuf);
   SEND_STRING(&s->sout, s->outbuf, s->outbuf_pos);
   s->outbuf_pos = 0;
 
   PSOCK_END(&s->sout);
 }
 
-PT_THREAD(httpd_handle_request(struct httpd_state* s)) {
-  PT_BEGIN(&s->outputpt);
-
-  /* send the request line */
-  PT_WAIT_THREAD(&s->outputpt, send_string(s, s->filename, strlen(s->filename)));
-
-  /* send host  */
-  if (s->outbuf_pos > 0) {
-    PT_WAIT_THREAD(&s->outputpt, send_string(s, s->outbuf, s->outbuf_pos));
-  }
-
-  if (s->content_type != NULL) {
-    strcpy(s->outbuf, http_content_type);
-    strcat(s->outbuf, " ");
-    strcat(s->outbuf, s->content_type);
-    strcat(s->outbuf, "\r\n");
-    s->outbuf_pos = strlen(s->outbuf);
-    PT_WAIT_THREAD(&s->outputpt, send_string(s, s->outbuf, s->outbuf_pos));
-  }
-
-  /* send the extra header(s) */
-  if (s->output_extra_headers != NULL) {
-    s->response_index = 0;
-    while ((s->outbuf_pos = s->output_extra_headers(s, s->outbuf, sizeof(s->outbuf), s->response_index)) > 0) {
-      PT_WAIT_THREAD(&s->outputpt, send_string(s, s->outbuf, s->outbuf_pos));
-      s->response_index++;
-    }
-  }
-
-  /* send content length */
-  if (s->content_len > 0) {
-    strcpy(s->outbuf, http_content_len);
-    strcat(s->outbuf, " ");
-    itoa(s->content_len, s->outbuf + strlen(s->outbuf), 10);
-    strcat(s->outbuf, "\r\n");
-    s->outbuf_pos = strlen(s->outbuf);
-  }
-
-  /* send header separator */
-  if (s->outbuf_pos + 2 < sizeof(s->outbuf)) {
-    s->outbuf[s->outbuf_pos++] = '\r';
-    s->outbuf[s->outbuf_pos++] = '\n';
-  }
-  PT_WAIT_THREAD(&s->outputpt, send_string(s, s->outbuf, s->outbuf_pos));
-  s->outbuf_pos = 0;
-
-  if (s->script != NULL) {
-    PT_WAIT_THREAD(&s->outputpt, s->script(s));
-  }
-  s->state = HTTPD_STATE_REQUEST_INPUT;
-
-  PSOCK_CLOSE(&s->sout);
-  PT_END(&s->outputpt);
-}
-
 PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   PSOCK_BEGIN(&s->sin);
   PSOCK_READTO(&s->sin, ' ');
 
-  if (strncmp(s->inputbuf, "GET ", 4) == 0) {
+  if (strncmp((char*)s->inputbuf, "GET ", 4) == 0) {
     s->request_type = HTTPD_GET;
-  } else if (strncmp(s->inputbuf, "POST ", 5) == 0) {
+  } else if (strncmp((char*)s->inputbuf, "POST ", 5) == 0) {
     s->request_type = HTTPD_POST;
     s->content_len = 0;
-  } else if (strncmp(s->inputbuf, "HTTP ", 5) == 0) {
+  } else if (strncmp((char*)s->inputbuf, "HTTP ", 5) == 0) {
     s->request_type = HTTPD_RESPONSE;
   } else {
     PSOCK_CLOSE_EXIT(&s->sin);
@@ -215,16 +160,17 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   }
 
   s->inputbuf[PSOCK_DATALEN(&s->sin) - 1] = 0;
-  strcpy(s->filename, s->inputbuf);
+  s->file = httpd_get_filename_index((const char*)s->inputbuf);
+  s->file_pos = 0;
 
   s->state = HTTPD_STATE_OUTPUT;
 
   while (1) {
     PSOCK_READTO(&s->sin, '\n');
 
-    if (s->request_type == HTTPD_POST && strncmp(s->inputbuf, http_content_len, 15) == 0) {
+    if (s->request_type == HTTPD_POST && strncmp((char*)s->inputbuf, http_content_len, 15) == 0) {
       s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
-      s->content_len = atoi(&s->inputbuf[16]);
+      s->content_len = atoi((char*)&s->inputbuf[16]);
     }
 
     /* should have a header callback here check_header(s) */
@@ -264,9 +210,6 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
 }
 
 void httpd_handle_connection(struct httpd_state* s) {
-  if (s->state == HTTPD_STATE_REQUEST_OUTPUT) {
-    httpd_handle_request(s);
-  }
   httpd_handle_input(s);
   if (s->state == HTTPD_STATE_OUTPUT) {
     httpd_handle_output(s);
