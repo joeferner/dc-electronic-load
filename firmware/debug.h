@@ -5,12 +5,11 @@
 #include "contiki/net/ipv4/uip_arp.h"
 #include "stringUtils.h"
 #include <stm32f10x_dma.h>
+#include "platform_config.h"
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-#define DEBUG_USART_RX_BUFFER_SIZE 100
 
 extern uint8_t g_debugUsartRxBuffer[DEBUG_USART_RX_BUFFER_SIZE];
 

@@ -6,7 +6,7 @@
 
 #ifdef FLASH_ENABLE
 
-#define FLASH_BLOCK_SIZE 4096
+#define FLASH_BLOCK_SIZE 512
 
 void sst25flash_setup();
 void sst25flash_erase_4k(uint32_t addr);

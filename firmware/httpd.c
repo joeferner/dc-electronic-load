@@ -2,7 +2,7 @@
 #include "network.h"
 #include "debug.h"
 #include "httpd.h"
-#include <string.h>
+#include <stdlib.h>
 
 static const char http_10[] = " HTTP/1.0\r\n";
 static const char http_content_type[] = "Content-Type:";

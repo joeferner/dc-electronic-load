@@ -3,6 +3,7 @@
 #define _HTTPD_H_
 
 #include "net/ip/psock.h"
+#include "platform_config.h"
 
 #ifndef HTTPD_CONNS
 #  define HTTPD_CONNS UIP_CONNS
@@ -17,13 +18,13 @@
 #ifndef WEBSERVER_CONF_INBUF_SIZE
 #  define HTTPD_INBUF_SIZE (HTTPD_PATHLEN + 90)
 #else
-#  define  HTTPD_INBUF_SIZE WEBSERVER_CONF_INBUF_SIZE
+#  define HTTPD_INBUF_SIZE WEBSERVER_CONF_INBUF_SIZE
 #endif
 
 #ifndef WEBSERVER_CONF_OUTBUF_SIZE
 #  define HTTPD_OUTBUF_SIZE (UIP_TCP_MSS + 20)
 #else
-#  define  HTTPD_OUTBUF_SIZE WEBSERVER_CONF_OUTBUF_SIZE
+#  define HTTPD_OUTBUF_SIZE WEBSERVER_CONF_OUTBUF_SIZE
 #endif
 
 #define SEND_STRING(s, str, len) PSOCK_SEND((s), (uint8_t *)(str), (len))

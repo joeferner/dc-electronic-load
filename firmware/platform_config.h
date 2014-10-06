@@ -4,6 +4,11 @@
 #include <misc.h>
 #include <stm32f10x_rcc.h>
 
+#define HTTPD_CONNS                8
+#define WEBSERVER_CONF_CFS_PATHLEN 20
+#define WEBSERVER_CONF_OUTBUF_SIZE 100
+#define DEBUG_USART_RX_BUFFER_SIZE 550
+
 #define SPI1_ENABLE
 #define SPI2_ENABLE
 #define NETWORK_ENABLE

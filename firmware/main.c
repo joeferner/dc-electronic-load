@@ -65,9 +65,6 @@ uint16_t readCurrentMilliamps;
 uint8_t readCurrentMilliampsDisplay;
 uint16_t setCurrentMilliamps;
 
-uint32_t debugWriteFlashAddress = 0;
-uint32_t debugWriteFlashCount = 0;
-
 PROCINIT(
   &etimer_process
   , &debug_process
@@ -322,69 +319,68 @@ void encoder_irq(ENCODER_DIR dir) {
 PROCESS_THREAD(debug_process, ev, data) {
   char line[MAX_LINE_LENGTH];
   uint8_t b;
+  uint32_t flashAddress = 0;
+  uint32_t flashCount = 0;
 
   PROCESS_BEGIN();
 
   while (1) {
     PROCESS_YIELD();
 
-    if (debugWriteFlashCount > 0) {
-      while (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) > 0) {
-        sst25flash_write_byte(debugWriteFlashAddress, b);
-        debugWriteFlashAddress++;
-        debugWriteFlashCount--;
+    while (dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
+      if (strcmp(line, "!CONNECT\n") == 0) {
+        debug_write_line("+OK");
+        debug_write_line("!clear");
+        debug_write_line("!set name,dc-electronic-load");
+        debug_write_line("!set description,'DC Electonic Load'");
       }
-    } else {
-      while (dma_ring_buffer_readline(&g_debugUsartDmaInputRingBuffer, line, MAX_LINE_LENGTH)) {
-        if (strcmp(line, "!CONNECT\n") == 0) {
-          debug_write_line("+OK");
-          debug_write_line("!clear");
-          debug_write_line("!set name,dc-electronic-load");
-          debug_write_line("!set description,'DC Electonic Load'");
-        }
 
 #ifdef DISP6800_ENABLE
-        else if (strcmp(line, "!DISPON\n") == 0) {
-          disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
-          debug_write_line("+OK");
-        } else if (strcmp(line, "!DISPOFF\n") == 0) {
-          disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
-          debug_write_line("+OK");
-        }
+      else if (strcmp(line, "!DISPON\n") == 0) {
+        disp6800_set_display_onoff(DISP6800_DISPLAY_ON);
+        debug_write_line("+OK");
+      } else if (strcmp(line, "!DISPOFF\n") == 0) {
+        disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
+        debug_write_line("+OK");
+      }
 #endif
 
 #ifdef FLASH_ENABLE
-        else if (strncmp(line, "!FLASHWRITE ", 12) == 0) {
-          debugWriteFlashAddress = atoi(line + 12);
-          debugWriteFlashCount = FLASH_BLOCK_SIZE;
-          sst25flash_erase_4k(debugWriteFlashAddress);
-          debug_write("+OK BEGIN FLASHWRITE ");
-          debug_write_u32(debugWriteFlashAddress, 10);
-          debug_write_ch(',');
-          debug_write_u32(debugWriteFlashCount, 10);
-          debug_write_line("");
-        } else if (strncmp(line, "!FLASHREAD ", 11) == 0) {
-          debugWriteFlashAddress = atoi(line + 11);
-          debugWriteFlashCount = FLASH_BLOCK_SIZE;
-          debug_write("+OK BEGIN FLASHREAD ");
-          debug_write_u32(debugWriteFlashAddress, 10);
-          debug_write_ch(',');
-          debug_write_u32(debugWriteFlashCount, 10);
-          debug_write_line("");
-          sst25flash_read_begin(debugWriteFlashAddress);
-          while (debugWriteFlashCount > 0) {
-            b = sst25flash_read();
-            debug_write_bytes(&b, 1);
-            debugWriteFlashCount--;
+      else if (strcmp(line, "!FLASHCLEAR\n") == 0) {
+        sst25flash_erase_chip();
+        debug_write_line("+OK");
+      } else if (strncmp(line, "!FLASHWRITE ", 12) == 0) {
+        flashAddress = atoi(line + 12);
+        flashCount = FLASH_BLOCK_SIZE;
+        sst25flash_erase_4k(flashAddress);
+
+        while (flashCount > 0) {
+          if (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) <= 0) {
+            continue;
           }
-          sst25flash_read_end();
+          sst25flash_write_byte(flashAddress, b);
+          flashAddress++;
+          flashCount--;
         }
+
+        debug_write_line("+OK");
+      } else if (strncmp(line, "!FLASHREAD ", 11) == 0) {
+        flashAddress = atoi(line + 11);
+        flashCount = FLASH_BLOCK_SIZE;
+        debug_write_line("+OK");
+        sst25flash_read_begin(flashAddress);
+        while (flashCount > 0) {
+          b = sst25flash_read();
+          debug_write_bytes(&b, 1);
+          flashCount--;
+        }
+        sst25flash_read_end();
+      }
 #endif
 
-        else {
-          debug_write("?Unknown command: ");
-          debug_write_line(line);
-        }
+      else {
+        debug_write("?Unknown command: ");
+        debug_write_line(line);
       }
     }
   }
