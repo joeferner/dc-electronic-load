@@ -41,17 +41,19 @@ readUntilOK()
 
 offset = 0
 while offset < fileSize:
-  tx = '!FLASHWRITE ' + str(offset) + '\n'
+  tx = '!FLASHWRITE ' + str(offset) + '/' + str(fileSize) + '\n'
   print 'tx: ' + tx.strip()
   ser.write(tx)
   print 'transmitting bytes'
   fileData = f.read(BLOCK_SIZE)
-  fileData += b'\xFF' * (BLOCK_SIZE - len(fileData))
   ser.write(fileData)
-  print str(BLOCK_SIZE) + ' bytes written. waiting for ack'
+  if len(fileData) < BLOCK_SIZE:
+    ser.write(b'\xFF' * (BLOCK_SIZE - len(fileData)))
+  print str(len(fileData)) + ' bytes written. waiting for ack'
   readUntilOK()
   print 'ack rx'
   offset += BLOCK_SIZE
+  sleep(0.01)
 
 offset = 0
 while offset < fileSize:

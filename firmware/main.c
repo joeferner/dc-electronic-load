@@ -352,7 +352,6 @@ PROCESS_THREAD(debug_process, ev, data) {
       } else if (strncmp(line, "!FLASHWRITE ", 12) == 0) {
         flashAddress = atoi(line + 12);
         flashCount = FLASH_BLOCK_SIZE;
-        sst25flash_erase_4k(flashAddress);
 
         while (flashCount > 0) {
           if (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) <= 0) {
@@ -363,7 +362,9 @@ PROCESS_THREAD(debug_process, ev, data) {
           flashCount--;
         }
 
-        debug_write_line("+OK");
+        debug_write("+OK ");
+        debug_write_u32(flashAddress, 10);
+        debug_write_line("");
       } else if (strncmp(line, "!FLASHREAD ", 11) == 0) {
         flashAddress = atoi(line + 11);
         flashCount = FLASH_BLOCK_SIZE;

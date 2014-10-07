@@ -40,6 +40,8 @@ void sst25flash_setup() {
   gpioInitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(FLASH_CS_PORT, &gpioInitStructure);
   sst25flash_spi_deassert();
+
+  sst25flash_write_status_reg(0x00);
 }
 
 void sst25flash_spi_assert() {

@@ -160,8 +160,16 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   }
 
   s->inputbuf[PSOCK_DATALEN(&s->sin) - 1] = 0;
+  if (strcmp((const char*)s->inputbuf, "/") == 0) {
+    strcpy((char*)s->inputbuf, "/index.html");
+  }
   s->file = httpd_get_filename_index((const char*)s->inputbuf);
   s->file_pos = 0;
+  debug_write("?httpd: ");
+  debug_write((const char*)s->inputbuf);
+  debug_write(" ");
+  debug_write_u8(s->file, 10);
+  debug_write_line("");
 
   s->state = HTTPD_STATE_OUTPUT;
 
@@ -189,8 +197,10 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
   PT_BEGIN(&s->outputpt);
 
   s->content_type = http_content_type_html;
-  s->script = httpd_get_script(s);
-  if (s->script == NULL) {
+  if (s->file != -1) {
+    s->script = httpd_get_script(s);
+  }
+  if (s->script == NULL || s->file == -1) {
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_404));
     PT_WAIT_THREAD(&s->outputpt, send_string(s, html_not_found, strlen(html_not_found)));
     uip_close();
