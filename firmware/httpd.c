@@ -163,12 +163,12 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   if (strcmp((const char*)s->inputbuf, "/") == 0) {
     strcpy((char*)s->inputbuf, "/index.html");
   }
-  s->file = httpd_get_filename_index((const char*)s->inputbuf);
+  s->file = httpd_get_file((const char*)s->inputbuf);
   s->file_pos = 0;
   debug_write("?httpd: ");
   debug_write((const char*)s->inputbuf);
   debug_write(" ");
-  debug_write_u8(s->file, 10);
+  debug_write_u32((uint32_t)s->file, 10);
   debug_write_line("");
 
   s->state = HTTPD_STATE_OUTPUT;
@@ -197,10 +197,10 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
   PT_BEGIN(&s->outputpt);
 
   s->content_type = http_content_type_html;
-  if (s->file != -1) {
+  if (s->file != NULL) {
     s->script = httpd_get_script(s);
   }
-  if (s->script == NULL || s->file == -1) {
+  if (s->script == NULL || s->file == NULL) {
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_404));
     PT_WAIT_THREAD(&s->outputpt, send_string(s, html_not_found, strlen(html_not_found)));
     uip_close();
@@ -249,3 +249,4 @@ struct httpd_state* httpd_state_alloc() {
 void httpd_state_free(struct httpd_state* s) {
   s->state = HTTPD_STATE_UNUSED;
 }
+
