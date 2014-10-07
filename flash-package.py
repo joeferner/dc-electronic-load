@@ -11,27 +11,36 @@ files = []
 
 fout = open(outputFilename, 'wb')
 
-offset = 0
-for f in os.listdir(inputPath):
-  print 'packaging: ' + f
-  
-  fin = open(os.path.join(inputPath, f), "rb")
+def readdir(path):
+  offset = 0
+  for f in os.listdir(path):
+    filename = os.path.join(path, f)
+    relFilename = os.path.relpath(filename, inputPath)
+    if os.path.isfile(filename):
+      print 'packaging: ' + relFilename
+      
+      fin = open(filename, "rb")
 
-  fin.seek(0, 2)
-  fileSize = fin.tell()
-  print '  file size ' + str(fileSize)
-  fin.seek(0)
+      fin.seek(0, 2)
+      fileSize = fin.tell()
+      print '  file size ' + str(fileSize)
+      fin.seek(0)
 
-  while True:
-    data = fin.read(512)
-    if len(data) == 0:
-      break
-    fout.write(data)
+      while True:
+        data = fin.read(512)
+        if len(data) == 0:
+          break
+        fout.write(data)
 
-  files.append({ 'filename': f, 'size': fileSize, 'offset': offset })
+      files.append({ 'filename': relFilename, 'size': fileSize, 'offset': offset })
 
-  fin.close()
-  offset += fileSize
+      fin.close()
+      offset += fileSize
+    
+    elif os.path.isdir(filename):
+      readdir(filename)
+
+readdir(inputPath);
 
 fout.close()
 
