@@ -80,6 +80,7 @@ SET(PROJECT_SOURCES
   httpd.c
   sst25flash.c
   flashFiles.c
+  spi.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})
