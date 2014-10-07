@@ -45,7 +45,7 @@ PROCESS_THREAD(httpd_process, ev, data) {
     } else if (etimer_expired(&et)) {
       debug_write("HTTPD States: ");
       for (i = 0; i < HTTPD_CONNS; i++) {
-        debug_write_u8(conns[i].state, 10);
+        debug_write_u8(conns[i].state, 16);
         if (conns[i].state != HTTPD_STATE_UNUSED && timer_expired(&conns[i].timer)) {
           conns[i].state = HTTPD_STATE_UNUSED;
           debug_write("*** RELEASED HTTPD Session");

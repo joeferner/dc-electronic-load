@@ -188,5 +188,5 @@ void debug_write_u8_array(uint8_t* p, int len) {
 }
 
 void uip_log(char* msg) {
-  debug_write_line(msg);
+  //debug_write_line(msg);
 }

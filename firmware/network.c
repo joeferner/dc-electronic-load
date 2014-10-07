@@ -194,14 +194,17 @@ PT_THREAD(httpd_script(struct httpd_state* s)) {
   PSOCK_BEGIN(&s->sout);
 
   struct flashFile* f = &flashFiles[s->file];
-  readlen = MIN(HTTPD_OUTBUF_SIZE, f->size - s->file_pos);
-  sst25flash_read_begin(f->offset + s->file_pos);
-  for (i = 0; i < readlen; i++) {
-    s->outbuf[i] = sst25flash_read();
+  while (s->file_pos < f->size) {
+    readlen = MIN(HTTPD_OUTBUF_SIZE, f->size - s->file_pos);
+    sst25flash_read_begin(f->offset + s->file_pos);
+    for (i = 0; i < readlen; i++) {
+      s->outbuf[i] = sst25flash_read();
+    }
+    sst25flash_read_end();
+    s->file_pos += readlen;
+    s->outbuf_pos = readlen;
+    PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
   }
-  sst25flash_read_end();
-  s->outbuf_pos = readlen;
-  PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
 
   PSOCK_END(&s->sout);
 }

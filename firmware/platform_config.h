@@ -35,7 +35,7 @@
 #define DEBUG_LED_PIN           GPIO_Pin_0
 
 #define DEBUG_USART             USART1
-#define DEBUG_USART_BAUD        9600
+#define DEBUG_USART_BAUD        19200
 #define DEBUG_USART_RCC         RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_USART1
 #define DEBUG_USART_TX          GPIOA
 #define DEBUG_USART_TX_PIN      GPIO_Pin_9

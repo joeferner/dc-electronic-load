@@ -5,6 +5,7 @@ import sys
 from time import sleep
 
 BLOCK_SIZE = 512
+BAUD_RATE = 19200
 
 if len(sys.argv) != 3:
   print 'filename serialPort required'
@@ -24,7 +25,7 @@ print 'file size ' + str(fileSize)
 f.seek(0)
 
 print 'opening port ' + port
-ser = serial.Serial(port, 9600, timeout = 1)
+ser = serial.Serial(port, BAUD_RATE, timeout = 1)
 
 def readUntilOK():
   while True:
