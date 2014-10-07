@@ -1,4 +1,0 @@
-
-$(function() {
-  $('#t').html('done');
-});

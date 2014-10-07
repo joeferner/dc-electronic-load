@@ -1,0 +1,7 @@
+{
+  "name": "test-server",
+  "dependencies": {
+    "express": "^4.9.5",
+    "ws": "^0.4.32"
+  }
+}
