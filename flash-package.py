@@ -2,12 +2,16 @@
 
 import sys
 import os
+import mimetypes
+
+mimetypes.init()
 
 inputPath = './flash-files'
 outputFilename = './out.img'
 flashFilesCFilename = './firmware/flashFiles.c'
 
 files = []
+mimeTypes = {}
 
 fout = open(outputFilename, 'wb')
 
@@ -32,7 +36,15 @@ def readdir(path):
           break
         fout.write(data)
 
-      files.append({ 'filename': relFilename, 'size': fileSize, 'offset': offset })
+      mimeType = mimetypes.guess_type(relFilename)[0]
+      mimeTypes[mimeType] = True
+
+      files.append({ 
+        'filename': relFilename,
+        'contentType': mimeType,
+        'size': fileSize, 
+        'offset': offset
+      })
 
       fin.close()
       offset += fileSize
@@ -44,17 +56,27 @@ readdir(inputPath);
 
 fout.close()
 
+def mimeTypeToVariableName(mimeType):
+  return 'mimetype_' + mimeType.replace('/', '_')
+
 fout = open(flashFilesCFilename, 'w')
 
 fout.write("""
 #include <stdlib.h>
 #include "flashFiles.h"
 
+""")
+
+for mimeType in mimeTypes:
+  fout.write('static const char ' + mimeTypeToVariableName(mimeType) + '[] = "' + mimeType + '";\n')
+
+fout.write("""
+  
 struct flashFile flashFiles[] = {
 """)
 
 for f in files:
-  fout.write('  { .filename = "/' + f['filename'] + '", .offset = ' + str(f['offset']) + ', .size = ' + str(f['size']) + ' },\n')
+  fout.write('  { .filename = "/' + f['filename'] + '", .content_type = ' + mimeTypeToVariableName(f['contentType']) + ', .offset = ' + str(f['offset']) + ', .size = ' + str(f['size']) + ', .script = serve_flash_file },\n')
   
 fout.write('  { .filename = NULL, .offset = 0, .size = 0 }\n')
 fout.write('};\n')

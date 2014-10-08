@@ -4,7 +4,6 @@
 
 #include "net/ip/psock.h"
 #include "platform_config.h"
-#include "flashFiles.h"
 
 #ifndef HTTPD_CONNS
 #  define HTTPD_CONNS UIP_CONNS
@@ -42,10 +41,10 @@
 #define HTTPD_STATE_REQUEST_INPUT  4
 
 struct httpd_state;
+struct flashFile;
 
 typedef char(*httpd_script_t)(struct httpd_state* s);
 
-extern httpd_script_t httpd_get_script(struct httpd_state* s);
 extern struct flashFile* httpd_get_file(const char* filename);
 
 struct httpd_state {
@@ -55,14 +54,11 @@ struct httpd_state {
   uint8_t inputbuf[HTTPD_INBUF_SIZE];
   struct flashFile* file;
   uint32_t file_pos;
-  const char* content_type;
-  uint16_t content_len;
+  uint32_t content_len;
   uint8_t outbuf[HTTPD_OUTBUF_SIZE];
   uint16_t outbuf_pos;
   uint8_t state;
   uint8_t request_type;
-  
-  httpd_script_t script;
 };
 
 PROCESS_NAME(httpd_process);

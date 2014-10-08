@@ -2,6 +2,7 @@
 #include "network.h"
 #include "debug.h"
 #include "httpd.h"
+#include "flashFiles.h"
 #include <stdlib.h>
 
 static const char http_10[] = " HTTP/1.0\r\n";
@@ -130,7 +131,7 @@ PT_THREAD(send_headers(struct httpd_state* s, const char* statushdr)) {
   SEND_STRING(&s->sout, statushdr, strlen(statushdr));
   strcpy((char*)s->outbuf, http_content_type);
   strcat((char*)s->outbuf, " ");
-  strcat((char*)s->outbuf, s->content_type == NULL ? http_content_type_html : s->content_type);
+  strcat((char*)s->outbuf, (s->file == NULL || s->file->content_type == NULL) ? http_content_type_html : s->file->content_type);
   strcat((char*)s->outbuf, "\r\n\r\n");
   s->outbuf_pos = strlen((char*)s->outbuf);
   SEND_STRING(&s->sout, s->outbuf, s->outbuf_pos);
@@ -196,11 +197,7 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
 PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
   PT_BEGIN(&s->outputpt);
 
-  s->content_type = http_content_type_html;
-  if (s->file != NULL) {
-    s->script = httpd_get_script(s);
-  }
-  if (s->script == NULL || s->file == NULL) {
+  if (s->file == NULL) {
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_404));
     PT_WAIT_THREAD(&s->outputpt, send_string(s, html_not_found, strlen(html_not_found)));
     uip_close();
@@ -212,9 +209,8 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
       PT_WAIT_UNTIL(&s->outputpt, s->state == HTTPD_STATE_OUTPUT);
     }
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
-    PT_WAIT_THREAD(&s->outputpt, s->script(s));
+    PT_WAIT_THREAD(&s->outputpt, s->file->script(s));
   }
-  s->script = NULL;
   PSOCK_CLOSE(&s->sout);
   PT_END(&s->outputpt);
 }

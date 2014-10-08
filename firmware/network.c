@@ -110,7 +110,6 @@ uint8_t enc28j60_spi_transfer(uint8_t d) {
 
 PROCESS_THREAD(telnet_process, ev, data) {
   int i;
-  uint16_t recvLen;
   uint8_t* p;
 
   PROCESS_BEGIN();
@@ -188,7 +187,7 @@ void dhcpc_unconfigured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_unconfigured");
 }
 
-PT_THREAD(httpd_script(struct httpd_state* s)) {
+PT_THREAD(serve_flash_file(struct httpd_state* s)) {
   uint32_t i, readlen;
 
   PSOCK_BEGIN(&s->sout);
@@ -206,10 +205,6 @@ PT_THREAD(httpd_script(struct httpd_state* s)) {
   }
 
   PSOCK_END(&s->sout);
-}
-
-httpd_script_t httpd_get_script(struct httpd_state* s) {
-  return httpd_script;
 }
 
 struct flashFile* httpd_get_file(const char* filename) {

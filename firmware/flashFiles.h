@@ -3,11 +3,16 @@
 #define _FLASH_FILES_H_
 
 #include <stdint.h>
+#include "httpd.h"
+
+extern char serve_flash_file(struct httpd_state* s);
 
 struct flashFile {
   const char* filename;
+  const char* content_type;
   uint32_t offset;
   uint32_t size;
+  httpd_script_t script;
 };
 
 extern struct flashFile flashFiles[];
