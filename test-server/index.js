@@ -20,7 +20,7 @@ wss.on('connection', function(ws) {
     var msg = {
       time: new Date().getTime(),
       voltage: 5 + Math.random(),
-      amperage: 4 +  + Math.random()
+      amperage: Math.random()
     };
     ws.send(JSON.stringify(msg), function() { /* ignore errors */ });
   }, 1000);
