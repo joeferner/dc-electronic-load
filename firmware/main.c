@@ -28,7 +28,10 @@
 #include "dac.h"
 #endif
 #ifdef FLASH_ENABLE
-#include "sst25flash.h"
+#include "flashsst25.h"
+#endif
+#ifdef MAC_ENABLE
+#include "mac25aa02e48.h"
 #endif
 #ifdef NETWORK_ENABLE
 #include "network.h"
@@ -50,10 +53,6 @@ uint16_t adcCurrentToMillamps(uint16_t value);
 uint16_t setMilliampsToDac(uint16_t value);
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
-
-#ifdef NETWORK_ENABLE
-uint8_t MAC_ADDRESS[6] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
-#endif
 
 #define DISPLAY_MILLI     1
 #define DISPLAY_1DECIMALS 2
@@ -102,7 +101,6 @@ void setup() {
   dma_ring_buffer_init(&g_debugUsartDmaInputRingBuffer, DEBUG_USART_RX_DMA_CH, g_debugUsartRxBuffer, DEBUG_USART_RX_BUFFER_SIZE);
 
   debug_setup();
-  debug_led_set(1);
   debug_write_line("?BEGIN setup");
 
   process_init();
@@ -130,7 +128,12 @@ void setup() {
 #endif
 
 #ifdef FLASH_ENABLE
-  sst25flash_setup();
+  flashsst25_setup();
+#endif
+
+#ifdef MAC_ENABLE
+  mac25aa02e48_setup();
+  mac25aa02e48_read_eui48();
 #endif
 
 #ifdef ADC_ENABLE
@@ -143,7 +146,7 @@ void setup() {
 #endif
 
 #ifdef NETWORK_ENABLE
-  network_setup();
+  network_setup(EUI48);
 #endif
 
 #ifdef FAN_ENABLE
@@ -151,8 +154,7 @@ void setup() {
 #endif
 
   time_setup();
-
-  debug_led_set(0);
+  
   debug_write_line("?END setup");
 }
 
@@ -347,7 +349,7 @@ PROCESS_THREAD(debug_process, ev, data) {
 
 #ifdef FLASH_ENABLE
       else if (strcmp(line, "!FLASHCLEAR\n") == 0) {
-        sst25flash_erase_chip();
+        flashsst25_erase_chip();
         debug_write_line("+OK");
       } else if (strncmp(line, "!FLASHWRITE ", 12) == 0) {
         flashAddress = atoi(line + 12);
@@ -357,7 +359,7 @@ PROCESS_THREAD(debug_process, ev, data) {
           if (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) <= 0) {
             continue;
           }
-          sst25flash_write_byte(flashAddress, b);
+          flashsst25_write_byte(flashAddress, b);
           flashAddress++;
           flashCount--;
         }
@@ -369,13 +371,13 @@ PROCESS_THREAD(debug_process, ev, data) {
         flashAddress = atoi(line + 11);
         flashCount = FLASH_BLOCK_SIZE;
         debug_write_line("+OK");
-        sst25flash_read_begin(flashAddress);
+        flashsst25_read_begin(flashAddress);
         while (flashCount > 0) {
-          b = sst25flash_read();
+          b = flashsst25_read();
           debug_write_bytes(&b, 1);
           flashCount--;
         }
-        sst25flash_read_end();
+        flashsst25_read_end();
       }
 #endif
 

@@ -10,12 +10,7 @@
 PROCESS_NAME(dhcp_process);
 PROCESS_NAME(telnet_process);
 
-extern uint8_t IP_ADDRESS[4];
-extern uint8_t GATEWAY_ADDRESS[4];
-extern uint8_t NETMASK_ADDRESS[4];
-extern uint8_t MAC_ADDRESS[6];
-
-void network_setup();
+void network_setup(uint8_t* macAddress);
 void network_tick();
 
 #endif // _NETWORK_H_

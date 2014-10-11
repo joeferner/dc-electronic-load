@@ -21,11 +21,13 @@ void debug_setup() {
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
+#ifdef DEBUG_LED_ENABLE
   RCC_APB2PeriphClockCmd(DEBUG_LED_RCC, ENABLE);
   gpioInitStructure.GPIO_Pin = DEBUG_LED_PIN;
   gpioInitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   gpioInitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(DEBUG_LED_PORT, &gpioInitStructure);
+#endif
 
   RCC_APB2PeriphClockCmd(DEBUG_USART_RCC, ENABLE);
 
@@ -74,6 +76,7 @@ void debug_setup() {
   USART_Cmd(DEBUG_USART, ENABLE);
 }
 
+#ifdef DEBUG_LED_ENABLE
 void debug_led_set(int v) {
   if (v) {
     GPIO_SetBits(DEBUG_LED_PORT, DEBUG_LED_PIN);
@@ -81,6 +84,7 @@ void debug_led_set(int v) {
     GPIO_ResetBits(DEBUG_LED_PORT, DEBUG_LED_PIN);
   }
 }
+#endif
 
 void debug_write_uip_eth_addr(const struct uip_eth_addr* addr) {
   int i;

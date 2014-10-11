@@ -78,8 +78,9 @@ SET(PROJECT_SOURCES
   dac.c
   fan.c
   httpd.c
-  sst25flash.c
+  flashsst25.c
   flashFiles.c
+  mac25aa02e48.c
   spi.c
 )
 

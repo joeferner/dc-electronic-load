@@ -9,30 +9,27 @@
 #define WEBSERVER_CONF_OUTBUF_SIZE 100
 #define DEBUG_USART_RX_BUFFER_SIZE 600
 
-#define SPI1_ENABLE
+// #define SPI1_ENABLE
 #define SPI2_ENABLE
-#define NETWORK_ENABLE
-#define ADC_ENABLE
-#define DAC_ENABLE
+// #define NETWORK_ENABLE
+// #define ADC_ENABLE
+// #define DAC_ENABLE
 // #define DISP6800_ENABLE
 // #define FAN_ENABLE
 // #define ENCODER_ENABLE
 #define FLASH_ENABLE
+#define MAC_ENABLE
 
-// SPI1 pins: SCK (GPIOA - pin 5)
-// SPI1 pins: MISO (GPIOA - pin 6)
-// SPI1 pins: MOSI (GPIOA - pin 7)
+// SPI1 pins: SCK (GPIOA5)
+// SPI1 pins: MISO (GPIOA6)
+// SPI1 pins: MOSI (GPIOA7)
 
-// SPI2 pins: SCK (GPIOA - pin 13)
-// SPI2 pins: MISO (GPIOA - pin 14)
-// SPI2 pins: MOSI (GPIOA - pin 15)
+// SPI2 pins: SCK (GPIOB13)
+// SPI2 pins: MISO (GPIOB14)
+// SPI2 pins: MOSI (GPIOB15)
 
 #define MAX_SET_CURRENT         5000
 #define MAX_LINE_LENGTH         50
-
-#define DEBUG_LED_RCC           RCC_APB2Periph_GPIOB
-#define DEBUG_LED_PORT          GPIOB
-#define DEBUG_LED_PIN           GPIO_Pin_0
 
 #define DEBUG_USART             USART1
 #define DEBUG_USART_BAUD        19200
@@ -87,9 +84,9 @@
 #ifndef SPI2_ENABLE
   #error "SPI2 is required for adc"
 #endif
-#define ADC_CS_RCC              RCC_APB2Periph_GPIOB
-#define ADC_CS_PORT             GPIOB
-#define ADC_CS_PIN              GPIO_Pin_1
+#define ADC_CS_RCC              RCC_APB2Periph_GPIOC
+#define ADC_CS_PORT             GPIOC
+#define ADC_CS_PIN              GPIO_Pin_6
 #define ADC_SPI                 SPI2
 
 #define ADC_VOLTAGE_CHANNEL     0
@@ -102,9 +99,9 @@
 #ifndef SPI2_ENABLE
   #error "SPI2 is required for dac"
 #endif
-#define DAC_CS_RCC              RCC_APB2Periph_GPIOB
-#define DAC_CS_PORT             GPIOB
-#define DAC_CS_PIN              GPIO_Pin_2
+#define DAC_CS_RCC              RCC_APB2Periph_GPIOC
+#define DAC_CS_PORT             GPIOC
+#define DAC_CS_PIN              GPIO_Pin_7
 #define DAC_SPI                 SPI2
 #endif
 
@@ -112,10 +109,20 @@
 #ifndef SPI2_ENABLE
   #error "SPI2 is required for flash"
 #endif
-#define FLASH_CS_RCC              RCC_APB2Periph_GPIOB
-#define FLASH_CS_PORT             GPIOB
-#define FLASH_CS_PIN              GPIO_Pin_8
-#define FLASH_SPI                 SPI2
+#define FLASH_CS_RCC            RCC_APB2Periph_GPIOC
+#define FLASH_CS_PORT           GPIOC
+#define FLASH_CS_PIN            GPIO_Pin_8
+#define FLASH_SPI               SPI2
+#endif
+
+#ifdef MAC_ENABLE
+#ifndef SPI2_ENABLE
+  #error "SPI2 is required for mac"
+#endif
+#define MAC_CS_RCC              RCC_APB2Periph_GPIOC
+#define MAC_CS_PORT             GPIOC
+#define MAC_CS_PIN              GPIO_Pin_9
+#define MAC_SPI                 SPI2
 #endif
 
 #ifdef FAN_ENABLE

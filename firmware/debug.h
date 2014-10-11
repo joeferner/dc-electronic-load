@@ -14,7 +14,9 @@ extern "C" {
 extern uint8_t g_debugUsartRxBuffer[DEBUG_USART_RX_BUFFER_SIZE];
 
 void debug_setup();
+#ifdef DEBUG_LED_ENABLE
 void debug_led_set(int v);
+#endif
 void debug_write_line(const char* str);
 void debug_write_bytes(const uint8_t* data, uint16_t len);
 void debug_write(const char* str);

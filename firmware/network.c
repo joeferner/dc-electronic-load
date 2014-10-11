@@ -10,7 +10,7 @@
 #include "debug.h"
 #include "ring_buffer.h"
 #include "flashFiles.h"
-#include "sst25flash.h"
+#include "flashsst25.h"
 #include "util.h"
 
 #ifdef NETWORK_ENABLE
@@ -21,7 +21,7 @@ PROCESS(telnet_process, "Telnet");
 uint8_t _network_uip_headerLength = 0;
 uint8_t _network_request_dhcp = 0;
 
-void network_setup() {
+void network_setup(uint8_t* macAddress) {
   debug_write_line("?BEGIN network_setup");
 
   uip_ipaddr_t ipaddr;
@@ -45,12 +45,12 @@ void network_setup() {
   GPIO_Init(ENC28J60_CS_PORT, &gpioConfig);
   enc28j60_spi_deassert();
 
-  uip_lladdr.addr[0] = MAC_ADDRESS[0];
-  uip_lladdr.addr[1] = MAC_ADDRESS[1];
-  uip_lladdr.addr[2] = MAC_ADDRESS[2];
-  uip_lladdr.addr[3] = MAC_ADDRESS[3];
-  uip_lladdr.addr[4] = MAC_ADDRESS[4];
-  uip_lladdr.addr[5] = MAC_ADDRESS[5];
+  uip_lladdr.addr[0] = macAddress[0];
+  uip_lladdr.addr[1] = macAddress[1];
+  uip_lladdr.addr[2] = macAddress[2];
+  uip_lladdr.addr[3] = macAddress[3];
+  uip_lladdr.addr[4] = macAddress[4];
+  uip_lladdr.addr[5] = macAddress[5];
 
   uip_ipaddr(&ipaddr, 0, 0, 0, 0);
   uip_sethostaddr(&ipaddr);
@@ -194,11 +194,11 @@ PT_THREAD(serve_flash_file(struct httpd_state* s)) {
 
   while (s->file_pos < s->file->size) {
     readlen = MIN(HTTPD_OUTBUF_SIZE, s->file->size - s->file_pos);
-    sst25flash_read_begin(s->file->offset + s->file_pos);
+    flashsst25_read_begin(s->file->offset + s->file_pos);
     for (i = 0; i < readlen; i++) {
-      s->outbuf[i] = sst25flash_read();
+      s->outbuf[i] = flashsst25_read();
     }
-    sst25flash_read_end();
+    flashsst25_read_end();
     s->file_pos += readlen;
     s->outbuf_pos = readlen;
     PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
