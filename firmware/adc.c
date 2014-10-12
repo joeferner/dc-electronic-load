@@ -1,16 +1,12 @@
 #include "adc.h"
 #include "debug.h"
 #include "platform_config.h"
+#include "delay.h"
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_rcc.h>
 #include <stm32f10x_spi.h>
 
 #ifdef ADC_ENABLE
-
-#define ADC_CH0_SINGLE  0x0600
-#define ADC_CH1_SINGLE  0x0640
-#define ADC_CH2_SINGLE  0x0680
-#define ADC_CH3_SINGLE  0x06c0
 
 PROCESS(adc_volts_process, "ADC Volts");
 PROCESS(adc_current_process, "ADC Current");
@@ -63,7 +59,7 @@ uint8_t adc_spi_transfer(uint8_t d) {
 uint16_t adc_sample(uint16_t ch) {
   adc_spi_assert();
   adc_spi_transfer((ch >> 8) & 0xff);
-  uint16_t high = adc_spi_transfer(ch & 0xff);
+  uint16_t high = (adc_spi_transfer(ch & 0xff) & 0x0f);
   uint16_t low = adc_spi_transfer(0x00);
   uint16_t value = (high << 8) | low;
   adc_spi_deassert();

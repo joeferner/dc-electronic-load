@@ -154,7 +154,7 @@ void setup() {
 #endif
 
   time_setup();
-  
+
   debug_write_line("?END setup");
 }
 
@@ -336,6 +336,20 @@ PROCESS_THREAD(debug_process, ev, data) {
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
       }
+
+#ifdef ADC_ENABLE
+      else if (strcmp(line, "!ADCRAW\n") == 0) {
+        debug_write("+OK ");
+	debug_write_u16(adc_sample(ADC_CH0_SINGLE), 10);
+	debug_write(",");
+	debug_write_u16(adc_sample(ADC_CH1_SINGLE), 10);
+	debug_write(",");
+	debug_write_u16(adc_sample(ADC_CH2_SINGLE), 10);
+	debug_write(",");
+	debug_write_u16(adc_sample(ADC_CH3_SINGLE), 10);
+	debug_write_line("");
+      }
+#endif
 
 #ifdef DISP6800_ENABLE
       else if (strcmp(line, "!DISPON\n") == 0) {

@@ -12,11 +12,11 @@
 // #define SPI1_ENABLE
 #define SPI2_ENABLE
 // #define NETWORK_ENABLE
-// #define ADC_ENABLE
-// #define DAC_ENABLE
-// #define DISP6800_ENABLE
+#define ADC_ENABLE
+#define DAC_ENABLE
+#define DISP6800_ENABLE
 // #define FAN_ENABLE
-// #define ENCODER_ENABLE
+#define ENCODER_ENABLE
 #define FLASH_ENABLE
 #define MAC_ENABLE
 
@@ -42,9 +42,9 @@
 #define DEBUG_USART_DR_BASE     ((uint32_t)&USART1->DR)
 
 #ifdef DISP6800_ENABLE
-#define DISP6800_RCC            RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB
+#define DISP6800_RCC            RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD
 
-#define DISP6800_DATA           GPIOA
+#define DISP6800_DATA           GPIOB
 #define DISP6800_DATA0_PIN      GPIO_Pin_0
 #define DISP6800_DATA1_PIN      GPIO_Pin_1
 #define DISP6800_DATA2_PIN      GPIO_Pin_2
@@ -53,31 +53,31 @@
 #define DISP6800_DATA5_PIN      GPIO_Pin_5
 #define DISP6800_DATA6_PIN      GPIO_Pin_6
 #define DISP6800_DATA7_PIN      GPIO_Pin_7
-#define DISP6800_RW             GPIOB
-#define DISP6800_RW_PIN         GPIO_Pin_8
-#define DISP6800_EN             GPIOB
-#define DISP6800_EN_PIN         GPIO_Pin_9
-#define DISP6800_RESET          GPIOB
-#define DISP6800_RESET_PIN      GPIO_Pin_10
-#define DISP6800_CS             GPIOB
-#define DISP6800_CS_PIN         GPIO_Pin_11
-#define DISP6800_DC             GPIOB
-#define DISP6800_DC_PIN         GPIO_Pin_12
+#define DISP6800_RW             GPIOC
+#define DISP6800_RW_PIN         GPIO_Pin_10
+#define DISP6800_EN             GPIOA
+#define DISP6800_EN_PIN         GPIO_Pin_15
+#define DISP6800_RESET          GPIOC
+#define DISP6800_RESET_PIN      GPIO_Pin_11
+#define DISP6800_CS             GPIOC
+#define DISP6800_CS_PIN         GPIO_Pin_12
+#define DISP6800_DC             GPIOD
+#define DISP6800_DC_PIN         GPIO_Pin_2
 #endif
 
 #ifdef ENCODER_ENABLE
-#define ENCODER_CH_A_EXTI       EXTI_Line6
-#define ENCODER_CH_A_EXTI_PORT  GPIO_PortSourceGPIOB
-#define ENCODER_CH_A_EXTI_PIN   GPIO_PinSource6
-#define ENCODER_CH_A_RCC        RCC_APB2Periph_GPIOB
-#define ENCODER_CH_A_PORT       GPIOB
-#define ENCODER_CH_A_PIN        GPIO_Pin_6
-#define ENCODER_CH_B_EXTI       EXTI_Line7
-#define ENCODER_CH_B_EXTI_PORT  GPIO_PortSourceGPIOB
-#define ENCODER_CH_B_EXTI_PIN   GPIO_PinSource7
-#define ENCODER_CH_B_RCC        RCC_APB2Periph_GPIOB
-#define ENCODER_CH_B_PORT       GPIOB
-#define ENCODER_CH_B_PIN        GPIO_Pin_7
+#define ENCODER_CH_A_EXTI       EXTI_Line0
+#define ENCODER_CH_A_EXTI_PORT  GPIO_PortSourceGPIOC
+#define ENCODER_CH_A_EXTI_PIN   GPIO_PinSource0
+#define ENCODER_CH_A_RCC        RCC_APB2Periph_GPIOC
+#define ENCODER_CH_A_PORT       GPIOC
+#define ENCODER_CH_A_PIN        GPIO_Pin_0
+#define ENCODER_CH_B_EXTI       EXTI_Line1
+#define ENCODER_CH_B_EXTI_PORT  GPIO_PortSourceGPIOC
+#define ENCODER_CH_B_EXTI_PIN   GPIO_PinSource1
+#define ENCODER_CH_B_RCC        RCC_APB2Periph_GPIOC
+#define ENCODER_CH_B_PORT       GPIOC
+#define ENCODER_CH_B_PIN        GPIO_Pin_1
 #endif
 
 #ifdef ADC_ENABLE

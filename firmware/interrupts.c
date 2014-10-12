@@ -53,13 +53,22 @@ void SysTick_Handler() {
 }
 
 #ifdef ENCODER_ENABLE
-void EXTI9_5_IRQHandler() {
+void EXTI0_IRQHandler() {
   uint8_t signal = 0;
 
   if (EXTI_GetITStatus(ENCODER_CH_A_EXTI) != RESET) {
     signal = 1;
     EXTI_ClearITPendingBit(ENCODER_CH_A_EXTI);
   }
+
+  if (signal) {
+    encoder_exti_irq();
+  }
+}
+
+void EXTI1_IRQHandler() {
+  uint8_t signal = 0;
+
   if (EXTI_GetITStatus(ENCODER_CH_B_EXTI) != RESET) {
     signal = 1;
     EXTI_ClearITPendingBit(ENCODER_CH_B_EXTI);
@@ -69,6 +78,7 @@ void EXTI9_5_IRQHandler() {
     encoder_exti_irq();
   }
 }
+
 #endif
 
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress) {

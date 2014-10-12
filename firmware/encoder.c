@@ -46,7 +46,13 @@ void encoder_setup() {
   extiInitStructure.EXTI_Line = ENCODER_CH_B_EXTI;
   EXTI_Init(&extiInitStructure);
 
-  nvicInitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+  nvicInitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+  nvicInitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+  nvicInitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+  nvicInitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&nvicInitStructure);
+
+  nvicInitStructure.NVIC_IRQChannel = EXTI1_IRQn;
   nvicInitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
   nvicInitStructure.NVIC_IRQChannelSubPriority = 0x0F;
   nvicInitStructure.NVIC_IRQChannelCmd = ENABLE;

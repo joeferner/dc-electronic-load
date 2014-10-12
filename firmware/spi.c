@@ -62,7 +62,7 @@ void spi_setup() {
   spiInitStruct.SPI_Mode = SPI_Mode_Master;
   spiInitStruct.SPI_DataSize = SPI_DataSize_8b;
   spiInitStruct.SPI_NSS = SPI_NSS_Soft;
-  spiInitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
+  spiInitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
   spiInitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
 
   // Mode 0 (CPOL = 0, CPHA = 0)
