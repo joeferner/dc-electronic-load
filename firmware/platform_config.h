@@ -9,13 +9,13 @@
 #define WEBSERVER_CONF_OUTBUF_SIZE 100
 #define DEBUG_USART_RX_BUFFER_SIZE 600
 
-// #define SPI1_ENABLE
+#define SPI1_ENABLE
 #define SPI2_ENABLE
-// #define NETWORK_ENABLE
+#define NETWORK_ENABLE
 #define ADC_ENABLE
 #define DAC_ENABLE
 #define DISP6800_ENABLE
-// #define FAN_ENABLE
+#define FAN_ENABLE
 #define ENCODER_ENABLE
 #define FLASH_ENABLE
 #define MAC_ENABLE
@@ -126,27 +126,25 @@
 #endif
 
 #ifdef FAN_ENABLE
-#define FAN_PWM_RCC1            RCC_APB1Periph_TIM3
-#define FAN_PWM_RCC2            RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO
-#define FAN_PWM_PORT            GPIOB
-#define FAN_PWM_PIN             GPIO_Pin_5
-#define FAN_PWM_TIMER           TIM3
-#define FAN_PWM_TIMER_REMAP             GPIO_PartialRemap_TIM3
-#define FAN_PWM_TIMER_CH_INIT           TIM_OC2Init
-#define FAN_PWM_TIMER_CH_PRELOAD_CONFIG TIM_OC2PreloadConfig
+#define FAN_PWM_RCC2            RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO
+#define FAN_PWM_PORT            GPIOA
+#define FAN_PWM_PIN             GPIO_Pin_8
+#define FAN_PWM_TIMER           TIM1
+#define FAN_PWM_TIMER_CH_INIT           TIM_OC1Init
+#define FAN_PWM_TIMER_CH_PRELOAD_CONFIG TIM_OC1PreloadConfig
 #endif
 
 #ifdef NETWORK_ENABLE
 #ifndef SPI1_ENABLE
   #error "SPI1 is required for network"
 #endif
-#define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOA
-#define ENC28J60_CS_PORT        GPIOA
+#define ENC28J60_CS_RCC         RCC_APB2Periph_GPIOC
+#define ENC28J60_CS_PORT        GPIOC
 #define ENC28J60_CS_PIN         GPIO_Pin_4
 
-#define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOA
-#define ENC28J60_RESET_PORT     GPIOA
-#define ENC28J60_RESET_PIN      GPIO_Pin_3
+#define ENC28J60_RESET_RCC      RCC_APB2Periph_GPIOC
+#define ENC28J60_RESET_PORT     GPIOC
+#define ENC28J60_RESET_PIN      GPIO_Pin_5
 
 // port 23 is the traditional telnet port
 #define TELNET_PORT             23
