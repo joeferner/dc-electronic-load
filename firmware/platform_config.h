@@ -126,12 +126,9 @@
 #endif
 
 #ifdef FAN_ENABLE
-#define FAN_PWM_RCC2            RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO
-#define FAN_PWM_PORT            GPIOA
-#define FAN_PWM_PIN             GPIO_Pin_8
-#define FAN_PWM_TIMER           TIM1
-#define FAN_PWM_TIMER_CH_INIT           TIM_OC1Init
-#define FAN_PWM_TIMER_CH_PRELOAD_CONFIG TIM_OC1PreloadConfig
+#define FAN_RCC2            RCC_APB2Periph_GPIOA
+#define FAN_PORT            GPIOA
+#define FAN_PIN             GPIO_Pin_8
 #endif
 
 #ifdef NETWORK_ENABLE
