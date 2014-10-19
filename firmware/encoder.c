@@ -3,6 +3,7 @@
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_exti.h>
 #include "debug.h"
+#include "delay.h"
 
 #ifdef ENCODER_ENABLE
 
@@ -19,7 +20,7 @@ void encoder_setup() {
   EXTI_InitTypeDef extiInitStructure;
   NVIC_InitTypeDef nvicInitStructure;
 
-  RCC_APB2PeriphClockCmd(ENCODER_CH_A_RCC | ENCODER_CH_B_RCC, ENABLE);
+  RCC_APB2PeriphClockCmd(ENCODER_CH_A_RCC | ENCODER_CH_B_RCC | ENCODER_BUTTON_RCC, ENABLE);
 
   GPIO_StructInit(&gpioInitStructure);
   gpioInitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
@@ -30,10 +31,14 @@ void encoder_setup() {
   gpioInitStructure.GPIO_Pin = ENCODER_CH_B_PIN;
   GPIO_Init(ENCODER_CH_B_PORT, &gpioInitStructure);
 
+  gpioInitStructure.GPIO_Pin = ENCODER_BUTTON_PIN;
+  GPIO_Init(ENCODER_BUTTON_PORT, &gpioInitStructure);
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
   GPIO_EXTILineConfig(ENCODER_CH_A_EXTI_PORT, ENCODER_CH_A_EXTI_PIN);
   GPIO_EXTILineConfig(ENCODER_CH_B_EXTI_PORT, ENCODER_CH_B_EXTI_PIN);
+  GPIO_EXTILineConfig(ENCODER_BUTTON_EXTI_PORT, ENCODER_BUTTON_EXTI_PIN);
 
   EXTI_StructInit(&extiInitStructure);
   extiInitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
@@ -44,6 +49,9 @@ void encoder_setup() {
   EXTI_Init(&extiInitStructure);
 
   extiInitStructure.EXTI_Line = ENCODER_CH_B_EXTI;
+  EXTI_Init(&extiInitStructure);
+
+  extiInitStructure.EXTI_Line = ENCODER_BUTTON_EXTI;
   EXTI_Init(&extiInitStructure);
 
   nvicInitStructure.NVIC_IRQChannel = EXTI0_IRQn;
@@ -58,11 +66,18 @@ void encoder_setup() {
   nvicInitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvicInitStructure);
 
+  nvicInitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+  nvicInitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+  nvicInitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+  nvicInitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&nvicInitStructure);
+
   EXTI_GenerateSWInterrupt(ENCODER_CH_A_EXTI);
 }
 
 // 0x00, 0x10, 0x11, 0x01
 void encoder_exti_irq() {
+  delay_ms(1);
   uint8_t a = GPIO_ReadInputDataBit(ENCODER_CH_A_PORT, ENCODER_CH_A_PIN);
   uint8_t b = GPIO_ReadInputDataBit(ENCODER_CH_B_PORT, ENCODER_CH_B_PIN);
   uint8_t p = (a ? 0x00 : 0x10) | (b ? 0x00 : 0x01);
@@ -116,6 +131,14 @@ void encoder_exti_irq() {
         encoder_last_p = ENCODER_P_INIT;
       }
     }
+  }
+}
+
+void encoder_exti_button_irq() {
+  delay_ms(1);
+  uint8_t b = GPIO_ReadInputDataBit(ENCODER_BUTTON_PORT, ENCODER_BUTTON_PIN);
+  if (b == 0x00) {
+    encoder_button_irq();
   }
 }
 

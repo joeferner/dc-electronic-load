@@ -72,12 +72,20 @@
 #define ENCODER_CH_A_RCC        RCC_APB2Periph_GPIOC
 #define ENCODER_CH_A_PORT       GPIOC
 #define ENCODER_CH_A_PIN        GPIO_Pin_0
+
 #define ENCODER_CH_B_EXTI       EXTI_Line1
 #define ENCODER_CH_B_EXTI_PORT  GPIO_PortSourceGPIOC
 #define ENCODER_CH_B_EXTI_PIN   GPIO_PinSource1
 #define ENCODER_CH_B_RCC        RCC_APB2Periph_GPIOC
 #define ENCODER_CH_B_PORT       GPIOC
 #define ENCODER_CH_B_PIN        GPIO_Pin_1
+
+#define ENCODER_BUTTON_EXTI       EXTI_Line2
+#define ENCODER_BUTTON_EXTI_PORT  GPIO_PortSourceGPIOC
+#define ENCODER_BUTTON_EXTI_PIN   GPIO_PinSource2
+#define ENCODER_BUTTON_RCC        RCC_APB2Periph_GPIOC
+#define ENCODER_BUTTON_PORT       GPIOC
+#define ENCODER_BUTTON_PIN        GPIO_Pin_2
 #endif
 
 #ifdef ADC_ENABLE

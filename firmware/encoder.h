@@ -11,6 +11,7 @@ typedef enum {
 } ENCODER_DIR;
 
 extern void encoder_irq(ENCODER_DIR dir);
+extern void encoder_button_irq();
 
 void encoder_setup();
 void encoder_exti_irq();

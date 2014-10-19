@@ -4,6 +4,7 @@
 
 extern void time_SysTick_Handler();
 extern void encoder_exti_irq();
+extern void encoder_exti_button_irq();
 
 static void HardFault_Handler(void) __attribute__((naked));
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
@@ -76,6 +77,19 @@ void EXTI1_IRQHandler() {
 
   if (signal) {
     encoder_exti_irq();
+  }
+}
+
+void EXTI2_IRQHandler() {
+  uint8_t signal = 0;
+
+  if (EXTI_GetITStatus(ENCODER_BUTTON_EXTI) != RESET) {
+    signal = 1;
+    EXTI_ClearITPendingBit(ENCODER_BUTTON_EXTI);
+  }
+
+  if (signal) {
+    encoder_exti_button_irq();
   }
 }
 

@@ -64,6 +64,7 @@ uint16_t readCurrentMilliamps;
 uint8_t readCurrentMilliampsDisplay;
 uint16_t setCurrentMilliamps;
 uint8_t fanSetOverride;
+uint16_t lastAdcValue[4];
 
 PROCINIT(
   &etimer_process
@@ -267,27 +268,32 @@ void milli_to_string(uint16_t v, char* buffer, uint8_t display) {
 }
 
 uint16_t adcVoltsToMillivolts(uint16_t value) {
-  return value * 2;
+  return value * 6.0318341;
 }
 
 uint16_t adcCurrentToMillamps(uint16_t value) {
-  return value * 11;
+  return value * 1.2521904632;
 }
 
 uint16_t setMilliampsToDac(uint16_t value) {
-  return value / 10;
+  return value / 1.2427047619;
 }
 
 #ifdef ADC_ENABLE
 void adc_irq(uint8_t channel, uint16_t value) {
+  lastAdcValue[channel] = value;
+
   if (channel == ADC_VOLTAGE_CHANNEL) {
     readMilliVolts = adcVoltsToMillivolts(value);
   } else if (channel == ADC_CURRENT_CHANNEL) {
     readCurrentMilliamps = adcCurrentToMillamps(value);
-  } else if (channel == ADC_TEMP1_CHANNEL) {
-    // TODO set fan
-  } else if (channel == ADC_TEMP2_CHANNEL) {
-    // TODO set fan
+  } else if (channel == ADC_TEMP1_CHANNEL || channel == ADC_TEMP2_CHANNEL) {
+    if(lastAdcValue[ADC_TEMP1_CHANNEL] < 2500 || lastAdcValue[ADC_TEMP2_CHANNEL] < 2500) {
+      fan_set(100);
+    }
+    if(lastAdcValue[ADC_TEMP1_CHANNEL] > 2600 && lastAdcValue[ADC_TEMP2_CHANNEL] > 2600) {
+      fan_set(0);
+    }
   }
 #ifdef DISP6800_ENABLE
   process_poll(&gfx_update_process);
@@ -316,6 +322,17 @@ void encoder_irq(ENCODER_DIR dir) {
   process_poll(&gfx_update_process);
 #endif
 }
+
+void encoder_button_irq() {
+  setCurrentMilliamps = 0;
+#ifdef DAC_ENABLE
+  dac_set(setMilliampsToDac(setCurrentMilliamps));
+#endif
+#ifdef DISP6800_ENABLE
+  process_poll(&gfx_update_process);
+#endif
+}
+
 #endif
 
 PROCESS_THREAD(debug_process, ev, data) {
@@ -338,7 +355,19 @@ PROCESS_THREAD(debug_process, ev, data) {
       }
 
 #ifdef ADC_ENABLE
-      else if (strcmp(line, "!ADCRAW\n") == 0) {
+      else if (strcmp(line, "!ADCLAST\n") == 0) {
+        debug_write("+OK ");
+        debug_write_u16(lastAdcValue[0], 10);
+        debug_write(",");
+        debug_write_u16(lastAdcValue[1], 10);
+        debug_write(",");
+        debug_write_u16(lastAdcValue[2], 10);
+        debug_write(",");
+        debug_write_u16(lastAdcValue[3], 10);
+        debug_write(",");
+        debug_write_u16(setCurrentMilliamps, 10);
+        debug_write_line("");
+      } else if (strcmp(line, "!ADCRAW\n") == 0) {
         debug_write("+OK ");
         debug_write_u16(adc_sample(ADC_CH0_SINGLE), 10);
         debug_write(",");
@@ -354,12 +383,12 @@ PROCESS_THREAD(debug_process, ev, data) {
 #ifdef FAN_ENABLE
       else if (strncmp(line, "!FANSET ", 8) == 0) {
         uint8_t fanSetOverride = atoi(line + 8);
-	fan_set(fanSetOverride);
+        fan_set(fanSetOverride);
         debug_write_line("+OK");
       } else if (strcmp(line, "!FANGET\n") == 0) {
         debug_write("+OK ");
-	debug_write_u8(fan_get(), 10);
-	debug_write_line("");
+        debug_write_u8(fan_get(), 10);
+        debug_write_line("");
       }
 #endif
 
