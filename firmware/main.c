@@ -211,7 +211,7 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
     if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
       strcpy(suffix, "mA");
     } else {
-      strcpy(suffix, "A");
+      strcpy(suffix, " A");
     }
     gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
     gfx_draw_string(suffix, &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
@@ -228,11 +228,23 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
     gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
     gfx_draw_string(suffix, &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
 
-    // read read volts
-    milli_to_string(readMilliVolts, valueBuffer, DISPLAY_3DECIMALS);
+    // draw read volts
+    milli_to_string(readMilliVolts, valueBuffer, DISPLAY_2DECIMALS);
     gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
     gfx_draw_string("V", &FONT_XSMALL, 110, 42, GFX_ALIGN_LEFT);
 
+    // draw watts
+    uint16_t milliwatts = readMilliVolts * readCurrentMilliamps / 1000;
+    if (milliwatts < 1000) {
+      milli_to_string(milliwatts, valueBuffer, DISPLAY_MILLI);
+      strcpy(suffix, "mW");
+    } else {
+      milli_to_string(milliwatts, valueBuffer, DISPLAY_1DECIMALS);
+      strcpy(suffix, " W");
+    }
+    gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
+    gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
+    
     // TODO the next line is for the menu
     // TODO gfx_draw_string("POWER", &FONT_XSMALL, 2, 54, GFX_ALIGN_LEFT);
 

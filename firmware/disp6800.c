@@ -80,7 +80,7 @@ void disp6800_setup() {
   disp6800_set_remap_format(0x50);
   disp6800_set_current_range(0x02);   // set full current range
   //disp6800_set_gray_scale_table();    // set pulse width for gray scale table
-  disp6800_set_contrast_current(128); // set scale factor of segment output current
+  disp6800_set_contrast_current(255); // set scale factor of segment output current
   disp6800_set_frame_freqency(0x51);
   disp6800_set_phase_length(0x55);    // set phase 1 as 5 clocks and phase 2 as 5 clocks
   disp6800_set_precharge_voltage(0x10);
