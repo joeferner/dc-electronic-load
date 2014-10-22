@@ -35,6 +35,14 @@ def readUntilOK():
     if len(line) > 0:
       print 'rx: ' + line
 
+def readUntilREADY():
+  while True:
+    line = ser.readline().strip()
+    if "+READY" in line:
+      return line
+    if len(line) > 0:
+      print 'rx: ' + line
+
 tx = '!FLASHCLEAR\n'
 print 'tx: ' + tx.strip()
 ser.write(tx)
@@ -45,6 +53,7 @@ while offset < fileSize:
   tx = '!FLASHWRITE ' + str(offset) + '/' + str(fileSize) + '\n'
   print 'tx: ' + tx.strip()
   ser.write(tx)
+  readUntilREADY()
   print 'transmitting bytes'
   fileData = f.read(BLOCK_SIZE)
   ser.write(fileData)

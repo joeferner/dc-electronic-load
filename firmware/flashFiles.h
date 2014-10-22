@@ -6,6 +6,8 @@
 #include "httpd.h"
 
 extern char serve_flash_file(struct httpd_state* s);
+extern char serve_amps_set(struct httpd_state* s);
+extern char serve_web_socket(struct httpd_state* s);
 
 struct flashFile {
   const char* filename;

@@ -19,7 +19,26 @@
 
 <div class="container">
   <div style="margin-top: 80px;"></div>
-  <div id="graph" class="graph"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <div id="graph" class="graph"></div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3">
+      <form role="form" class="form" method="post" action="/amps/set" id="set-amperage-form">
+        <div class="form-group">
+          <label class="control-label" for="set-amperage">Target Amps (mA)</label>
+          <div id="current-set-amperage">???mA</div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label" for="set-amperage">Set Target Amps (mA)</label>
+          <input type="number" class="form-control" id="set-amperage" name="value" placeholder="Enter amps in milli-amps" min="0" max="5000" step="1">
+        </div>
+        <button type="submit" class="btn btn-default">Set Amps</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>

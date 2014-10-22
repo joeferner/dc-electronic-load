@@ -4,11 +4,21 @@ var WebSocketServer = require('ws').Server;
 var http = require('http');
 var express = require('express');
 var path = require('path');
+var bodyParser = require('body-parser');
 
 var PORT = 10080;
+var targetAmps = 0;
 
 var app = express();
 app.use(express.static(path.join(__dirname, '../flash-files')));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.post('/amps/set', function(req, res, next) {
+  console.log(req.body);
+  targetAmps = parseInt(req.body.value);
+  res.send('OK');
+});
 
 var server = http.createServer(app);
 server.listen(PORT);
@@ -20,7 +30,8 @@ wss.on('connection', function(ws) {
     var msg = {
       time: new Date().getTime(),
       voltage: 5 + Math.random(),
-      amperage: Math.random()
+      amperage: Math.random(),
+      targetAmps: targetAmps
     };
     ws.send(JSON.stringify(msg), function() { /* ignore errors */ });
   }, 1000);

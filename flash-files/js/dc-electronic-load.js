@@ -18,7 +18,7 @@ $(function() {
       },
       yaxes: [
         { min: 0, axisLabel: 'Voltage (V)' },
-        { min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function (val, axis) { return parseInt(val * 100); } },
+        { min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function(val, axis) { return parseInt(val * 100); } },
         { min: 0, axisLabel: 'Power (W)', position: 'right' }
       ]
     });
@@ -40,6 +40,7 @@ $(function() {
     wsConnection.onmessage = function(e) {
       var json = JSON.parse(e.data);
       console.log('Server:', json);
+      $('#current-set-amperage').html(json.targetAmps + "mA");
       data.voltage.push([json.time, json.voltage]);
       data.amperage.push([json.time, json.amperage]);
       data.power.push([json.time, json.voltage * json.amperage]);
@@ -47,6 +48,36 @@ $(function() {
     };
   }
 
+  function ajaxForms() {
+    ajaxSetAmperageForm();
+  }
+
+  function ajaxSetAmperageForm() {
+    var setAmperageForm = $('#set-amperage-form');
+    $("[type='submit']", setAmperageForm).click(function(event) {
+      event.preventDefault();
+      var valueField = $("[name='value']", setAmperageForm);
+      var value = $.trim(valueField.val());
+      if (value == '' || parseInt(value) < 0 || parseInt(value) > 5000) {
+        valueField.closest('div.form-group').addClass('has-error');
+        return;
+      }
+      valueField.closest('div.form-group').removeClass('has-error');
+
+      $.ajax({
+        type: "POST",
+        url: setAmperageForm.attr('action'),
+        data: {
+          value: value
+        },
+        success: function() {
+          console.log(arguments);
+        }
+      });
+    });
+  }
+
   updateGraph();
   openWebSocket();
+  ajaxForms();
 });

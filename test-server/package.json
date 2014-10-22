@@ -1,6 +1,7 @@
 {
   "name": "test-server",
   "dependencies": {
+    "body-parser": "^1.9.0",
     "express": "^4.9.5",
     "ws": "^0.4.32"
   }

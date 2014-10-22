@@ -207,6 +207,24 @@ PT_THREAD(serve_flash_file(struct httpd_state* s)) {
   PSOCK_END(&s->sout);
 }
 
+PT_THREAD(serve_amps_set(struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sout);
+
+  strcpy((char*)s->outbuf, "OK");
+  s->outbuf_pos = strlen((char*)s->outbuf);
+
+  PSOCK_END(&s->sout);
+}
+
+PT_THREAD(serve_web_socket(struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sout);
+
+  strcpy((char*)s->outbuf, "OK");
+  s->outbuf_pos = strlen((char*)s->outbuf);
+
+  PSOCK_END(&s->sout);
+}
+
 struct flashFile* httpd_get_file(const char* filename) {
   for (uint8_t i = 0; ; i++) {
     struct flashFile* f = &flashFiles[i];

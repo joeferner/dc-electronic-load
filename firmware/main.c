@@ -244,7 +244,7 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
     }
     gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
     gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
-    
+
     // TODO the next line is for the menu
     // TODO gfx_draw_string("POWER", &FONT_XSMALL, 2, 54, GFX_ALIGN_LEFT);
 
@@ -300,10 +300,10 @@ void adc_irq(uint8_t channel, uint16_t value) {
   } else if (channel == ADC_CURRENT_CHANNEL) {
     readCurrentMilliamps = adcCurrentToMillamps(value);
   } else if (channel == ADC_TEMP1_CHANNEL || channel == ADC_TEMP2_CHANNEL) {
-    if(lastAdcValue[ADC_TEMP1_CHANNEL] < 2500 || lastAdcValue[ADC_TEMP2_CHANNEL] < 2500) {
+    if (lastAdcValue[ADC_TEMP1_CHANNEL] < 2500 || lastAdcValue[ADC_TEMP2_CHANNEL] < 2500) {
       fan_set(100);
     }
-    if(lastAdcValue[ADC_TEMP1_CHANNEL] > 2600 && lastAdcValue[ADC_TEMP2_CHANNEL] > 2600) {
+    if (lastAdcValue[ADC_TEMP1_CHANNEL] > 2600 && lastAdcValue[ADC_TEMP2_CHANNEL] > 2600) {
       fan_set(0);
     }
   }
@@ -352,6 +352,7 @@ PROCESS_THREAD(debug_process, ev, data) {
   uint8_t b;
   uint32_t flashAddress = 0;
   uint32_t flashCount = 0;
+  uint32_t t = 0;
 
   PROCESS_BEGIN();
 
@@ -422,18 +423,27 @@ PROCESS_THREAD(debug_process, ev, data) {
         flashAddress = atoi(line + 12);
         flashCount = FLASH_BLOCK_SIZE;
 
-        while (flashCount > 0) {
+        debug_write_line("+READY");
+        t = time_ms();
+        while (1) {
+          if (flashCount <= 0) {
+            debug_write("+OK ");
+            debug_write_u32(flashAddress, 10);
+            debug_write_line("");
+            break;
+          }
+          if ((time_ms() - t) > 5000) {
+            debug_write_line("-FAIL");
+            break;
+          }
           if (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) <= 0) {
             continue;
           }
           flashsst25_write_byte(flashAddress, b);
           flashAddress++;
           flashCount--;
+          t = time_ms();
         }
-
-        debug_write("+OK ");
-        debug_write_u32(flashAddress, 10);
-        debug_write_line("");
       } else if (strncmp(line, "!FLASHREAD ", 11) == 0) {
         flashAddress = atoi(line + 11);
         flashCount = FLASH_BLOCK_SIZE;
