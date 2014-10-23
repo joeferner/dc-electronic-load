@@ -62,5 +62,6 @@ struct httpd_state {
 };
 
 PROCESS_NAME(httpd_process);
+PT_THREAD(send_headers(struct httpd_state* s, const char* statushdr));
 
 #endif

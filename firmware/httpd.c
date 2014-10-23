@@ -9,8 +9,7 @@ static const char http_10[] = " HTTP/1.0\r\n";
 static const char http_content_type[] = "Content-Type:";
 static const char http_content_type_html[] = "text/html";
 static const char http_content_len[] = "Content-Length:";
-static const char http_header_404[] = "HTTP/1.0 404 Not found\r\nServer: Contiki\r\nConnection: close\r\n";
-static const char http_header_200[] = "HTTP/1.0 200 OK\r\nServer: Contiki\r\nConnection: close\r\n";
+static const char http_header_404[] = "HTTP/1.0 404 Not found\r\nConnection: close\r\n";
 static const char html_not_found[] = "<html><body><h1>Page not found</h1></body></html>";
 
 uint16_t http_connections = 0;
@@ -203,7 +202,6 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
     uip_close();
     PT_EXIT(&s->outputpt);
   } else {
-    PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
     PT_WAIT_THREAD(&s->outputpt, s->file->script(s));
   }
   PSOCK_CLOSE(&s->sout);

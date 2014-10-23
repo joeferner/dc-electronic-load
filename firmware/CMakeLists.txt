@@ -82,6 +82,7 @@ SET(PROJECT_SOURCES
   flashFiles.c
   mac25aa02e48.c
   spi.c
+  dcElectronicLoad.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})

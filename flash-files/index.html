@@ -3,8 +3,6 @@
 <head>
   <title>DC Electronic Load</title>
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/ripples.min.css" rel="stylesheet">
-  <link href="css/material.min.css" rel="stylesheet">
   <link href="css/dc-electronic-load.css" rel="stylesheet">
 </head>
 <body>
@@ -30,12 +28,25 @@
           <label class="control-label" for="set-amperage">Target Amps (mA)</label>
           <div id="current-set-amperage">???mA</div>
         </div>
+        <div class="form-group">
+          <label class="control-label" for="set-amperage">Amps (mA)</label>
+          <div id="current-amperage">???mA</div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="set-amperage">Voltage (V)</label>
+          <div id="current-voltage">???V</div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="set-amperage">Power (W)</label>
+          <div id="current-power">???W</div>
+        </div>
 
         <div class="form-group">
           <label class="control-label" for="set-amperage">Set Target Amps (mA)</label>
           <input type="number" class="form-control" id="set-amperage" name="value" placeholder="Enter amps in milli-amps" min="0" max="5000" step="1">
         </div>
-        <button type="submit" class="btn btn-default">Set Amps</button>
+        <button type="button" class="btn btn-default btn-zero-amps">Zero Amps</button>
+        <button type="submit" class="btn btn-default btn-set-amps">Set Amps</button>
       </form>
     </div>
   </div>
@@ -46,8 +57,6 @@
 <script type="text/javascript" src="js/jquery.flot.time.min.js"></script>
 <script type="text/javascript" src="js/jquery.flot.axislabels.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/ripples.min.js"></script>
-<script type="text/javascript" src="js/material.min.js"></script>
 <script type="text/javascript" src="js/dc-electronic-load.js"></script>
 </body>
 </html>

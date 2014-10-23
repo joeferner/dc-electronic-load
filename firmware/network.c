@@ -3,6 +3,7 @@
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_rcc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "network.h"
 #include "contiki/net/ipv4/uip_arp.h"
 #include "contiki/net/ip/dhcpc.h"
@@ -12,8 +13,12 @@
 #include "flashFiles.h"
 #include "flashsst25.h"
 #include "util.h"
+#include "dcElectronicLoad.h"
 
 #ifdef NETWORK_ENABLE
+
+static const char http_header_200[] = "HTTP/1.0 200 OK\r\nConnection: close\r\n";
+static const char http_header_400[] = "HTTP/1.0 200 BAD\r\nConnection: close\r\n";
 
 PROCESS(dhcp_process, "DHCP");
 PROCESS(telnet_process, "Telnet");
@@ -191,6 +196,7 @@ PT_THREAD(serve_flash_file(struct httpd_state* s)) {
   uint32_t readlen;
 
   PSOCK_BEGIN(&s->sout);
+  PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
 
   while (s->file_pos < s->file->size) {
     readlen = MIN(HTTPD_OUTBUF_SIZE, s->file->size - s->file_pos);
@@ -204,19 +210,28 @@ PT_THREAD(serve_flash_file(struct httpd_state* s)) {
 }
 
 PT_THREAD(serve_amps_set(struct httpd_state* s)) {
+  uint32_t value;
   PSOCK_BEGIN(&s->sout);
 
-  strcpy((char*)s->outbuf, "OK");
-  s->outbuf_pos = strlen((char*)s->outbuf);
+  if (strncmp((const char*)s->inputbuf, "value=", 6) == 0) {
+    value = atoi((const char*)s->inputbuf + 6);
+    set_current_milliamps(value);
+
+    PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
+    PSOCK_SEND_STR(&s->sout, "OK");
+  } else {
+    PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_400));
+    PSOCK_SEND_STR(&s->sout, "FAIL");
+  }
 
   PSOCK_END(&s->sout);
 }
 
 PT_THREAD(serve_web_socket(struct httpd_state* s)) {
   PSOCK_BEGIN(&s->sout);
+  PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
 
-  strcpy((char*)s->outbuf, "OK");
-  s->outbuf_pos = strlen((char*)s->outbuf);
+  PSOCK_SEND_STR(&s->sout, "OK");
 
   PSOCK_END(&s->sout);
 }

@@ -1,11 +1,17 @@
 'use strict';
 
 $(function() {
+  var setAmperageForm = $('#set-amperage-form');
+
   var data = {
     voltage: [],
     amperage: [],
     power: []
   };
+
+  function round(v, places) {
+    return parseFloat(v).toFixed(places);
+  }
 
   function updateGraph() {
     $.plot("#graph", [
@@ -40,7 +46,10 @@ $(function() {
     wsConnection.onmessage = function(e) {
       var json = JSON.parse(e.data);
       console.log('Server:', json);
-      $('#current-set-amperage').html(json.targetAmps + "mA");
+      $('#current-set-amperage').html(round(json.targetAmps, 0) + "mA");
+      $('#current-amperage').html(round(json.amperage, 0) + "mA");
+      $('#current-voltage').html(round(json.voltage, 2) + "V");
+      $('#current-power').html(round(json.voltage * json.amperage, 2) + "W");
       data.voltage.push([json.time, json.voltage]);
       data.amperage.push([json.time, json.amperage]);
       data.power.push([json.time, json.voltage * json.amperage]);
@@ -52,9 +61,25 @@ $(function() {
     ajaxSetAmperageForm();
   }
 
+  function setAmps(value) {
+    $.ajax({
+      type: "POST",
+      url: setAmperageForm.attr('action'),
+      data: {
+        value: value
+      },
+      success: function() {
+        console.log(arguments);
+      }
+    });
+  }
+
   function ajaxSetAmperageForm() {
-    var setAmperageForm = $('#set-amperage-form');
-    $("[type='submit']", setAmperageForm).click(function(event) {
+    $(".btn-zero-amps", setAmperageForm).click(function(event) {
+      setAmps(0);
+    });
+
+    $(".btn-set-amps", setAmperageForm).click(function(event) {
       event.preventDefault();
       var valueField = $("[name='value']", setAmperageForm);
       var value = $.trim(valueField.val());
@@ -64,16 +89,7 @@ $(function() {
       }
       valueField.closest('div.form-group').removeClass('has-error');
 
-      $.ajax({
-        type: "POST",
-        url: setAmperageForm.attr('action'),
-        data: {
-          value: value
-        },
-        success: function() {
-          console.log(arguments);
-        }
-      });
+      setAmps(value);
     });
   }
 
