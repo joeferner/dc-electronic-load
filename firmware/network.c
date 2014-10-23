@@ -188,17 +188,13 @@ void dhcpc_unconfigured(const struct dhcpc_state* s) {
 }
 
 PT_THREAD(serve_flash_file(struct httpd_state* s)) {
-  uint32_t i, readlen;
+  uint32_t readlen;
 
   PSOCK_BEGIN(&s->sout);
 
   while (s->file_pos < s->file->size) {
     readlen = MIN(HTTPD_OUTBUF_SIZE, s->file->size - s->file_pos);
-    flashsst25_read_begin(s->file->offset + s->file_pos);
-    for (i = 0; i < readlen; i++) {
-      s->outbuf[i] = flashsst25_read();
-    }
-    flashsst25_read_end();
+    flashsst25_readn(s->file->offset + s->file_pos, s->outbuf, readlen);
     s->file_pos += readlen;
     s->outbuf_pos = readlen;
     PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);

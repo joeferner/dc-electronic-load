@@ -203,11 +203,6 @@ PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
     uip_close();
     PT_EXIT(&s->outputpt);
   } else {
-    if (s->request_type == HTTPD_POST) {
-      /* A post has a body that needs to be read */
-      s->state = HTTPD_STATE_INPUT;
-      PT_WAIT_UNTIL(&s->outputpt, s->state == HTTPD_STATE_OUTPUT);
-    }
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
     PT_WAIT_THREAD(&s->outputpt, s->file->script(s));
   }

@@ -167,6 +167,17 @@ uint8_t flashsst25_read() {
   return flashsst25_spi_transfer(0x00);
 }
 
+void flashsst25_readn(uint32_t addr, uint8_t* buffer, uint16_t len) {
+  uint16_t i;
+  uint8_t* o = buffer;
+  flashsst25_read_begin(addr);
+  for (i = 0; i < len; i++) {
+    *o++ = flashsst25_read();
+  }
+  flashsst25_read_end();
+}
+
+
 void flashsst25_write_byte(uint32_t addr, uint8_t val) {
   flashsst25_write_enable();
   flashsst25_spi_assert();
