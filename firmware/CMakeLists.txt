@@ -83,6 +83,8 @@ SET(PROJECT_SOURCES
   mac25aa02e48.c
   spi.c
   dcElectronicLoad.c
+  sha1.c
+  base64.c
 )
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES} ${CMSIS_STARTUP_SOURCE})

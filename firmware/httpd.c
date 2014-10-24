@@ -3,12 +3,16 @@
 #include "debug.h"
 #include "httpd.h"
 #include "flashFiles.h"
+#include "sha1.h"
+#include "base64.h"
 #include <stdlib.h>
 
 static const char http_10[] = " HTTP/1.0\r\n";
 static const char http_content_type[] = "Content-Type:";
 static const char http_content_type_html[] = "text/html";
 static const char http_content_len[] = "Content-Length:";
+static const char http_sec_websocket_key[] = "Sec-WebSocket-Key:";
+static const char http_websocket_guid[] = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 static const char http_header_404[] = "HTTP/1.0 404 Not found\r\nConnection: close\r\n";
 static const char html_not_found[] = "<html><body><h1>Page not found</h1></body></html>";
 
@@ -139,6 +143,26 @@ PT_THREAD(send_headers(struct httpd_state* s, const char* statushdr)) {
   PSOCK_END(&s->sout);
 }
 
+void httpd_calculate_websocket_accept(const char* key, char* accept) {
+  SHA1Context ctx;
+  int i, j;
+  uint8_t data[20];
+
+  SHA1Reset(&ctx);
+  SHA1Input(&ctx, (uint8_t*)key, strlen(key));
+  SHA1Input(&ctx, (uint8_t*)http_websocket_guid, strlen(http_websocket_guid));
+  SHA1Result(&ctx);
+
+  for (i = 0, j = 0; i < 5; i++, j += 4) {
+    data[j + 0] = (ctx.Message_Digest[i] >> 24) & 0xff;
+    data[j + 1] = (ctx.Message_Digest[i] >> 16) & 0xff;
+    data[j + 2] = (ctx.Message_Digest[i] >> 8) & 0xff;
+    data[j + 3] = (ctx.Message_Digest[i] >> 0) & 0xff;
+  }
+
+  base64_encode(data, 20, accept);
+}
+
 PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   PSOCK_BEGIN(&s->sin);
   PSOCK_READTO(&s->sin, ' ');
@@ -179,6 +203,11 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
     if (s->request_type == HTTPD_POST && strncmp((char*)s->inputbuf, http_content_len, 15) == 0) {
       s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
       s->content_len = atoi((char*)&s->inputbuf[16]);
+    }
+
+    if (strncmp((char*)s->inputbuf, http_sec_websocket_key, 18) == 0) {
+      s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
+      httpd_calculate_websocket_accept((char*)&s->inputbuf[19], s->sec_websocket_accept);
     }
 
     /* should have a header callback here check_header(s) */

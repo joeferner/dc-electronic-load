@@ -45,5 +45,8 @@ PROCESS_NAME(gfx_update_process);
 void dc_electronic_load_setup();
 void dc_electronic_load_loop();
 void set_current_milliamps(uint32_t value);
+uint16_t get_millivolts();
+uint16_t get_milliamps();
+uint16_t get_set_milliamps();
 
 #endif

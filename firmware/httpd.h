@@ -55,10 +55,12 @@ struct httpd_state {
   struct flashFile* file;
   uint32_t file_pos;
   uint32_t content_len;
+  char sec_websocket_accept[35];
   uint8_t outbuf[HTTPD_OUTBUF_SIZE];
   uint16_t outbuf_pos;
   uint8_t state;
   uint8_t request_type;
+  struct etimer ws_etimer;
 };
 
 PROCESS_NAME(httpd_process);

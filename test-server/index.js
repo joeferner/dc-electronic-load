@@ -29,11 +29,13 @@ wss.on('connection', function(ws) {
   var id = setInterval(function() {
     var msg = {
       time: new Date().getTime(),
-      voltage: 5 + Math.random(),
-      amperage: Math.random(),
+      voltage: 5000 + (Math.random() * 10),
+      amperage: 200 + (Math.random() * 10),
       targetAmps: targetAmps
     };
-    ws.send(JSON.stringify(msg), function() { /* ignore errors */ });
+    ws.send(JSON.stringify(msg), function() {
+      // ignore errors
+    });
   }, 1000);
   console.log('started client interval');
   ws.on('close', function() {

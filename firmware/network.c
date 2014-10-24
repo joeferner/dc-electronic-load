@@ -17,8 +17,13 @@
 
 #ifdef NETWORK_ENABLE
 
+#define WS_FIN          0x80
+#define WS_OPCODE_TEXT  0x01
+
 static const char http_header_200[] = "HTTP/1.0 200 OK\r\nConnection: close\r\n";
-static const char http_header_400[] = "HTTP/1.0 200 BAD\r\nConnection: close\r\n";
+static const char http_200_ok[] = "HTTP/1.0 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
+static const char http_400_fail[] = "HTTP/1.0 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
+static const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
 PROCESS(dhcp_process, "DHCP");
 PROCESS(telnet_process, "Telnet");
@@ -196,7 +201,15 @@ PT_THREAD(serve_flash_file(struct httpd_state* s)) {
   uint32_t readlen;
 
   PSOCK_BEGIN(&s->sout);
-  PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
+  PSOCK_SEND_STR(&s->sout, http_header_200);
+  PSOCK_SEND_STR(&s->sout, "Content-Type: ");
+  PSOCK_SEND_STR(&s->sout, s->file->content_type);
+  PSOCK_SEND_STR(&s->sout, "\r\n");
+  PSOCK_SEND_STR(&s->sout, "Content-Length: ");
+  itoa(s->file->size, (char*)s->outbuf, 10);
+  PSOCK_SEND_STR(&s->sout, (const char*)s->outbuf);
+  PSOCK_SEND_STR(&s->sout, "\r\n");
+  PSOCK_SEND_STR(&s->sout, "\r\n");
 
   while (s->file_pos < s->file->size) {
     readlen = MIN(HTTPD_OUTBUF_SIZE, s->file->size - s->file_pos);
@@ -217,21 +230,50 @@ PT_THREAD(serve_amps_set(struct httpd_state* s)) {
     value = atoi((const char*)s->inputbuf + 6);
     set_current_milliamps(value);
 
-    PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
-    PSOCK_SEND_STR(&s->sout, "OK");
+    PSOCK_SEND_STR(&s->sout, http_200_ok);
   } else {
-    PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_400));
-    PSOCK_SEND_STR(&s->sout, "FAIL");
+    PSOCK_SEND_STR(&s->sout, http_400_fail);
   }
 
   PSOCK_END(&s->sout);
 }
 
 PT_THREAD(serve_web_socket(struct httpd_state* s)) {
-  PSOCK_BEGIN(&s->sout);
-  PSOCK_WAIT_THREAD(&s->sout, send_headers(s, http_header_200));
+  uint8_t len;
+  char* p;
 
-  PSOCK_SEND_STR(&s->sout, "OK");
+  PSOCK_BEGIN(&s->sout);
+  PSOCK_SEND_STR(&s->sout, http_header_101_ws_upgrade);
+  PSOCK_SEND_STR(&s->sout, "Sec-WebSocket-Accept: ");
+  PSOCK_SEND_STR(&s->sout, s->sec_websocket_accept);
+  PSOCK_SEND_STR(&s->sout, "\r\n\r\n");
+
+  etimer_set(&s->ws_etimer, CLOCK_SECOND);
+
+  while (!(uip_aborted() || uip_closed() || uip_timedout())) {
+    p = (char*)&s->outbuf[2];
+    strcpy(p, "{\"time\":");
+    p += strlen(p);
+    itoa(time_ms(), p, 10);
+    strcat(p, ",\"voltage\":");
+    p += strlen(p);
+    itoa(get_millivolts(), p, 10);
+    strcat(p, ",\"amperage\":");
+    p += strlen(p);
+    itoa(get_milliamps(), p, 10);
+    strcat(p, ",\"targetAmps\":");
+    p += strlen(p);
+    itoa(get_set_milliamps(), p, 10);
+    strcat(p, "}");
+
+    len = strlen((const char*)&s->outbuf[2]);
+    s->outbuf[0] = WS_FIN | WS_OPCODE_TEXT;
+    s->outbuf[1] = len;
+    s->outbuf_pos = len + 2;
+    PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
+    PSOCK_WAIT_UNTIL(&s->sout, etimer_expired(&s->ws_etimer));
+    etimer_reset(&s->ws_etimer);
+  }
 
   PSOCK_END(&s->sout);
 }

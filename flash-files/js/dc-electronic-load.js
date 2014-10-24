@@ -2,7 +2,10 @@
 
 $(function() {
   var setAmperageForm = $('#set-amperage-form');
+  var connectButton = $('.btn-connect');
+  var connectMessage = $('.connect-message');
 
+  var wsConnection;
   var data = {
     voltage: [],
     amperage: [],
@@ -30,29 +33,60 @@ $(function() {
     });
   }
 
+  function clearGraph() {
+    data.voltage = [];
+    data.amperage = [];
+    data.power = [];
+    updateGraph();
+  }
+
+  function toggleConnect() {
+    if (wsConnection) {
+      closeWebSocket();
+    } else {
+      openWebSocket();
+    }
+  }
+
+  function closeWebSocket() {
+    wsConnection.close();
+    connectButton.html('Connect');
+    connectButton.removeClass('disabled');
+    wsConnection = null;
+  }
+
   function openWebSocket() {
+    connectMessage.html('');
+    connectButton.html('Connecting...');
+    connectButton.addClass('disabled');
+
     var wsAddr = 'ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws';
     console.log('connecting ws: ' + wsAddr);
-    var wsConnection = new WebSocket(wsAddr);
+    wsConnection = new WebSocket(wsAddr);
 
     wsConnection.onopen = function() {
       console.log('connected ws: ' + wsAddr);
+      connectButton.html('Disconnect');
+      connectButton.removeClass('disabled');
     };
 
     wsConnection.onerror = function(error) {
-      console.log('WebSocket Error ' + error);
+      console.log('WebSocket Error ', error, wsConnection);
+      connectMessage.html('Error connecting');
+      closeWebSocket();
     };
 
     wsConnection.onmessage = function(e) {
       var json = JSON.parse(e.data);
       console.log('Server:', json);
+      var power = (json.voltage / 1000.0) * (json.amperage / 1000.0);
       $('#current-set-amperage').html(round(json.targetAmps, 0) + "mA");
       $('#current-amperage').html(round(json.amperage, 0) + "mA");
-      $('#current-voltage').html(round(json.voltage, 2) + "V");
-      $('#current-power').html(round(json.voltage * json.amperage, 2) + "W");
-      data.voltage.push([json.time, json.voltage]);
+      $('#current-voltage').html(round(json.voltage / 1000.0, 2) + "V");
+      $('#current-power').html(round(power, 2) + "W");
+      data.voltage.push([json.time, json.voltage / 1000.0]);
       data.amperage.push([json.time, json.amperage]);
-      data.power.push([json.time, json.voltage * json.amperage]);
+      data.power.push([json.time, power]);
       updateGraph();
     };
   }
@@ -96,4 +130,6 @@ $(function() {
   updateGraph();
   openWebSocket();
   ajaxForms();
+  connectButton.click(toggleConnect);
+  $('.btn-clear').click(clearGraph);
 });

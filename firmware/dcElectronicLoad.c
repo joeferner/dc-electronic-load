@@ -108,6 +108,19 @@ void set_current_milliamps(uint32_t value) {
 #endif
 }
 
+uint16_t get_millivolts() {
+  return readMilliVolts;
+}
+
+uint16_t get_milliamps() {
+  return readCurrentMilliamps;
+}
+
+uint16_t get_set_milliamps() {
+  return setCurrentMilliamps;
+}
+
+
 #ifdef DISP6800_ENABLE
 PROCESS_THREAD(gfx_update_process, ev, data) {
   char valueBuffer[20];
