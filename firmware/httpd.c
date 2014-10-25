@@ -109,8 +109,6 @@ void httpd_appcall(void* state) {
         debug_write_line("HTTPD: aborting - http timeout");
         http_connections--;
         httpd_state_free(s);
-      } else {
-        debug_write_line("HTTPD: uip-poll");
       }
     } else {
       timer_restart(&s->timer);

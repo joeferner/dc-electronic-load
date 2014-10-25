@@ -72,7 +72,7 @@ PROCESS_THREAD(adc_volts_process, ev, data) {
   etimer_set(&adc_volts_etimer, CLOCK_SECOND / 10);
 
   while (1) {
-    PROCESS_YIELD();
+    PROCESS_YIELD_UNTIL(etimer_expired(&adc_volts_etimer));
     uint16_t value = adc_sample(ADC_CH0_SINGLE);
     adc_irq(0, value);
 
@@ -88,7 +88,7 @@ PROCESS_THREAD(adc_current_process, ev, data) {
   etimer_set(&adc_current_etimer, CLOCK_SECOND / 10);
 
   while (1) {
-    PROCESS_YIELD();
+    PROCESS_YIELD_UNTIL(etimer_expired(&adc_current_etimer));
     uint16_t value = adc_sample(ADC_CH1_SINGLE);
     adc_irq(1, value);
 
@@ -104,7 +104,7 @@ PROCESS_THREAD(adc_temp_process, ev, data) {
   etimer_set(&adc_temp_etimer, CLOCK_SECOND);
 
   while (1) {
-    PROCESS_YIELD();
+    PROCESS_YIELD_UNTIL(etimer_expired(&adc_temp_etimer));
     uint16_t value = adc_sample(ADC_CH2_SINGLE);
     adc_irq(2, value);
     value = adc_sample(ADC_CH3_SINGLE);
