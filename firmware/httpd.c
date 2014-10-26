@@ -5,6 +5,7 @@
 #include "flashFiles.h"
 #include "sha1.h"
 #include "base64.h"
+#include "net/ip/tcpip.h"
 #include <stdlib.h>
 
 static const char http_10[] = " HTTP/1.0\r\n";
@@ -75,7 +76,11 @@ void httpd_appcall(void* state) {
 
   if (uip_closed() || uip_aborted() || uip_timedout()) {
     if (s != NULL) {
-      debug_write_line("HTTPD: closed/aborted");
+      debug_write("HTTPD: closed/aborted: ");
+      if (s->file) {
+        debug_write(s->file->filename);
+      }
+      debug_write_line("");
       http_connections--;
       httpd_state_free(s);
     } else {
@@ -187,10 +192,8 @@ PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
   }
   s->file = httpd_get_file((const char*)s->inputbuf);
   s->file_pos = 0;
-  debug_write("?httpd: ");
+  debug_write("?httpd file: ");
   debug_write((const char*)s->inputbuf);
-  debug_write(" ");
-  debug_write_u32((uint32_t)s->file, 10);
   debug_write_line("");
 
   s->state = HTTPD_STATE_OUTPUT;

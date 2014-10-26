@@ -42,4 +42,7 @@ wss.on('connection', function(ws) {
     console.log('stopping client interval');
     clearInterval(id);
   });
+  ws.on('message', function() {
+    console.log(arguments);
+  });
 });

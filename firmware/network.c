@@ -7,6 +7,7 @@
 #include "network.h"
 #include "contiki/net/ipv4/uip_arp.h"
 #include "contiki/net/ip/dhcpc.h"
+#include "net/ip/tcpip.h"
 #include "contiki-conf.h"
 #include "debug.h"
 #include "ring_buffer.h"
@@ -20,7 +21,7 @@
 #define WS_FIN          0x80
 #define WS_OPCODE_TEXT  0x01
 
-static const char http_header_200[] = "HTTP/1.0 200 OK\r\nConnection: close\r\n";
+static const char http_header_200[] = "HTTP/1.0 200 OK\r\nCache-Control: public, max-age=864000\r\nConnection: close\r\n";
 static const char http_200_ok[] = "HTTP/1.0 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
 static const char http_400_fail[] = "HTTP/1.0 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
 static const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
@@ -271,8 +272,15 @@ PT_THREAD(serve_web_socket(struct httpd_state* s)) {
     s->outbuf[1] = len;
     s->outbuf_pos = len + 2;
     PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
-    PSOCK_WAIT_UNTIL(&s->sout, etimer_expired(&s->ws_etimer));
+    PSOCK_WAIT_UNTIL(&s->sout, PSOCK_NEWDATA(&s->sout) || etimer_expired(&s->ws_etimer));
     etimer_reset(&s->ws_etimer);
+    if (PSOCK_NEWDATA(&s->sout)) {
+      PSOCK_READBUF_LEN(&s->sout, 7);
+      if (s->inputbuf[0] == (WS_FIN | WS_OPCODE_TEXT)) {
+        len = s->inputbuf[1] & 0x7f;
+        debug_write_line("ws message");
+      }
+    }
   }
 
   PSOCK_END(&s->sout);

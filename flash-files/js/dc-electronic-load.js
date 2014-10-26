@@ -5,7 +5,6 @@ $(function() {
   var connectButton = $('.btn-connect');
   var connectMessage = $('.connect-message');
 
-  var wsConnection;
   var data = {
     voltage: [],
     amperage: [],
@@ -41,7 +40,7 @@ $(function() {
   }
 
   function toggleConnect() {
-    if (wsConnection) {
+    if (document.wsConnection) {
       closeWebSocket();
     } else {
       openWebSocket();
@@ -49,10 +48,13 @@ $(function() {
   }
 
   function closeWebSocket() {
-    wsConnection.close();
+    if (document.wsConnection) {
+      document.wsConnection.send("CLOSE");
+      document.wsConnection.close();
+    }
     connectButton.html('Connect');
     connectButton.removeClass('disabled');
-    wsConnection = null;
+    document.wsConnection = null;
   }
 
   function openWebSocket() {
@@ -62,21 +64,21 @@ $(function() {
 
     var wsAddr = 'ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws';
     console.log('connecting ws: ' + wsAddr);
-    wsConnection = new WebSocket(wsAddr);
+    document.wsConnection = new WebSocket(wsAddr);
 
-    wsConnection.onopen = function() {
+    document.wsConnection.onopen = function() {
       console.log('connected ws: ' + wsAddr);
       connectButton.html('Disconnect');
       connectButton.removeClass('disabled');
     };
 
-    wsConnection.onerror = function(error) {
-      console.log('WebSocket Error ', error, wsConnection);
+    document.wsConnection.onerror = function(error) {
+      console.log('WebSocket Error ', error, document.wsConnection);
       connectMessage.html('Error connecting');
       closeWebSocket();
     };
 
-    wsConnection.onmessage = function(e) {
+    document.wsConnection.onmessage = function(e) {
       var json = JSON.parse(e.data);
       console.log('Server:', json);
       var power = (json.voltage / 1000.0) * (json.amperage / 1000.0);
