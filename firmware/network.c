@@ -20,6 +20,7 @@
 
 #define WS_FIN          0x80
 #define WS_OPCODE_TEXT  0x01
+#define WS_MASK         0x80
 
 static const char http_header_200[] = "HTTP/1.0 200 OK\r\nCache-Control: public, max-age=864000\r\nConnection: close\r\n";
 static const char http_200_ok[] = "HTTP/1.0 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
@@ -198,92 +199,112 @@ void dhcpc_unconfigured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_unconfigured");
 }
 
-PT_THREAD(serve_flash_file(struct httpd_state* s)) {
+PT_THREAD(serve_flash_file(process_event_t ev, struct httpd_state* s)) {
   uint32_t readlen;
 
-  PSOCK_BEGIN(&s->sout);
-  PSOCK_SEND_STR(&s->sout, http_header_200);
-  PSOCK_SEND_STR(&s->sout, "Content-Type: ");
-  PSOCK_SEND_STR(&s->sout, s->file->content_type);
-  PSOCK_SEND_STR(&s->sout, "\r\n");
-  PSOCK_SEND_STR(&s->sout, "Content-Length: ");
-  itoa(s->file->size, (char*)s->outbuf, 10);
-  PSOCK_SEND_STR(&s->sout, (const char*)s->outbuf);
-  PSOCK_SEND_STR(&s->sout, "\r\n");
-  PSOCK_SEND_STR(&s->sout, "\r\n");
+  PSOCK_BEGIN(&s->sock);
+  PSOCK_SEND_STR(&s->sock, http_header_200);
+  PSOCK_SEND_STR(&s->sock, "Content-Type: ");
+  PSOCK_SEND_STR(&s->sock, s->file->content_type);
+  PSOCK_SEND_STR(&s->sock, "\r\n");
+  PSOCK_SEND_STR(&s->sock, "Content-Length: ");
+  itoa(s->file->size, (char*)s->buf, 10);
+  PSOCK_SEND_STR(&s->sock, (const char*)s->buf);
+  PSOCK_SEND_STR(&s->sock, "\r\n");
+  PSOCK_SEND_STR(&s->sock, "\r\n");
 
   while (s->file_pos < s->file->size) {
     readlen = MIN(HTTPD_OUTBUF_SIZE, s->file->size - s->file_pos);
-    flashsst25_readn(s->file->offset + s->file_pos, s->outbuf, readlen);
+    flashsst25_readn(s->file->offset + s->file_pos, s->buf, readlen);
     s->file_pos += readlen;
     s->outbuf_pos = readlen;
-    PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
+    PSOCK_SEND(&s->sock, s->buf, s->outbuf_pos);
   }
 
-  PSOCK_END(&s->sout);
+  PSOCK_END(&s->sock);
 }
 
-PT_THREAD(serve_amps_set(struct httpd_state* s)) {
+PT_THREAD(serve_amps_set(process_event_t ev, struct httpd_state* s)) {
   uint32_t value;
-  PSOCK_BEGIN(&s->sout);
+  PSOCK_BEGIN(&s->sock);
 
-  if (strncmp((const char*)s->inputbuf, "value=", 6) == 0) {
-    value = atoi((const char*)s->inputbuf + 6);
+  if (strncmp((const char*)s->buf, "value=", 6) == 0) {
+    value = atoi((const char*)s->buf + 6);
     set_current_milliamps(value);
 
-    PSOCK_SEND_STR(&s->sout, http_200_ok);
+    PSOCK_SEND_STR(&s->sock, http_200_ok);
   } else {
-    PSOCK_SEND_STR(&s->sout, http_400_fail);
+    PSOCK_SEND_STR(&s->sock, http_400_fail);
   }
 
-  PSOCK_END(&s->sout);
+  PSOCK_END(&s->sock);
 }
 
-PT_THREAD(serve_web_socket(struct httpd_state* s)) {
-  uint8_t len;
+PT_THREAD(serve_web_socket(process_event_t ev, struct httpd_state* s)) {
+  uint8_t i, len;
+  uint8_t wsMask[4];
   char* p;
 
-  PSOCK_BEGIN(&s->sout);
-  PSOCK_SEND_STR(&s->sout, http_header_101_ws_upgrade);
-  PSOCK_SEND_STR(&s->sout, "Sec-WebSocket-Accept: ");
-  PSOCK_SEND_STR(&s->sout, s->sec_websocket_accept);
-  PSOCK_SEND_STR(&s->sout, "\r\n\r\n");
+  PSOCK_BEGIN(&s->sock);
+  PSOCK_SEND_STR(&s->sock, http_header_101_ws_upgrade);
+  PSOCK_SEND_STR(&s->sock, "Sec-WebSocket-Accept: ");
+  PSOCK_SEND_STR(&s->sock, s->sec_websocket_accept);
+  PSOCK_SEND_STR(&s->sock, "\r\n\r\n");
 
   etimer_set(&s->ws_etimer, CLOCK_SECOND);
 
   while (!(uip_aborted() || uip_closed() || uip_timedout())) {
-    p = (char*)&s->outbuf[2];
-    strcpy(p, "{\"time\":");
-    p += strlen(p);
-    itoa(time_ms(), p, 10);
-    strcat(p, ",\"voltage\":");
-    p += strlen(p);
-    itoa(get_millivolts(), p, 10);
-    strcat(p, ",\"amperage\":");
-    p += strlen(p);
-    itoa(get_milliamps(), p, 10);
-    strcat(p, ",\"targetAmps\":");
-    p += strlen(p);
-    itoa(get_set_milliamps(), p, 10);
-    strcat(p, "}");
+    PT_YIELD_UNTIL(&s->sock.pt, uip_aborted() || uip_closed() || uip_timedout() || uip_newdata() || etimer_expired(&s->ws_etimer));
+    if (etimer_expired(&s->ws_etimer)) {
+      p = (char*)&s->buf[2];
+      strcpy(p, "{\"time\":");
+      p += strlen(p);
+      itoa(time_ms(), p, 10);
+      strcat(p, ",\"voltage\":");
+      p += strlen(p);
+      itoa(get_millivolts(), p, 10);
+      strcat(p, ",\"amperage\":");
+      p += strlen(p);
+      itoa(get_milliamps(), p, 10);
+      strcat(p, ",\"targetAmps\":");
+      p += strlen(p);
+      itoa(get_set_milliamps(), p, 10);
+      strcat(p, "}");
 
-    len = strlen((const char*)&s->outbuf[2]);
-    s->outbuf[0] = WS_FIN | WS_OPCODE_TEXT;
-    s->outbuf[1] = len;
-    s->outbuf_pos = len + 2;
-    PSOCK_SEND(&s->sout, s->outbuf, s->outbuf_pos);
-    PSOCK_WAIT_UNTIL(&s->sout, PSOCK_NEWDATA(&s->sout) || etimer_expired(&s->ws_etimer));
-    etimer_reset(&s->ws_etimer);
-    if (PSOCK_NEWDATA(&s->sout)) {
-      PSOCK_READBUF_LEN(&s->sout, 7);
-      if (s->inputbuf[0] == (WS_FIN | WS_OPCODE_TEXT)) {
-        len = s->inputbuf[1] & 0x7f;
-        debug_write_line("ws message");
+      len = strlen((const char*)&s->buf[2]);
+      s->buf[0] = WS_FIN | WS_OPCODE_TEXT;
+      s->buf[1] = len;
+      s->outbuf_pos = len + 2;
+      PSOCK_SEND(&s->sock, s->buf, s->outbuf_pos);
+
+      etimer_reset(&s->ws_etimer);
+    }
+    if (uip_newdata()) {
+      p = (char*)uip_appdata;
+      if (p[0] == (WS_FIN | WS_OPCODE_TEXT)) {
+        len = p[1] & 0x7f;
+        if ((p[1] & WS_MASK) == WS_MASK) {
+          memcpy(wsMask, &p[2], 4);
+          for (i = 0; i < len; i++) {
+            p[i] = p[i + 6] ^ wsMask[i % 4];
+          }
+        } else {
+          for (i = 0; i < len; i++) {
+            p[i] = p[i + 2];
+          }
+        }
+        p[len] = '\0';
+        debug_write("ws message: ");
+        debug_write((char*)p);
+        debug_write_line("");
+        if (strcmp(p, "CLOSE") == 0) {
+          break;
+        }
       }
     }
   }
 
-  PSOCK_END(&s->sout);
+  PSOCK_END(&s->sock);
 }
 
 struct flashFile* httpd_get_file(const char* filename) {
@@ -300,3 +321,4 @@ struct flashFile* httpd_get_file(const char* filename) {
 }
 
 #endif
+

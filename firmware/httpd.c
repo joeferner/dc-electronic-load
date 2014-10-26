@@ -21,11 +21,11 @@ uint16_t http_connections = 0;
 static struct httpd_state conns[HTTPD_CONNS];
 
 void httpd_init();
-void httpd_appcall(void* state);
+void httpd_appcall(process_event_t ev, void* state);
 void httpd_state_init();
 struct httpd_state* httpd_state_alloc();
 void httpd_state_free(struct httpd_state* s);
-void httpd_handle_connection(struct httpd_state* s);
+void httpd_handle_connection(process_event_t ev, struct httpd_state* s);
 
 PROCESS(httpd_process, "HTTP server");
 
@@ -46,7 +46,7 @@ PROCESS_THREAD(httpd_process, ev, data) {
   while (1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == tcpip_event || etimer_expired(&et));
     if (ev == tcpip_event) {
-      httpd_appcall(data);
+      httpd_appcall(ev, data);
     } else if (etimer_expired(&et)) {
       debug_write("HTTPD States: ");
       for (i = 0; i < HTTPD_CONNS; i++) {
@@ -71,7 +71,7 @@ void httpd_init() {
   httpd_state_init();
 }
 
-void httpd_appcall(void* state) {
+void httpd_appcall(process_event_t ev, void* state) {
   struct httpd_state* s = (struct httpd_state*)state;
 
   if (uip_closed() || uip_aborted() || uip_timedout()) {
@@ -102,11 +102,10 @@ void httpd_appcall(void* state) {
       /* this is a request that is to be sent! */
       s->state = HTTPD_STATE_REQUEST_OUTPUT;
     }
-    PSOCK_INIT(&s->sin, (uint8_t*)s->inputbuf, sizeof(s->inputbuf) - 1);
-    PSOCK_INIT(&s->sout, (uint8_t*)s->inputbuf, sizeof(s->inputbuf) - 1);
+    PSOCK_INIT(&s->sock, (uint8_t*)s->buf, sizeof(s->buf) - 1);
     PT_INIT(&s->outputpt);
     timer_set(&s->timer, CLOCK_SECOND * 30);
-    httpd_handle_connection(s);
+    httpd_handle_connection(ev, s);
   } else if (s != NULL) {
     if (uip_poll()) {
       if (timer_expired(&s->timer)) {
@@ -118,7 +117,7 @@ void httpd_appcall(void* state) {
     } else {
       timer_restart(&s->timer);
     }
-    httpd_handle_connection(s);
+    httpd_handle_connection(ev, s);
   } else {
     debug_write_line("HTTPD: aborting - no state");
     uip_abort();
@@ -126,24 +125,24 @@ void httpd_appcall(void* state) {
 }
 
 PT_THREAD(send_string(struct httpd_state* s, const char* str, uint16_t len)) {
-  PSOCK_BEGIN(&s->sout);
-  SEND_STRING(&s->sout, str, len);
-  PSOCK_END(&s->sout);
+  PSOCK_BEGIN(&s->sock);
+  SEND_STRING(&s->sock, str, len);
+  PSOCK_END(&s->sock);
 }
 
 PT_THREAD(send_headers(struct httpd_state* s, const char* statushdr)) {
-  PSOCK_BEGIN(&s->sout);
+  PSOCK_BEGIN(&s->sock);
 
-  SEND_STRING(&s->sout, statushdr, strlen(statushdr));
-  strcpy((char*)s->outbuf, http_content_type);
-  strcat((char*)s->outbuf, " ");
-  strcat((char*)s->outbuf, (s->file == NULL || s->file->content_type == NULL) ? http_content_type_html : s->file->content_type);
-  strcat((char*)s->outbuf, "\r\n\r\n");
-  s->outbuf_pos = strlen((char*)s->outbuf);
-  SEND_STRING(&s->sout, s->outbuf, s->outbuf_pos);
+  SEND_STRING(&s->sock, statushdr, strlen(statushdr));
+  strcpy((char*)s->buf, http_content_type);
+  strcat((char*)s->buf, " ");
+  strcat((char*)s->buf, (s->file == NULL || s->file->content_type == NULL) ? http_content_type_html : s->file->content_type);
+  strcat((char*)s->buf, "\r\n\r\n");
+  s->outbuf_pos = strlen((char*)s->buf);
+  SEND_STRING(&s->sock, s->buf, s->outbuf_pos);
   s->outbuf_pos = 0;
 
-  PSOCK_END(&s->sout);
+  PSOCK_END(&s->sock);
 }
 
 void httpd_calculate_websocket_accept(const char* key, char* accept) {
@@ -166,82 +165,84 @@ void httpd_calculate_websocket_accept(const char* key, char* accept) {
   base64_encode(data, 20, accept);
 }
 
-PT_THREAD(httpd_handle_input(struct httpd_state* s)) {
-  PSOCK_BEGIN(&s->sin);
-  PSOCK_READTO(&s->sin, ' ');
+PT_THREAD(httpd_handle_input(process_event_t ev, struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sock);
+  PSOCK_READTO(&s->sock, ' ');
 
-  if (strncmp((char*)s->inputbuf, "GET ", 4) == 0) {
+  if (strncmp((char*)s->buf, "GET ", 4) == 0) {
     s->request_type = HTTPD_GET;
-  } else if (strncmp((char*)s->inputbuf, "POST ", 5) == 0) {
+  } else if (strncmp((char*)s->buf, "POST ", 5) == 0) {
     s->request_type = HTTPD_POST;
     s->content_len = 0;
-  } else if (strncmp((char*)s->inputbuf, "HTTP ", 5) == 0) {
+  } else if (strncmp((char*)s->buf, "HTTP ", 5) == 0) {
     s->request_type = HTTPD_RESPONSE;
   } else {
-    PSOCK_CLOSE_EXIT(&s->sin);
+    PSOCK_CLOSE_EXIT(&s->sock);
   }
-  PSOCK_READTO(&s->sin, ' ');
+  PSOCK_READTO(&s->sock, ' ');
 
-  if (s->inputbuf[0] != '/') {
-    PSOCK_CLOSE_EXIT(&s->sin);
+  if (s->buf[0] != '/') {
+    PSOCK_CLOSE_EXIT(&s->sock);
   }
 
-  s->inputbuf[PSOCK_DATALEN(&s->sin) - 1] = 0;
-  if (strcmp((const char*)s->inputbuf, "/") == 0) {
-    strcpy((char*)s->inputbuf, "/index.html");
+  s->buf[PSOCK_DATALEN(&s->sock) - 1] = 0;
+  if (strcmp((const char*)s->buf, "/") == 0) {
+    strcpy((char*)s->buf, "/index.html");
   }
-  s->file = httpd_get_file((const char*)s->inputbuf);
+  s->file = httpd_get_file((const char*)s->buf);
   s->file_pos = 0;
   debug_write("?httpd file: ");
-  debug_write((const char*)s->inputbuf);
+  debug_write((const char*)s->buf);
   debug_write_line("");
 
-  s->state = HTTPD_STATE_OUTPUT;
-
   while (1) {
-    PSOCK_READTO(&s->sin, '\n');
+    PSOCK_READTO(&s->sock, '\n');
 
-    if (s->request_type == HTTPD_POST && strncmp((char*)s->inputbuf, http_content_len, 15) == 0) {
-      s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
-      s->content_len = atoi((char*)&s->inputbuf[16]);
+    if (s->request_type == HTTPD_POST && strncmp((char*)s->buf, http_content_len, 15) == 0) {
+      s->buf[PSOCK_DATALEN(&s->sock) - 2] = 0;
+      s->content_len = atoi((char*)&s->buf[16]);
     }
 
-    if (strncmp((char*)s->inputbuf, http_sec_websocket_key, 18) == 0) {
-      s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
-      httpd_calculate_websocket_accept((char*)&s->inputbuf[19], s->sec_websocket_accept);
+    if (strncmp((char*)s->buf, http_sec_websocket_key, 18) == 0) {
+      s->buf[PSOCK_DATALEN(&s->sock) - 2] = 0;
+      httpd_calculate_websocket_accept((char*)&s->buf[19], s->sec_websocket_accept);
     }
 
     /* should have a header callback here check_header(s) */
-    if (PSOCK_DATALEN(&s->sin) > 2) {
-      s->inputbuf[PSOCK_DATALEN(&s->sin) - 2] = 0;
+    if (PSOCK_DATALEN(&s->sock) > 2) {
+      s->buf[PSOCK_DATALEN(&s->sock) - 2] = 0;
     } else if (s->request_type == HTTPD_POST) {
-      PSOCK_READBUF_LEN(&s->sin, s->content_len);
-      s->inputbuf[PSOCK_DATALEN(&s->sin)] = 0;
+      PSOCK_READBUF_LEN(&s->sock, s->content_len);
+      s->buf[PSOCK_DATALEN(&s->sock)] = 0;
       s->state = HTTPD_STATE_OUTPUT;
+      break;
+    } else {
+      s->state = HTTPD_STATE_OUTPUT;
+      break;
     }
   }
-  PSOCK_END(&s->sin);
+  PSOCK_END(&s->sock);
 }
 
-PT_THREAD(httpd_handle_output(struct httpd_state* s)) {
+PT_THREAD(httpd_handle_output(process_event_t ev, struct httpd_state* s)) {
   PT_BEGIN(&s->outputpt);
 
   if (s->file == NULL) {
     PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_404));
     PT_WAIT_THREAD(&s->outputpt, send_string(s, html_not_found, strlen(html_not_found)));
-    uip_close();
-    PT_EXIT(&s->outputpt);
   } else {
-    PT_WAIT_THREAD(&s->outputpt, s->file->script(s));
+    PT_WAIT_THREAD(&s->outputpt, s->file->script(ev, s));
   }
-  PSOCK_CLOSE(&s->sout);
+  PSOCK_CLOSE(&s->sock);
   PT_END(&s->outputpt);
 }
 
-void httpd_handle_connection(struct httpd_state* s) {
-  httpd_handle_input(s);
+void httpd_handle_connection(process_event_t ev, struct httpd_state* s) {
+  if (s->state == HTTPD_STATE_INPUT) {
+    httpd_handle_input(ev, s);
+  }
   if (s->state == HTTPD_STATE_OUTPUT) {
-    httpd_handle_output(s);
+    httpd_handle_output(ev, s);
   }
 }
 

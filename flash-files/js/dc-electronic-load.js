@@ -26,7 +26,7 @@ $(function() {
       },
       yaxes: [
         { min: 0, axisLabel: 'Voltage (V)' },
-        { min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function(val, axis) { return parseInt(val * 100); } },
+        { min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function(val, axis) { return parseInt(val); } },
         { min: 0, axisLabel: 'Power (W)', position: 'right' }
       ]
     });
@@ -48,6 +48,7 @@ $(function() {
   }
 
   function closeWebSocket() {
+    console.log('Closing ws');
     if (document.wsConnection) {
       document.wsConnection.send("CLOSE");
       document.wsConnection.close();

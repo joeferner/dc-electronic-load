@@ -15,12 +15,6 @@
 #  define HTTPD_PATHLEN WEBSERVER_CONF_CFS_PATHLEN
 #endif
 
-#ifndef WEBSERVER_CONF_INBUF_SIZE
-#  define HTTPD_INBUF_SIZE (HTTPD_PATHLEN + 90)
-#else
-#  define HTTPD_INBUF_SIZE WEBSERVER_CONF_INBUF_SIZE
-#endif
-
 #ifndef WEBSERVER_CONF_OUTBUF_SIZE
 #  define HTTPD_OUTBUF_SIZE (UIP_TCP_MSS + 20)
 #else
@@ -38,25 +32,23 @@
 #define HTTPD_STATE_INPUT          1
 #define HTTPD_STATE_OUTPUT         2
 #define HTTPD_STATE_REQUEST_OUTPUT 3
-#define HTTPD_STATE_REQUEST_INPUT  4
 
 struct httpd_state;
 struct flashFile;
 
-typedef char(*httpd_script_t)(struct httpd_state* s);
+typedef char(*httpd_script_t)(process_event_t ev, struct httpd_state* s);
 
 extern struct flashFile* httpd_get_file(const char* filename);
 
 struct httpd_state {
   struct timer timer;
-  struct psock sin, sout;
+  struct psock sock;
   struct pt outputpt;
-  uint8_t inputbuf[HTTPD_INBUF_SIZE];
   struct flashFile* file;
   uint32_t file_pos;
   uint32_t content_len;
   char sec_websocket_accept[35];
-  uint8_t outbuf[HTTPD_OUTBUF_SIZE];
+  uint8_t buf[HTTPD_OUTBUF_SIZE];
   uint16_t outbuf_pos;
   uint8_t state;
   uint8_t request_type;
