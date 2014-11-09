@@ -7,6 +7,8 @@
 #include "network.h"
 #include "contiki/net/ipv4/uip_arp.h"
 #include "contiki/net/ip/dhcpc.h"
+#include "contiki/net/ipv4/uip-fw.h"
+#include "contiki/net/ipv4/uip-fw-drv.h"
 #include "net/ip/tcpip.h"
 #include "contiki-conf.h"
 #include "debug.h"
@@ -76,8 +78,12 @@ void network_setup(uint8_t* macAddress) {
   enc28j60_setup(&uip_lladdr);
 
   uip_init();
+  uip_fw_init();
   uip_arp_init();
 
+  debug_write_line("?Start uip-fw");
+  process_start(&uip_fw_process, NULL);
+  
   debug_write_line("?Start DHCP Process");
   _network_request_dhcp = 1;
   process_start(&dhcp_process, NULL);

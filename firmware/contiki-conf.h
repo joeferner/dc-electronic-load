@@ -2,6 +2,7 @@
 #define _CONTIKI_CONF_H_
 
 #include <stdint.h>
+#include "platform_config.h"
 
 #define CCIF
 #define CLIF
@@ -33,9 +34,12 @@ typedef unsigned int uip_stats_t;
 #define UIP_CONF_LLH_LEN 14
 
 /* uIP configuration */
+#define UIP_CONF_IP_FORWARD       1
+#define UIP_CONF_TCP_SPLIT        1
 #define UIP_CONF_BROADCAST        1
 #define UIP_CONF_LOGGING          1
 #define UIP_CONF_BUFFER_SIZE      1024
+#define UIP_SPLIT_CONF_SIZE       WEBSERVER_CONF_OUTBUF_SIZE
 #define RESOLV_CONF_SUPPORTS_MDNS 1
 #define UIP_CONF_TCP_FORWARD      1
 #define CONTIKI_CONF_DEFAULT_HOSTNAME "rs232-01"

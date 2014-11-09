@@ -31,6 +31,7 @@ PROCINIT(
   , &httpd_process
   , &telnet_process
   , &resolv_process
+  , &uip_fw_process
 #endif
 );
 

@@ -51,8 +51,11 @@ SET(PROJECT_SOURCES
 
   contiki/net/ipv4/uip.c
   contiki/net/ipv4/uip_arp.c
+  contiki/net/ipv4/uip-fw.c
+  contiki/net/ipv4/uip-fw-drv.c
   contiki/net/ip/psock.c
   contiki/net/ip/dhcpc.c
+  contiki/net/ip/uip-split.c
   contiki/net/ip/tcpip.c
   contiki/net/ip/resolv.c
   contiki/net/ip/uip-udp-packet.c
