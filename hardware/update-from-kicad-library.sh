@@ -13,4 +13,4 @@ do
   fi
 done
 
-kicad-update -i dc-electronic-load.lib.list -o dc-electronic-load.lib --basedir ../..//kicad-library
+kicad-update -i dc-electronic-load.lib.list -o dc-electronic-load.lib --basedir ../../kicad-library

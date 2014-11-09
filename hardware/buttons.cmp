@@ -1,0 +1,59 @@
+Cmp-Mod V01 Created by Cvpcb (2014-10-09 BZR 5173)-product   date = Sat 08 Nov 2014 09:42:45 PM EST
+
+BeginCmp
+TimeStamp = /545ED507;
+Reference = M1;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ED55A;
+Reference = M2;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ED575;
+Reference = M3;
+ValeurCmp = Mounting Hole;
+IdModule  = klib:MTGNP565H328Z565P;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ED126;
+Reference = P1;
+ValeurCmp = P05;
+IdModule  = klib:JST-B5B-XH-A;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ECF89;
+Reference = S1;
+ValeurCmp = BUTTOND;
+IdModule  = klib:TL1105SP;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ECFE5;
+Reference = S2;
+ValeurCmp = BUTTONC;
+IdModule  = klib:TL1105SP;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ED01D;
+Reference = S3;
+ValeurCmp = BUTTONB;
+IdModule  = klib:TL1105SP;
+EndCmp
+
+BeginCmp
+TimeStamp = /545ED05A;
+Reference = S4;
+ValeurCmp = BUTTONA;
+IdModule  = klib:TL1105SP;
+EndCmp
+
+EndListe

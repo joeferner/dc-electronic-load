@@ -31,3 +31,4 @@ libs/MOSFET-N-123.lib
 libs/MOSFET-N-134.lib
 libs/TSV631.lib
 libs/DIODEZENER.lib
+libs/SPST-4PIN.lib
