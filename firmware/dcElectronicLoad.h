@@ -10,6 +10,7 @@
 #include "time.h"
 #include "spi.h"
 #include "debug.h"
+#include "delay.h"
 #ifdef DISP6800_ENABLE
 #include "disp6800.h"
 #include "gfx.h"
@@ -34,6 +35,9 @@
 #endif
 #ifdef NETWORK_ENABLE
 #include "network.h"
+#endif
+#ifdef BUTTONS_ENABLE
+#include "buttons.h"
 #endif
 
 PROCESS_NAME(debug_process);

@@ -13,12 +13,16 @@ PROCESS(gfx_update_process, "GFX Update");
 #define DISPLAY_2DECIMALS 3
 #define DISPLAY_3DECIMALS 4
 
+#define GFX_STATE_MEASURE 1
+#define GFX_STATE_INFO    2
+
 uint16_t readMilliVolts;
 uint16_t readCurrentMilliamps;
 uint8_t readCurrentMilliampsDisplay;
 uint16_t setCurrentMilliamps;
 uint8_t fanSetOverride;
 uint16_t lastAdcValue[4];
+uint8_t gfxState;
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
@@ -27,11 +31,16 @@ uint16_t adcVoltsToMillivolts(uint16_t value);
 uint16_t adcCurrentToMillamps(uint16_t value);
 uint16_t setMilliampsToDac(uint16_t value);
 
+void gfx_draw_display_measure();
+void gfx_draw_display_info();
+void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, const char* menuD);
+
 void dc_electronic_load_setup() {
   setCurrentMilliamps = 0;
   readCurrentMilliamps = 0;
   readMilliVolts = 0;
   readCurrentMilliampsDisplay = DISPLAY_MILLI;
+  gfxState = GFX_STATE_MEASURE;
 
   dma_ring_buffer_init(&g_debugUsartDmaInputRingBuffer, DEBUG_USART_RX_DMA_CH, g_debugUsartRxBuffer, DEBUG_USART_RX_BUFFER_SIZE);
 
@@ -84,6 +93,10 @@ void dc_electronic_load_setup() {
   fan_setup();
 #endif
 
+#ifdef BUTTONS_ENABLE
+  buttons_setup();
+#endif
+
   time_setup();
 
   debug_write_line("?END setup");
@@ -96,6 +109,7 @@ void dc_electronic_load_loop() {
   process_run();
   etimer_request_poll();
   process_poll(&debug_process);
+  buttons_loop();
 }
 
 void set_current_milliamps(uint32_t value) {
@@ -123,8 +137,6 @@ uint16_t get_set_milliamps() {
 
 #ifdef DISP6800_ENABLE
 PROCESS_THREAD(gfx_update_process, ev, data) {
-  char valueBuffer[20];
-  char suffix[5];
   PROCESS_BEGIN();
 
   while (1) {
@@ -132,61 +144,142 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
     gfx_clear();
 
-    // draw read current
-    if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
-      if (readCurrentMilliamps >= 1000) {
-        readCurrentMilliampsDisplay = DISPLAY_2DECIMALS;
-      }
+    if (gfxState == GFX_STATE_MEASURE) {
+      gfx_draw_display_measure();
     } else {
-      if (readCurrentMilliamps < 800) {
-        readCurrentMilliampsDisplay = DISPLAY_MILLI;
-      }
+      gfx_draw_display_info();
     }
-    milli_to_string(readCurrentMilliamps, valueBuffer, readCurrentMilliampsDisplay);
-    if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
-      strcpy(suffix, "mA");
-    } else {
-      strcpy(suffix, " A");
-    }
-    gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
-    gfx_draw_string(suffix, &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
-
-    // draw set current
-    if (setCurrentMilliamps < 1000) {
-      milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_MILLI);
-      strcpy(suffix, "mA");
-    } else {
-      milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_2DECIMALS);
-      strcpy(suffix, "A");
-    }
-    gfx_draw_string("SET", &FONT_XSMALL, 2, 2, GFX_ALIGN_LEFT);
-    gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
-    gfx_draw_string(suffix, &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
-
-    // draw read volts
-    milli_to_string(readMilliVolts, valueBuffer, DISPLAY_2DECIMALS);
-    gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
-    gfx_draw_string("V", &FONT_XSMALL, 110, 42, GFX_ALIGN_LEFT);
-
-    // draw watts
-    uint16_t milliwatts = readMilliVolts * readCurrentMilliamps / 1000;
-    if (milliwatts < 1000) {
-      milli_to_string(milliwatts, valueBuffer, DISPLAY_MILLI);
-      strcpy(suffix, "mW");
-    } else {
-      milli_to_string(milliwatts, valueBuffer, DISPLAY_1DECIMALS);
-      strcpy(suffix, " W");
-    }
-    gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
-    gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
-
-    // TODO the next line is for the menu
-    // TODO gfx_draw_string("POWER", &FONT_XSMALL, 2, 54, GFX_ALIGN_LEFT);
 
     gfx_redraw();
   }
 
   PROCESS_END();
+}
+
+void gfx_draw_display_measure() {
+  char valueBuffer[20];
+  char suffix[5];
+
+  // draw read current
+  if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
+    if (readCurrentMilliamps >= 1000) {
+      readCurrentMilliampsDisplay = DISPLAY_2DECIMALS;
+    }
+  } else {
+    if (readCurrentMilliamps < 800) {
+      readCurrentMilliampsDisplay = DISPLAY_MILLI;
+    }
+  }
+  milli_to_string(readCurrentMilliamps, valueBuffer, readCurrentMilliampsDisplay);
+  if (readCurrentMilliampsDisplay == DISPLAY_MILLI) {
+    strcpy(suffix, "mA");
+  } else {
+    strcpy(suffix, " A");
+  }
+  gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 0, GFX_ALIGN_RIGHT);
+  gfx_draw_string(suffix, &FONT_XSMALL, 110, 14, GFX_ALIGN_LEFT);
+
+  // draw set current
+  if (setCurrentMilliamps < 1000) {
+    milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_MILLI);
+    strcpy(suffix, "mA");
+  } else {
+    milli_to_string(setCurrentMilliamps, valueBuffer, DISPLAY_2DECIMALS);
+    strcpy(suffix, "A");
+  }
+  gfx_draw_string("SET", &FONT_XSMALL, 2, 2, GFX_ALIGN_LEFT);
+  gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 30, 11, GFX_ALIGN_RIGHT);
+  gfx_draw_string(suffix, &FONT_XSMALL, 30, 14, GFX_ALIGN_LEFT);
+
+  // draw read volts
+  milli_to_string(readMilliVolts, valueBuffer, DISPLAY_2DECIMALS);
+  gfx_draw_string(valueBuffer, &FONT_LARGE, 110, 28, GFX_ALIGN_RIGHT);
+  gfx_draw_string("V", &FONT_XSMALL, 110, 42, GFX_ALIGN_LEFT);
+
+  // draw watts
+  uint16_t milliwatts = readMilliVolts * readCurrentMilliamps / 1000;
+  if (milliwatts < 1000) {
+    milli_to_string(milliwatts, valueBuffer, DISPLAY_MILLI);
+    strcpy(suffix, "mW");
+  } else {
+    milli_to_string(milliwatts, valueBuffer, DISPLAY_1DECIMALS);
+    strcpy(suffix, " W");
+  }
+  gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
+  gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
+
+  gfx_draw_menu(NULL, NULL, NULL, "INFO");
+}
+
+void gfx_draw_display_info() {
+  char valueBuffer[20];
+  char* p;
+  uint8_t i;
+  uip_ipaddr_t addr;
+
+  // MAC Addr
+  gfx_draw_string("MAC Addr: ", &FONT_XSMALL, 0, 0, GFX_ALIGN_LEFT);
+  p = valueBuffer;
+  for (i = 0; i < EUI48_LENGTH; i++) {
+    if (i > 0) {
+      *p++ = ':';
+    }
+    *p++ = TO_HEX(EUI48[i] >> 4);
+    *p++ = TO_HEX(EUI48[i] >> 0);
+  }
+  *p = '\0';
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 12, GFX_ALIGN_LEFT);
+
+  // IP Address
+  gfx_draw_string("IP Addr: ", &FONT_XSMALL, 0, 24, GFX_ALIGN_LEFT);
+  uip_gethostaddr(&addr);
+  valueBuffer[0] = '\0';
+  for (i = 0; i < 4; i++) {
+    if (i > 0) {
+      strcat(valueBuffer, ".");
+    }
+    p = valueBuffer + strlen(valueBuffer);
+    uitoa(addr.u8[i], p, 10);
+  }
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 36, GFX_ALIGN_LEFT);
+
+  gfx_draw_menu(NULL, NULL, NULL, "EXIT");
+}
+
+void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, const char* menuD) {
+  if (menuA) {
+    gfx_draw_string(menuA, &FONT_XSMALL, 15, 54, GFX_ALIGN_CENTER);
+  }
+  if (menuB) {
+    gfx_draw_string(menuB, &FONT_XSMALL, 48, 54, GFX_ALIGN_CENTER);
+  }
+  if (menuC) {
+    gfx_draw_string(menuC, &FONT_XSMALL, 77, 54, GFX_ALIGN_CENTER);
+  }
+  if (menuD) {
+    gfx_draw_string(menuD, &FONT_XSMALL, 110, 54, GFX_ALIGN_CENTER);
+  }
+}
+
+#endif
+
+#ifdef BUTTONS_ENABLE
+void buttons_irq(uint8_t buttons) {
+  if (gfxState == GFX_STATE_MEASURE) {
+    if (buttons & BUTTON_D) { // info
+      gfxState = GFX_STATE_INFO;
+#ifdef DISP6800_ENABLE
+      process_poll(&gfx_update_process);
+#endif
+    }
+  } else if (gfxState == GFX_STATE_INFO) {
+    if (buttons & BUTTON_D) { // exit
+      gfxState = GFX_STATE_MEASURE;
+#ifdef DISP6800_ENABLE
+      process_poll(&gfx_update_process);
+#endif
+    }
+  }
 }
 #endif
 

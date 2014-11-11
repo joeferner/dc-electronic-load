@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+#define TO_HEX(i) ( (((i) & 0xf) <= 9) ? ('0' + ((i) & 0xf)) : ('A' - 10 + ((i) & 0xf)) )
+
 extern uint8_t g_debugUsartRxBuffer[DEBUG_USART_RX_BUFFER_SIZE];
 
 void debug_setup();

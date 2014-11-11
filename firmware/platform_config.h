@@ -17,6 +17,7 @@
 #define DISP6800_ENABLE
 #define FAN_ENABLE
 #define ENCODER_ENABLE
+#define BUTTONS_ENABLE
 #define FLASH_ENABLE
 #define MAC_ENABLE
 
@@ -86,6 +87,24 @@
 #define ENCODER_BUTTON_RCC        RCC_APB2Periph_GPIOC
 #define ENCODER_BUTTON_PORT       GPIOC
 #define ENCODER_BUTTON_PIN        GPIO_Pin_2
+#endif
+
+#ifdef BUTTONS_ENABLE
+#define BUTTONS_A_RCC            RCC_APB2Periph_GPIOC
+#define BUTTONS_A_PORT           GPIOC
+#define BUTTONS_A_PIN            GPIO_Pin_3
+
+#define BUTTONS_B_RCC            RCC_APB2Periph_GPIOA
+#define BUTTONS_B_PORT           GPIOA
+#define BUTTONS_B_PIN            GPIO_Pin_0
+
+#define BUTTONS_C_RCC            RCC_APB2Periph_GPIOA
+#define BUTTONS_C_PORT           GPIOA
+#define BUTTONS_C_PIN            GPIO_Pin_1
+
+#define BUTTONS_D_RCC            RCC_APB2Periph_GPIOA
+#define BUTTONS_D_PORT           GPIOA
+#define BUTTONS_D_PIN            GPIO_Pin_2
 #endif
 
 #ifdef ADC_ENABLE

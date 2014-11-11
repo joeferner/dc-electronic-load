@@ -5,8 +5,6 @@
 #include <stm32f10x_rcc.h>
 #include <misc.h>
 
-#define TO_HEX(i) ( (((i) & 0xf) <= 9) ? ('0' + ((i) & 0xf)) : ('A' - 10 + ((i) & 0xf)) )
-
 uint8_t g_debugUsartRxBuffer[DEBUG_USART_RX_BUFFER_SIZE];
 
 char* itoa(int32_t value, char* result, int base);

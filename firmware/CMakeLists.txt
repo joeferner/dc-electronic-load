@@ -73,6 +73,7 @@ SET(PROJECT_SOURCES
   enc28j60.c
   disp6800.c
   gfx.c
+  buttons.c
   encoder.c
   adc.c
   dac.c

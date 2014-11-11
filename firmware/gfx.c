@@ -76,6 +76,8 @@ int gfx_measure_string_width(const char* str, const tFont* font) {
 int gfx_draw_string(const char* str, const tFont* font, int x, int y, uint32_t opts) {
   if (TEST(opts, GFX_ALIGN_RIGHT)) {
     x -= gfx_measure_string_width(str, font);
+  } else if (TEST(opts, GFX_ALIGN_CENTER)) {
+    x -= gfx_measure_string_width(str, font) / 2;
   }
 
   int cx = 0;

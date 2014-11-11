@@ -9,8 +9,9 @@
 #include <stdint.h>
 #include "font.h"
 
-#define GFX_ALIGN_LEFT  0x00000000
-#define GFX_ALIGN_RIGHT 0x00000001
+#define GFX_ALIGN_LEFT   0x00000000
+#define GFX_ALIGN_RIGHT  0x00000001
+#define GFX_ALIGN_CENTER 0x00000002
 
 void gfx_setup();
 void gfx_clear();
