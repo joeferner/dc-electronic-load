@@ -75,6 +75,7 @@ SET(PROJECT_SOURCES
   gfx.c
   buttons.c
   encoder.c
+  recorder.c
   adc.c
   dac.c
   fan.c

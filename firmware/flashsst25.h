@@ -18,6 +18,7 @@ void flashsst25_read_end();
 uint8_t flashsst25_read();
 void flashsst25_readn(uint32_t addr, uint8_t* buffer, uint16_t len);
 void flashsst25_write_enable();
+void flashsst25_write(uint32_t addr, uint8_t* buffer, uint16_t len);
 void flashsst25_write_byte(uint32_t addr, uint8_t val);
 void flashsst25_write_status_reg(uint8_t val);
 uint8_t flashsst25_read_status_reg();

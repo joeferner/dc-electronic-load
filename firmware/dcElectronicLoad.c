@@ -98,6 +98,7 @@ void dc_electronic_load_setup() {
 #endif
 
   time_setup();
+  recorder_setup();
 
   debug_write_line("?END setup");
 }
@@ -208,7 +209,7 @@ void gfx_draw_display_measure() {
   gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
   gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
 
-  gfx_draw_menu(NULL, NULL, NULL, "INFO");
+  gfx_draw_menu(recorder_is_recording() ? "STOP" : "REC", NULL, NULL, "INFO");
 }
 
 void gfx_draw_display_info() {
@@ -266,20 +267,24 @@ void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, cons
 #ifdef BUTTONS_ENABLE
 void buttons_irq(uint8_t buttons) {
   if (gfxState == GFX_STATE_MEASURE) {
-    if (buttons & BUTTON_D) { // info
+    if (buttons & BUTTON_A) { // record/stop
+      if (recorder_is_recording()) {
+        recorder_stop();
+      } else {
+        recorder_start();
+      }
+    } else if (buttons & BUTTON_D) { // info
       gfxState = GFX_STATE_INFO;
-#ifdef DISP6800_ENABLE
-      process_poll(&gfx_update_process);
-#endif
     }
   } else if (gfxState == GFX_STATE_INFO) {
     if (buttons & BUTTON_D) { // exit
       gfxState = GFX_STATE_MEASURE;
-#ifdef DISP6800_ENABLE
-      process_poll(&gfx_update_process);
-#endif
     }
   }
+
+#ifdef DISP6800_ENABLE
+  process_poll(&gfx_update_process);
+#endif
 }
 #endif
 
@@ -365,6 +370,7 @@ void encoder_button_irq() {
 
 PROCESS_THREAD(debug_process, ev, data) {
   char line[MAX_LINE_LENGTH];
+  uint16_t read;
   uint8_t b;
   uint32_t flashAddress = 0;
   uint32_t flashCount = 0;
@@ -452,12 +458,12 @@ PROCESS_THREAD(debug_process, ev, data) {
             debug_write_line("-FAIL");
             break;
           }
-          if (dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, &b, 1) <= 0) {
+          if ((read = dma_ring_buffer_read(&g_debugUsartDmaInputRingBuffer, (uint8_t*)line, MIN(flashCount, sizeof(line)))) <= 0) {
             continue;
           }
-          flashsst25_write_byte(flashAddress, b);
-          flashAddress++;
-          flashCount--;
+          flashsst25_write(flashAddress, (uint8_t*)line, read);
+          flashAddress += read;
+          flashCount -= read;
           t = time_ms();
         }
       } else if (strncmp(line, "!FLASHREAD ", 11) == 0) {

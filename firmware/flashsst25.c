@@ -177,6 +177,13 @@ void flashsst25_readn(uint32_t addr, uint8_t* buffer, uint16_t len) {
   flashsst25_read_end();
 }
 
+// TODO this could speed up with a bulk write
+void flashsst25_write(uint32_t addr, uint8_t* buffer, uint16_t len) {
+  uint16_t i;
+  for (i = 0; i < len; i++, addr++) {
+    flashsst25_write_byte(addr, buffer[i]);
+  }
+}
 
 void flashsst25_write_byte(uint32_t addr, uint8_t val) {
   flashsst25_write_enable();

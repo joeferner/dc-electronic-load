@@ -4,10 +4,14 @@
 #include <misc.h>
 #include <stm32f10x_rcc.h>
 
+#define FLASH_SIZE                 (4 * 1024 * 1024)
+
 #define HTTPD_CONNS                8
 #define WEBSERVER_CONF_CFS_PATHLEN 20
 #define WEBSERVER_CONF_OUTBUF_SIZE 600
 #define DEBUG_USART_RX_BUFFER_SIZE 600
+#define RECORDING_START_ADDRESS    (512 * 1024)
+#define RECORDING_END_ADDRESS      FLASH_SIZE
 
 #define SPI1_ENABLE
 #define SPI2_ENABLE

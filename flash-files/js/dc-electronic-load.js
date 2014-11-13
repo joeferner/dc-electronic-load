@@ -3,6 +3,7 @@
 $(function() {
   var setAmperageForm = $('#set-amperage-form');
   var connectButton = $('.btn-connect');
+  var recorderStartStopButton = $('.btn-recorder-start-stop');
   var connectMessage = $('.connect-message');
 
   var data = {
@@ -17,17 +18,17 @@ $(function() {
 
   function updateGraph() {
     $.plot("#graph", [
-      { label: 'Voltage (V)', data: data.voltage, yaxis: 1 },
-      { label: 'Amperage (mA)', data: data.amperage, yaxis: 2 },
-      { label: 'Power (W)', data: data.power, yaxis: 3 }
+      {label: 'Voltage (V)', data: data.voltage, yaxis: 1},
+      {label: 'Amperage (mA)', data: data.amperage, yaxis: 2},
+      {label: 'Power (W)', data: data.power, yaxis: 3}
     ], {
       xaxis: {
         mode: "time"
       },
       yaxes: [
-        { min: 0, axisLabel: 'Voltage (V)' },
-        { min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function(val, axis) { return parseInt(val); } },
-        { min: 0, axisLabel: 'Power (W)', position: 'right' }
+        {min: 0, axisLabel: 'Voltage (V)'},
+        {min: 0, axisLabel: 'Amperage (mA)', tickFormatter: function(val, axis) { return parseInt(val); }},
+        {min: 0, axisLabel: 'Power (W)', position: 'right'}
       ]
     });
   }
@@ -87,6 +88,17 @@ $(function() {
       $('#current-amperage').html(round(json.amperage, 0) + "mA");
       $('#current-voltage').html(round(json.voltage / 1000.0, 2) + "V");
       $('#current-power').html(round(power, 2) + "W");
+
+      var recordingState = json.recording ? 'Recording' : 'Stopped';
+      recordingState += ' (samples: ' + json.recordingSamples + ')';
+      $('#current-recording-state').html(recordingState);
+
+      if (json.recording) {
+        recorderStartStopButton.html('Stop');
+      } else {
+        recorderStartStopButton.html('Start');
+      }
+
       data.voltage.push([json.time, json.voltage / 1000.0]);
       data.amperage.push([json.time, json.amperage]);
       data.power.push([json.time, power]);
@@ -130,9 +142,32 @@ $(function() {
     });
   }
 
+  function startStopRecording() {
+    if (recorderStartStopButton.text() == 'Start') {
+      $.ajax({
+        type: "POST",
+        url: '/recorder/start',
+        success: function() {
+          console.log(arguments);
+          recorderStartStopButton.html('Stop');
+        }
+      });
+    } else {
+      $.ajax({
+        type: "POST",
+        url: '/recorder/stop',
+        success: function() {
+          console.log(arguments);
+          recorderStartStopButton.html('Start');
+        }
+      });
+    }
+  }
+
   updateGraph();
   openWebSocket();
   ajaxForms();
   connectButton.click(toggleConnect);
+  recorderStartStopButton.click(startStopRecording);
   $('.btn-clear').click(clearGraph);
 });

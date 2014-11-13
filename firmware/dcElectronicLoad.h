@@ -11,6 +11,7 @@
 #include "spi.h"
 #include "debug.h"
 #include "delay.h"
+#include "recorder.h"
 #ifdef DISP6800_ENABLE
 #include "disp6800.h"
 #include "gfx.h"

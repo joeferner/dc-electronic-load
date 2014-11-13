@@ -6,6 +6,12 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+  
+#define BOOL  uint8_t
+#define FALSE 0
+#define TRUE  1
+  
 #define ABS(a) ( ((a) < 0) ? -(a) : (a) )
 #define MIN(a,b) ( ((a) < (b)) ? (a) : (b) )
 #define MAX(a,b) ( ((a) > (b)) ? (a) : (b) )

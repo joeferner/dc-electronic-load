@@ -15,6 +15,7 @@
 #include "flashsst25.h"
 #include "util.h"
 #include "dcElectronicLoad.h"
+#include "recorder.h"
 
 #ifdef NETWORK_ENABLE
 
@@ -22,9 +23,9 @@
 #define WS_OPCODE_TEXT  0x01
 #define WS_MASK         0x80
 
-static const char http_header_200[] = "HTTP/1.0 200 OK\r\nCache-Control: public, max-age=864000\r\nConnection: close\r\n";
-static const char http_200_ok[] = "HTTP/1.0 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
-static const char http_400_fail[] = "HTTP/1.0 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
+static const char http_header_200[] = "HTTP/1.1 200 OK\r\nCache-Control: public, max-age=864000\r\nConnection: close\r\n";
+static const char http_200_ok[] = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK";
+static const char http_400_fail[] = "HTTP/1.1 200 BAD\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL";
 static const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
 PROCESS(dhcp_process, "DHCP");
@@ -240,6 +241,90 @@ PT_THREAD(serve_amps_set(process_event_t ev, struct httpd_state* s)) {
   PSOCK_END(&s->sock);
 }
 
+PT_THREAD(serve_recorder_start(process_event_t ev, struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sock);
+
+  if (!recorder_is_recording()) {
+    recorder_start();
+    PSOCK_SEND_STR(&s->sock, http_200_ok);
+  } else {
+    PSOCK_SEND_STR(&s->sock, http_400_fail);
+  }
+
+  PSOCK_END(&s->sock);
+}
+
+PT_THREAD(serve_recorder_stop(process_event_t ev, struct httpd_state* s)) {
+  PSOCK_BEGIN(&s->sock);
+
+  if (recorder_is_recording()) {
+    recorder_stop();
+    PSOCK_SEND_STR(&s->sock, http_200_ok);
+  } else {
+    PSOCK_SEND_STR(&s->sock, http_400_fail);
+  }
+
+  PSOCK_END(&s->sock);
+}
+
+PT_THREAD(serve_recorder_download(process_event_t ev, struct httpd_state* s)) {
+  RecorderRecord record;
+  char* p;
+  PSOCK_BEGIN(&s->sock);
+
+  PSOCK_SEND_STR(&s->sock, "HTTP/1.1 200 OK\r\nConnection: close\r\nTransfer-Encoding: chunked\r\nContent-type: text/csv\r\nContent-disposition:attachment; filename=dc-electronic-load-data.csv\r\n\r\n");
+
+  p = (char*)s->buf;
+  strcpy(p, "  \r\nTime,Volts (mV),Amps (mA),Set Amps (mA)\n\r\n");
+  uitoa(strlen(p) - 6, p, 16);
+  p[2] = '\r';
+  PSOCK_SEND_STR(&s->sock, p);
+
+  s->file_pos = 0;
+  while ((s->file_pos < recorder_count()) || recorder_is_recording()) {
+    if (s->file_pos >= recorder_count()) {
+      PSOCK_WAIT_UNTIL(&s->sock, PSOCK_NEWDATA(&s->sock) || (s->file_pos < recorder_count()) || !recorder_is_recording());
+      continue;
+    }
+
+    recorder_read(s->file_pos, &record);
+
+    p = (char*)s->buf;
+    strcpy(p, "00\r\n");
+
+    p = p + strlen(p);
+    uitoa(record.time, p, 10);
+    strcat(p, ",");
+
+    p = p + strlen(p);
+    uitoa(record.millivolts, p, 10);
+    strcat(p, ",");
+
+    p = p + strlen(p);
+    uitoa(record.milliamps, p, 10);
+    strcat(p, ",");
+
+    p = p + strlen(p);
+    uitoa(record.setMilliamps, p, 10);
+
+    // since we saved 2 bytes of room for the length we need to pad the string to ensure we are at least 2 bytes long
+    while (strlen((char*)s->buf) < 0xf + 6) {
+      strcat(p, "    ");
+    }
+
+    strcat(p, "\n\r\n");
+    uitoa(strlen((char*)s->buf) - 6, (char*)s->buf, 16);
+    s->buf[2] = '\r';
+    PSOCK_SEND_STR(&s->sock, (char*)s->buf);
+
+    s->file_pos++;
+  }
+
+  PSOCK_SEND_STR(&s->sock, "0\r\n\r\n");
+
+  PSOCK_END(&s->sock);
+}
+
 PT_THREAD(serve_web_socket(process_event_t ev, struct httpd_state* s)) {
   uint8_t i, len;
   uint8_t wsMask[4];
@@ -260,15 +345,26 @@ PT_THREAD(serve_web_socket(process_event_t ev, struct httpd_state* s)) {
       strcpy(p, "{\"time\":");
       p += strlen(p);
       itoa(time_ms(), p, 10);
+
       strcat(p, ",\"voltage\":");
       p += strlen(p);
       itoa(get_millivolts(), p, 10);
+
       strcat(p, ",\"amperage\":");
       p += strlen(p);
       itoa(get_milliamps(), p, 10);
+
       strcat(p, ",\"targetAmps\":");
       p += strlen(p);
       itoa(get_set_milliamps(), p, 10);
+
+      strcat(p, ",\"recording\":");
+      strcat(p, recorder_is_recording() ? "true" : "false");
+
+      strcat(p, ",\"recordingSamples\":");
+      p += strlen(p);
+      itoa(recorder_count(), p, 10);
+
       strcat(p, "}");
 
       len = strlen((const char*)&s->buf[2]);
@@ -321,4 +417,5 @@ struct flashFile* httpd_get_file(const char* filename) {
 }
 
 #endif
+
 

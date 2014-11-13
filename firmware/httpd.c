@@ -212,8 +212,12 @@ PT_THREAD(httpd_handle_input(process_event_t ev, struct httpd_state* s)) {
     if (PSOCK_DATALEN(&s->sock) > 2) {
       s->buf[PSOCK_DATALEN(&s->sock) - 2] = 0;
     } else if (s->request_type == HTTPD_POST) {
-      PSOCK_READBUF_LEN(&s->sock, s->content_len);
-      s->buf[PSOCK_DATALEN(&s->sock)] = 0;
+      if (s->content_len > 0) {
+        PSOCK_READBUF_LEN(&s->sock, s->content_len);
+        s->buf[PSOCK_DATALEN(&s->sock)] = 0;
+      } else {
+        s->buf[0] = 0;
+      }
       s->state = HTTPD_STATE_OUTPUT;
       break;
     } else {
