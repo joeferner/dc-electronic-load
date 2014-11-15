@@ -29,7 +29,6 @@ PROCINIT(
   , &tcpip_process
   , &dhcp_process
   , &httpd_process
-  , &telnet_process
   , &resolv_process
 #endif
 );

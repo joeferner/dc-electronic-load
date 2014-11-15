@@ -30,7 +30,6 @@ static const char http_400_fail[] = "HTTP/1.1 200 BAD\r\nConnection: close\r\nCo
 static const char http_header_101_ws_upgrade[] = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
 PROCESS(dhcp_process, "DHCP");
-PROCESS(telnet_process, "Telnet");
 
 uint8_t _network_uip_headerLength = 0;
 uint8_t _network_request_dhcp = 0;
@@ -86,9 +85,6 @@ void network_setup(uint8_t* macAddress) {
   _network_request_dhcp = 1;
   process_start(&dhcp_process, NULL);
 
-  debug_write_line("?Start Telnet Process");
-  process_start(&telnet_process, NULL);
-
   debug_write_line("?Start HTTPD Process");
   process_start(&httpd_process, NULL);
 
@@ -97,7 +93,6 @@ void network_setup(uint8_t* macAddress) {
 
 void network_tick() {
   enc28j60_tick();
-  process_poll(&telnet_process);
 }
 
 void enc28j60_reset_assert() {
@@ -123,42 +118,6 @@ uint8_t enc28j60_spi_transfer(uint8_t d) {
   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
   return SPI_I2S_ReceiveData(SPI1);
 }
-
-PROCESS_THREAD(telnet_process, ev, data) {
-  int i;
-  uint8_t* p;
-
-  PROCESS_BEGIN();
-  tcp_listen(UIP_HTONS(TELNET_PORT));
-
-  while (1) {
-    PROCESS_WAIT_EVENT();
-    if (ev == PROCESS_EVENT_EXIT) {
-      process_exit(&dhcp_process);
-      LOADER_UNLOAD();
-    } else if (ev == PROCESS_EVENT_POLL) {
-      for (i = 0; i < UIP_CONNS; i++) {
-        if (uip_conn_active(i)) {
-          uip_poll_conn(&uip_conns[i]);
-        }
-      }
-    } else if (ev == tcpip_event) {
-      if (uip_connected()) {
-        tcp_markconn(uip_conn, NULL);
-      } else if (uip_newdata()) {
-        p = uip_appdata;
-        debug_write("!netdata:");
-        for (i = 0; i < uip_len; i++) {
-          debug_write_ch(p[i]);
-        }
-        debug_write_line("");
-      }
-    }
-  }
-
-  PROCESS_END();
-}
-
 
 PROCESS_THREAD(dhcp_process, ev, data) {
   PROCESS_BEGIN();

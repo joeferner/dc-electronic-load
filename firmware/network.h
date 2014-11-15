@@ -8,7 +8,6 @@
 #include "httpd.h"
 
 PROCESS_NAME(dhcp_process);
-PROCESS_NAME(telnet_process);
 
 void network_setup(uint8_t* macAddress);
 void network_tick();

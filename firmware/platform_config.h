@@ -174,8 +174,6 @@
 #define ENC28J60_RESET_PORT     GPIOC
 #define ENC28J60_RESET_PIN      GPIO_Pin_5
 
-// port 23 is the traditional telnet port
-#define TELNET_PORT             23
 #endif
 
 #endif // PLATFORM_CONFIG_H_INCLUDED
