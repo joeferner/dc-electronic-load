@@ -49,6 +49,7 @@ void gfx_redraw() {
   for (int i = 0; i < DISP6800_VBUF_SIZE; i++) {
     disp6800_tx_data(vbuf[i]);
   }
+  disp6800_end_tx_data();
 }
 
 void gfx_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
@@ -58,6 +59,15 @@ void gfx_set_pixel(uint8_t x, uint8_t y, uint8_t color) {
     vbuf[vbufOffset] = (vbuf[vbufOffset] & 0x0f) | ((color & 0x0f) << 4);
   } else {
     vbuf[vbufOffset] = (vbuf[vbufOffset] & 0xf0) | ((color & 0x0f) << 0);
+  }
+}
+
+void gfx_fill_rect(int x, int y, int width, int height, uint8_t color) {
+  int ix, iy;
+  for (iy = y; iy < y + height; iy++) {
+    for (ix = x; ix < x + width; ix++) {
+      gfx_set_pixel(ix, iy, color);
+    }
   }
 }
 

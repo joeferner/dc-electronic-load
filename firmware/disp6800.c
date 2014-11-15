@@ -229,6 +229,10 @@ void disp6800_begin_tx_data() {
   disp6800_write();
 }
 
+void disp6800_end_tx_data() {
+  disp6800_deassert_cs();
+}
+
 void disp6800_tx_data(uint8_t d) {
   disp6800_assert_cs();
   disp6800_set_data_port(d);

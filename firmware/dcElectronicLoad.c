@@ -1,6 +1,7 @@
 
 #include "platform_config.h"
 #include "dcElectronicLoad.h"
+#include "version.h"
 
 PROCESS(debug_process, "Debug");
 
@@ -17,6 +18,9 @@ PROCESS(gfx_update_process, "GFX Update");
 #define GFX_STATE_INFO    2
 #define GFX_STATE_RECORD  3
 
+#define GFX_MENU_HEIGHT   12
+#define GFX_INFO_HEIGHT   72
+
 #define MAX_SET_RATE_INDEX 4
 uint32_t SET_RATES[] = { 1000, 5000, 10000, 30000, 60000 };
 
@@ -28,6 +32,7 @@ uint8_t fanSetOverride;
 uint16_t lastAdcValue[4];
 uint8_t gfxState;
 uint8_t setRateIndex;
+uint32_t gfxScroll;
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
@@ -229,7 +234,7 @@ void gfx_draw_display_info() {
   uip_ipaddr_t addr;
 
   // MAC Addr
-  gfx_draw_string("MAC Addr: ", &FONT_XSMALL, 0, 0, GFX_ALIGN_LEFT);
+  gfx_draw_string("MAC Addr: ", &FONT_XSMALL, 0, 0 - gfxScroll, GFX_ALIGN_LEFT);
   p = valueBuffer;
   for (i = 0; i < EUI48_LENGTH; i++) {
     if (i > 0) {
@@ -239,10 +244,10 @@ void gfx_draw_display_info() {
     *p++ = TO_HEX(EUI48[i] >> 0);
   }
   *p = '\0';
-  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 12, GFX_ALIGN_LEFT);
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 12 - gfxScroll, GFX_ALIGN_LEFT);
 
   // IP Address
-  gfx_draw_string("IP Addr: ", &FONT_XSMALL, 0, 24, GFX_ALIGN_LEFT);
+  gfx_draw_string("IP Addr: ", &FONT_XSMALL, 0, 24 - gfxScroll, GFX_ALIGN_LEFT);
   uip_gethostaddr(&addr);
   valueBuffer[0] = '\0';
   for (i = 0; i < 4; i++) {
@@ -252,7 +257,13 @@ void gfx_draw_display_info() {
     p = valueBuffer + strlen(valueBuffer);
     uitoa(addr.u8[i], p, 10);
   }
-  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 36, GFX_ALIGN_LEFT);
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 36 - gfxScroll, GFX_ALIGN_LEFT);
+
+  // git hash
+  gfx_draw_string("GIT Hash: ", &FONT_XSMALL, 0, 48 - gfxScroll, GFX_ALIGN_LEFT);
+  strncpy(valueBuffer, GIT_HASH, 7);
+  valueBuffer[7] = '\0';
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 60 - gfxScroll, GFX_ALIGN_LEFT);
 
   gfx_draw_menu(NULL, NULL, NULL, "EXIT");
 }
@@ -274,6 +285,8 @@ void gfx_draw_display_record() {
 }
 
 void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, const char* menuD) {
+  gfx_fill_rect(0, GFX_HEIGHT - GFX_MENU_HEIGHT, GFX_WIDTH, GFX_MENU_HEIGHT, GFX_COLOR_BLACK);
+
   if (menuA) {
     gfx_draw_string(menuA, &FONT_XSMALL, 15, 54, GFX_ALIGN_CENTER);
   }
@@ -296,6 +309,7 @@ void buttons_irq(uint8_t buttons) {
     if (buttons & BUTTON_A) { // record screen
       gfxState = GFX_STATE_RECORD;
     } else if (buttons & BUTTON_D) { // info
+      gfxScroll = 0;
       gfxState = GFX_STATE_INFO;
     }
   } else if (gfxState == GFX_STATE_INFO) {
@@ -420,6 +434,16 @@ void encoder_irq(ENCODER_DIR dir) {
       newValue = CLAMP(newValue, 0, MAX_SET_RATE_INDEX);
       setRateIndex = newValue;
     }
+#ifdef DISP6800_ENABLE
+    process_poll(&gfx_update_process);
+#endif
+  } else if (gfxState == GFX_STATE_INFO) {
+    if (dir == ENCODER_DIR_CW) {
+      newValue = gfxScroll + 2;
+    } else {
+      newValue = gfxScroll - 2;
+    }
+    gfxScroll = CLAMP(newValue, 0, GFX_INFO_HEIGHT - (GFX_HEIGHT - GFX_MENU_HEIGHT));
 #ifdef DISP6800_ENABLE
     process_poll(&gfx_update_process);
 #endif
