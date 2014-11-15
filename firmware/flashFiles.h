@@ -11,6 +11,7 @@ extern char serve_web_socket(process_event_t ev, struct httpd_state* s);
 extern char serve_recorder_start(process_event_t ev, struct httpd_state* s);
 extern char serve_recorder_stop(process_event_t ev, struct httpd_state* s);
 extern char serve_recorder_download(process_event_t ev, struct httpd_state* s);
+extern char serve_info(process_event_t ev, struct httpd_state* s);
 
 struct flashFile {
   const char* filename;

@@ -16,6 +16,7 @@
 #include "util.h"
 #include "dcElectronicLoad.h"
 #include "recorder.h"
+#include "version.h"
 
 #ifdef NETWORK_ENABLE
 
@@ -33,6 +34,8 @@ PROCESS(telnet_process, "Telnet");
 
 uint8_t _network_uip_headerLength = 0;
 uint8_t _network_request_dhcp = 0;
+
+void get_info_json(char* p, BOOL includeExtras);
 
 void network_setup(uint8_t* macAddress) {
   debug_write_line("?BEGIN network_setup");
@@ -200,6 +203,62 @@ void dhcpc_unconfigured(const struct dhcpc_state* s) {
   debug_write_line("?dhcpc_unconfigured");
 }
 
+void get_info_json(char* p, BOOL includeExtras) {
+  strcpy(p, "{\"time\":");
+  p += strlen(p);
+  itoa(time_ms(), p, 10);
+
+  strcat(p, ",\"voltage\":");
+  p += strlen(p);
+  itoa(get_millivolts(), p, 10);
+
+  strcat(p, ",\"amperage\":");
+  p += strlen(p);
+  itoa(get_milliamps(), p, 10);
+
+  strcat(p, ",\"targetAmps\":");
+  p += strlen(p);
+  itoa(get_set_milliamps(), p, 10);
+
+  strcat(p, ",\"recording\":");
+  strcat(p, recorder_is_recording() ? "true" : "false");
+
+  strcat(p, ",\"recordingSamples\":");
+  p += strlen(p);
+  itoa(recorder_count(), p, 10);
+
+  if (includeExtras) {
+    strcat(p, ",\"gitHash\":\"");
+    p += strlen(p);
+    strcat(p, GIT_HASH);
+    strcat(p, "\"");
+  }
+
+  strcat(p, "}");
+}
+
+PT_THREAD(serve_info(process_event_t ev, struct httpd_state* s)) {
+  int infoLen;
+
+  PSOCK_BEGIN(&s->sock);
+  PSOCK_SEND_STR(&s->sock, http_header_200);
+  PSOCK_SEND_STR(&s->sock, "Content-Type: ");
+  PSOCK_SEND_STR(&s->sock, s->file->content_type);
+  PSOCK_SEND_STR(&s->sock, "\r\n");
+  PSOCK_SEND_STR(&s->sock, "Content-Length: ");
+  get_info_json((char*)s->buf, TRUE);
+  infoLen = strlen((char*)s->buf);
+  itoa(infoLen, (char*)s->buf, 10);
+  PSOCK_SEND_STR(&s->sock, (const char*)s->buf);
+  PSOCK_SEND_STR(&s->sock, "\r\n");
+  PSOCK_SEND_STR(&s->sock, "\r\n");
+
+  get_info_json((char*)s->buf, TRUE);
+  PSOCK_SEND_STR(&s->sock, (char*)s->buf);
+
+  PSOCK_END(&s->sock);
+}
+
 PT_THREAD(serve_flash_file(process_event_t ev, struct httpd_state* s)) {
   uint32_t readlen;
 
@@ -347,30 +406,7 @@ PT_THREAD(serve_web_socket(process_event_t ev, struct httpd_state* s)) {
     PT_YIELD_UNTIL(&s->sock.pt, uip_aborted() || uip_closed() || uip_timedout() || uip_newdata() || etimer_expired(&s->ws_etimer));
     if (etimer_expired(&s->ws_etimer)) {
       p = (char*)&s->buf[2];
-      strcpy(p, "{\"time\":");
-      p += strlen(p);
-      itoa(time_ms(), p, 10);
-
-      strcat(p, ",\"voltage\":");
-      p += strlen(p);
-      itoa(get_millivolts(), p, 10);
-
-      strcat(p, ",\"amperage\":");
-      p += strlen(p);
-      itoa(get_milliamps(), p, 10);
-
-      strcat(p, ",\"targetAmps\":");
-      p += strlen(p);
-      itoa(get_set_milliamps(), p, 10);
-
-      strcat(p, ",\"recording\":");
-      strcat(p, recorder_is_recording() ? "true" : "false");
-
-      strcat(p, ",\"recordingSamples\":");
-      p += strlen(p);
-      itoa(recorder_count(), p, 10);
-
-      strcat(p, "}");
+      get_info_json(p, FALSE);
 
       len = strlen((const char*)&s->buf[2]);
       s->buf[0] = WS_FIN | WS_OPCODE_TEXT;

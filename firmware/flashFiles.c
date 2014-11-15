@@ -20,10 +20,11 @@ struct flashFile flashFiles[] = {
   { .filename = "/img/glyphicons-halflings.png", .content_type = mimetype_image_png, .offset = 307345, .size = 12799, .script = serve_flash_file },
   { .filename = "/img/glyphicons-halflings-white.png", .content_type = mimetype_image_png, .offset = 320144, .size = 8777, .script = serve_flash_file },
   { .filename = "/amps/set", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_amps_set },
+  { .filename = "/info", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_info },
   { .filename = "/recorder/download", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_recorder_download },
   { .filename = "/recorder/stop", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_recorder_stop },
   { .filename = "/recorder/start", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_recorder_start },
   { .filename = "/ws", .content_type = mimetype_text_html, .offset = 328921, .size = 0, .script = serve_web_socket },
-  { .filename = "/index.html", .content_type = mimetype_text_html, .offset = 328921, .size = 3330, .script = serve_flash_file },
+  { .filename = "/index.html", .content_type = mimetype_text_html, .offset = 328921, .size = 3375, .script = serve_flash_file },
   { .filename = NULL, .offset = 0, .size = 0 }
 };
