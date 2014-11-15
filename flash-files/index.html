@@ -24,35 +24,49 @@
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-3">
-      <form role="form" class="form" method="post" action="/amps/set" id="set-amperage-form">
-        <div class="connect-group">
-          <button type="button" class="btn btn-default btn-connect disabled">Connecting...</button>
-          <div class="connect-message"></div>
-        </div>
+      <div class="connect-group">
+        <button type="button" class="btn btn-default btn-connect disabled">Connecting...</button>
+        <div class="connect-message"></div>
+      </div>
 
-        <div class="form-group">
-          <label class="control-label" for="set-amperage">Target Amps (mA)</label>
-          <div id="current-set-amperage">???mA</div>
-        </div>
-        <div class="form-group">
-          <label class="control-label" for="set-amperage">Amps (mA)</label>
-          <div id="current-amperage">???mA</div>
-        </div>
-        <div class="form-group">
-          <label class="control-label" for="set-amperage">Voltage (V)</label>
-          <div id="current-voltage">???V</div>
-        </div>
-        <div class="form-group">
-          <label class="control-label" for="set-amperage">Power (W)</label>
-          <div id="current-power">???W</div>
-        </div>
+      <div class="form-group">
+        <label class="control-label" for="set-amperage">Target Amps (mA)</label>
+
+        <div id="current-set-amperage">???mA</div>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="set-amperage">Amps (mA)</label>
+
+        <div id="current-amperage">???mA</div>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="set-amperage">Voltage (V)</label>
+
+        <div id="current-voltage">???V</div>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="set-amperage">Power (W)</label>
+
+        <div id="current-power">???W</div>
+      </div>
+      <form role="form" class="form" method="post" action="/recorder/" id="recorder-form">
         <div class="form-group">
           <label class="control-label" for="set-amperage">Recorder</label>
-          <div id="current-recording-state">???W</div>
+
+          <div id="current-recording-state">???</div>
+          <select name="rate">
+            <option value="1000">1s</option>
+            <option value="5000">5s</option>
+            <option value="10000">10s</option>
+            <option value="30000">30s</option>
+            <option value="60000">1m</option>
+          </select>
           <button type="button" class="btn btn-default btn-recorder-start-stop">Start</button>
           <a href="/recorder/download" class="btn btn-default btn-recorder-download">Download</a>
         </div>
+      </form>
 
+      <form role="form" class="form" method="post" action="/amps/set" id="set-amperage-form">
         <div class="form-group">
           <label class="control-label" for="set-amperage">Set Target Amps (mA)</label>
           <input type="number" class="form-control" id="set-amperage" name="value" placeholder="Enter amps in milli-amps" min="0" max="5000" step="1">

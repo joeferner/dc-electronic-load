@@ -15,6 +15,10 @@ PROCESS(gfx_update_process, "GFX Update");
 
 #define GFX_STATE_MEASURE 1
 #define GFX_STATE_INFO    2
+#define GFX_STATE_RECORD  3
+
+#define MAX_SET_RATE_INDEX 4
+uint32_t SET_RATES[] = { 1000, 5000, 10000, 30000, 60000 };
 
 uint16_t readMilliVolts;
 uint16_t readCurrentMilliamps;
@@ -23,15 +27,18 @@ uint16_t setCurrentMilliamps;
 uint8_t fanSetOverride;
 uint16_t lastAdcValue[4];
 uint8_t gfxState;
+uint8_t setRateIndex;
 
 dma_ring_buffer g_debugUsartDmaInputRingBuffer;
 
+void format_rate(uint32_t rateMillis, char* buffer);
 void milli_to_string(uint16_t v, char* buffer, uint8_t display);
 uint16_t adcVoltsToMillivolts(uint16_t value);
 uint16_t adcCurrentToMillamps(uint16_t value);
 uint16_t setMilliampsToDac(uint16_t value);
 
 void gfx_draw_display_measure();
+void gfx_draw_display_record();
 void gfx_draw_display_info();
 void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, const char* menuD);
 
@@ -39,6 +46,7 @@ void dc_electronic_load_setup() {
   setCurrentMilliamps = 0;
   readCurrentMilliamps = 0;
   readMilliVolts = 0;
+  setRateIndex = 0;
   readCurrentMilliampsDisplay = DISPLAY_MILLI;
   gfxState = GFX_STATE_MEASURE;
 
@@ -147,6 +155,8 @@ PROCESS_THREAD(gfx_update_process, ev, data) {
 
     if (gfxState == GFX_STATE_MEASURE) {
       gfx_draw_display_measure();
+    } else  if (gfxState == GFX_STATE_RECORD) {
+      gfx_draw_display_record();
     } else {
       gfx_draw_display_info();
     }
@@ -209,7 +219,7 @@ void gfx_draw_display_measure() {
   gfx_draw_string(valueBuffer, &FONT_SMALL_NUMBERS, 25, 30, GFX_ALIGN_RIGHT);
   gfx_draw_string(suffix, &FONT_XSMALL, 25, 42, GFX_ALIGN_RIGHT);
 
-  gfx_draw_menu(recorder_is_recording() ? "STOP" : "REC", NULL, NULL, "INFO");
+  gfx_draw_menu(recorder_is_recording() ? "*REC" : "REC", NULL, NULL, "INFO");
 }
 
 void gfx_draw_display_info() {
@@ -247,6 +257,22 @@ void gfx_draw_display_info() {
   gfx_draw_menu(NULL, NULL, NULL, "EXIT");
 }
 
+void gfx_draw_display_record() {
+  char valueBuffer[20];
+
+  // Records
+  gfx_draw_string("Records: ", &FONT_XSMALL, 0, 0, GFX_ALIGN_LEFT);
+  itoa(recorder_count(), valueBuffer, 10);
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 12, GFX_ALIGN_LEFT);
+
+  // Rate
+  gfx_draw_string("Rate: ", &FONT_XSMALL, 0, 24, GFX_ALIGN_LEFT);
+  format_rate(recorder_is_recording() ? recorder_rate() : SET_RATES[CLAMP(setRateIndex, 0, MAX_SET_RATE_INDEX)], valueBuffer);
+  gfx_draw_string(valueBuffer, &FONT_XSMALL, 5, 36, GFX_ALIGN_LEFT);
+
+  gfx_draw_menu(recorder_is_recording() ? "STOP" : "START", NULL, NULL, "EXIT");
+}
+
 void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, const char* menuD) {
   if (menuA) {
     gfx_draw_string(menuA, &FONT_XSMALL, 15, 54, GFX_ALIGN_CENTER);
@@ -267,17 +293,23 @@ void gfx_draw_menu(const char* menuA, const char* menuB, const char* menuC, cons
 #ifdef BUTTONS_ENABLE
 void buttons_irq(uint8_t buttons) {
   if (gfxState == GFX_STATE_MEASURE) {
-    if (buttons & BUTTON_A) { // record/stop
-      if (recorder_is_recording()) {
-        recorder_stop();
-      } else {
-        recorder_start();
-      }
+    if (buttons & BUTTON_A) { // record screen
+      gfxState = GFX_STATE_RECORD;
     } else if (buttons & BUTTON_D) { // info
       gfxState = GFX_STATE_INFO;
     }
   } else if (gfxState == GFX_STATE_INFO) {
     if (buttons & BUTTON_D) { // exit
+      gfxState = GFX_STATE_MEASURE;
+    }
+  } else if (gfxState == GFX_STATE_RECORD) {
+    if (buttons & BUTTON_A) { // start/stop
+      if (recorder_is_recording()) {
+        recorder_stop();
+      } else {
+        recorder_start(1000);
+      }
+    } else if (buttons & BUTTON_D) { // exit
       gfxState = GFX_STATE_MEASURE;
     }
   }
@@ -287,6 +319,27 @@ void buttons_irq(uint8_t buttons) {
 #endif
 }
 #endif
+
+void recorder_record_irq(RecorderRecord* record) {
+#ifdef DISP6800_ENABLE
+  if (gfxState == GFX_STATE_RECORD) {
+    process_poll(&gfx_update_process);
+  }
+#endif
+}
+
+void format_rate(uint32_t rateMillis, char* buffer) {
+  if (rateMillis < 1000) {
+    itoa(rateMillis, buffer, 10);
+    strcat(buffer, "ms");
+  } else if (rateMillis < 60000) {
+    itoa(rateMillis / 1000, buffer, 10);
+    strcat(buffer, "s");
+  } else {
+    itoa(rateMillis / 60000, buffer, 10);
+    strcat(buffer, "m");
+  }
+}
 
 void milli_to_string(uint16_t v, char* buffer, uint8_t display) {
   char tempBuffer[20];
@@ -349,21 +402,41 @@ void adc_irq(uint8_t channel, uint16_t value) {
 #ifdef ENCODER_ENABLE
 void encoder_irq(ENCODER_DIR dir) {
   int32_t newValue;
-  if (dir == ENCODER_DIR_CW) {
-    newValue = setCurrentMilliamps + 10;
-  } else {
-    newValue = setCurrentMilliamps - 10;
+  if (gfxState == GFX_STATE_MEASURE) {
+    if (dir == ENCODER_DIR_CW) {
+      newValue = setCurrentMilliamps + 10;
+    } else {
+      newValue = setCurrentMilliamps - 10;
+    }
+    newValue = CLAMP(newValue, 0, MAX_SET_CURRENT);
+    set_current_milliamps(newValue);
+  } else if (gfxState == GFX_STATE_RECORD) {
+    if (!recorder_is_recording()) {
+      if (dir == ENCODER_DIR_CW) {
+        newValue = setRateIndex + 1;
+      } else {
+        newValue = setRateIndex - 1;
+      }
+      newValue = CLAMP(newValue, 0, MAX_SET_RATE_INDEX);
+      setRateIndex = newValue;
+    }
+#ifdef DISP6800_ENABLE
+    process_poll(&gfx_update_process);
+#endif
   }
-  if (newValue < 0) {
-    newValue = 0;
-  } else if (newValue > MAX_SET_CURRENT) {
-    newValue = MAX_SET_CURRENT;
-  }
-  set_current_milliamps(newValue);
 }
 
 void encoder_button_irq() {
-  set_current_milliamps(0);
+  if (gfxState == GFX_STATE_MEASURE) {
+    set_current_milliamps(0);
+  } else if (gfxState == GFX_STATE_RECORD) {
+    if (!recorder_is_recording()) {
+      setRateIndex = 0;
+    }
+#ifdef DISP6800_ENABLE
+    process_poll(&gfx_update_process);
+#endif
+  }
 }
 
 #endif

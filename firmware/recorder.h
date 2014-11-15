@@ -12,10 +12,12 @@ typedef struct {
 } RecorderRecord;
 
 void recorder_setup();
-void recorder_start();
+void recorder_start(uint32_t rateMillis);
 void recorder_stop();
+uint32_t recorder_rate();
 BOOL recorder_is_recording();
 uint16_t recorder_count();
 void recorder_read(uint16_t recordNumber, RecorderRecord* record);
+extern void recorder_record_irq(RecorderRecord* record);
 
 #endif

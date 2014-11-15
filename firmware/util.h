@@ -15,7 +15,8 @@ extern "C" {
 #define ABS(a) ( ((a) < 0) ? -(a) : (a) )
 #define MIN(a,b) ( ((a) < (b)) ? (a) : (b) )
 #define MAX(a,b) ( ((a) > (b)) ? (a) : (b) )
-
+#define CLAMP(v, min, max) ( ((v) < (min)) ? (min) : ( ((v) > (max)) ? (max) : (v) ) )
+  
 uint32_t swap_endian(uint32_t val);
 void trim_right(char* str);
 int is_whitespace(char ch);

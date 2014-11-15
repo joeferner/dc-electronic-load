@@ -25,6 +25,9 @@ app.post('/amps/set', function(req, res, next) {
 });
 
 app.post('/recorder/start', function(req, res, next) {
+  console.log(req.body);
+  var rate = req.body.rate || 1000;
+
   if (recordingInterval) {
     clearInterval(recordingInterval);
   }
@@ -32,6 +35,7 @@ app.post('/recorder/start', function(req, res, next) {
   if (recording) {
     res.send(500);
   } else {
+    console.log('starting recording: ' + rate);
     data = [];
     recordingInterval = setInterval(function() {
       var msg = {
@@ -41,7 +45,7 @@ app.post('/recorder/start', function(req, res, next) {
         targetAmps: parseInt(targetAmps)
       };
       data.push(msg);
-    }, 1000);
+    }, rate);
     recording = true;
     res.send('OK');
   }

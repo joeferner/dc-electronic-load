@@ -11,19 +11,22 @@
 struct etimer recorder_etimer;
 BOOL recording;
 uint32_t recorder_write_addr;
+uint32_t recorder_set_rate;
 
 PROCESS(recorder_process, "Recorder");
 void recorder_erase_flash();
 
 void recorder_setup() {
   debug_write_line("?recorder_setup");
+  recorder_write_addr = RECORDING_START_ADDRESS;
   recording = FALSE;
 }
 
-void recorder_start() {
+void recorder_start(uint32_t rate) {
   debug_write_line("?recorder_start");
   recorder_erase_flash();
 
+  recorder_set_rate = rate;
   recorder_write_addr = RECORDING_START_ADDRESS;
   recording = TRUE;
 
@@ -50,6 +53,10 @@ uint16_t recorder_count() {
   return (recorder_write_addr - RECORDING_START_ADDRESS) / sizeof(RecorderRecord);
 }
 
+uint32_t recorder_rate() {
+  return recorder_set_rate;
+}
+
 void recorder_read(uint16_t recordNumber, RecorderRecord* record) {
   uint32_t addr = RECORDING_START_ADDRESS + (recordNumber * sizeof(RecorderRecord));
   flashsst25_readn(addr, (uint8_t*)record, sizeof(RecorderRecord));
@@ -61,7 +68,7 @@ PROCESS_THREAD(recorder_process, ev, data) {
 
   debug_write_line("?START recorder_process");
 
-  etimer_set(&recorder_etimer, CLOCK_SECOND / 1);
+  etimer_set(&recorder_etimer, CLOCK_SECOND * MAX(1, (recorder_set_rate / 1000)));
 
   while (recording) {
     PROCESS_YIELD_UNTIL(etimer_expired(&recorder_etimer));
@@ -83,6 +90,8 @@ PROCESS_THREAD(recorder_process, ev, data) {
     record.setMilliamps = get_set_milliamps();
     flashsst25_write(recorder_write_addr, (uint8_t*)&record, sizeof(record));
     recorder_write_addr += sizeof(record);
+
+    recorder_record_irq(&record);
 
     etimer_reset(&recorder_etimer);
   }

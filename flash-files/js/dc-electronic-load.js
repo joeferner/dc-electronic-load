@@ -144,9 +144,14 @@ $(function() {
 
   function startStopRecording() {
     if (recorderStartStopButton.text() == 'Start') {
+      var rate = $("#recorder-form [name='rate'] option:selected").val();
+
       $.ajax({
         type: "POST",
         url: '/recorder/start',
+        data: {
+          rate: rate
+        },
         success: function() {
           console.log(arguments);
           recorderStartStopButton.html('Stop');

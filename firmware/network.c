@@ -242,10 +242,15 @@ PT_THREAD(serve_amps_set(process_event_t ev, struct httpd_state* s)) {
 }
 
 PT_THREAD(serve_recorder_start(process_event_t ev, struct httpd_state* s)) {
+  uint32_t rate = 1000;
   PSOCK_BEGIN(&s->sock);
 
+  if (strncmp((const char*)s->buf, "rate=", 5) == 0) {
+    rate = atoi((const char*)s->buf + 5);
+  }
+
   if (!recorder_is_recording()) {
-    recorder_start();
+    recorder_start(rate);
     PSOCK_SEND_STR(&s->sock, http_200_ok);
   } else {
     PSOCK_SEND_STR(&s->sock, http_400_fail);
