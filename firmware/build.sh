@@ -29,12 +29,18 @@ BSS_SIZE_KB=$(echo "scale=1; ${BSS_SIZE}/1024" | bc -l)
 
 FLASH_TOTAL=$(echo "${TEXT_SIZE}+${DATA_SIZE}" | bc)
 RAM_TOTAL=$(echo "${DATA_SIZE}+${BSS_SIZE}" | bc)
+FLASH_REMAINING=$(echo "(128 * 1024)-${FLASH_TOTAL}" | bc)
+RAM_REMAINING=$(echo "(20 * 1024)-${RAM_TOTAL}" | bc)
 
 FLASH_TOTAL_KB=$(echo "scale=1; ${FLASH_TOTAL}/1024" | bc -l)
 RAM_TOTAL_KB=$(echo "scale=1; ${RAM_TOTAL}/1024" | bc -l)
+FLASH_REMAINING_KB=$(echo "scale=1; ${FLASH_REMAINING}/1024" | bc -l)
+RAM_REMAINING_KB=$(echo "scale=1; ${RAM_REMAINING}/1024" | bc -l)
 
 echo ""
-echo "flash = text (${TEXT_SIZE_KB}kB) + data (${DATA_SIZE_KB}kB) = ${FLASH_TOTAL_KB}kB"
-echo "ram = data (${DATA_SIZE_KB}kB) + bss (${BSS_SIZE_KB}kB) = ${RAM_TOTAL_KB}kB"
 echo "STM32 medium density ram = 20kB"
+echo "STM32F103RBT6 flash = 128kB"
+echo ""
+echo "flash = text (${TEXT_SIZE_KB}kB) + data (${DATA_SIZE_KB}kB) = ${FLASH_TOTAL_KB}kB (remaining: ${FLASH_REMAINING_KB}kB)"
+echo "  ram = data (${DATA_SIZE_KB}kB) +  bss (${BSS_SIZE_KB}kB) = ${RAM_TOTAL_KB}kB (remaining: ${RAM_REMAINING_KB}kB)"
 echo ""
