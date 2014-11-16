@@ -38,7 +38,7 @@ typedef unsigned int uip_stats_t;
 #define UIP_CONF_BUFFER_SIZE      1024
 #define RESOLV_CONF_SUPPORTS_MDNS 1
 #define UIP_CONF_TCP_FORWARD      1
-#define CONTIKI_CONF_DEFAULT_HOSTNAME "rs232-01"
+#define CONTIKI_CONF_DEFAULT_HOSTNAME "load01"
 
 /* Prefix for relocation sections in ELF files */
 #define REL_SECT_PREFIX ".rel"
