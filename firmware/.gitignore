@@ -2,3 +2,4 @@ build/
 dc-electronic-load.layout
 .kdev4/
 *.kate-swp
+version.h
