@@ -51,7 +51,7 @@ void buttons_loop() {
     v |= BUTTON_B;
   }
   if (IS_RISING(c, BUTTON_C)) {
-    v |= BUTTON_A;
+    v |= BUTTON_C;
   }
   if (IS_RISING(d, BUTTON_D)) {
     v |= BUTTON_D;
