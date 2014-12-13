@@ -46,6 +46,7 @@ void setup() {
   // 2 bit for pre-emption priority, 2 bits for subpriority
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
   dc_electronic_load_setup();

@@ -42,6 +42,7 @@ void disp6800_read();
 void disp6800_write();
 void disp6800_command();
 void disp6800_data();
+uint8_t disp6800_read_status();
 void disp6800_tx_command(uint8_t d);
 void disp6800_set_data_port(uint8_t d);
 void disp6800_set_data_dir(int dir);
@@ -67,9 +68,9 @@ void disp6800_setup() {
   disp6800_setup_gpio();
 
   disp6800_assert_reset();
-  delay_us(100);
+  delay_ms(500);
   disp6800_deassert_reset();
-  delay_us(100);
+  delay_ms(500);
 
   disp6800_set_display_onoff(DISP6800_DISPLAY_OFF);
   disp6800_set_display_clock(0x91);   // 135 Frames/second
@@ -84,7 +85,7 @@ void disp6800_setup() {
   disp6800_set_frame_freqency(0x51);
   disp6800_set_phase_length(0x55);    // set phase 1 as 5 clocks and phase 2 as 5 clocks
   disp6800_set_precharge_voltage(0x10);
-  disp6800_set_precharge_compensation(0x20, 0x20);
+  disp6800_set_precharge_compensation(0x20, 0x02);
   disp6800_set_vcomh(0x1c);           // set voltage high level
   disp6800_set_vsl(0x0d);             // set voltage low level
   disp6800_set_display_mode(DISP6800_DISPLAY_MODE_REGULAR);
@@ -214,17 +215,30 @@ void disp6800_deassert_cs() {
   DISP6800_CS->BSRR = DISP6800_CS_PIN; // -> 1
 }
 
-void disp6800_tx_command(uint8_t d) {
+uint8_t disp6800_read_status() {
+  disp6800_command();
+  disp6800_read();
+  disp6800_assert_cs();
   disp6800_assert_en();
+  delay_us(1);
+  uint8_t status = DISP6800_DATA->IDR & 0xff;
+  disp6800_deassert_en();
+  disp6800_deassert_cs();
+  return status;
+}
+
+void disp6800_tx_command(uint8_t d) {
   disp6800_command();
   disp6800_write();
-  disp6800_assert_cs();
   disp6800_set_data_port(d);
+  disp6800_assert_cs();
+  disp6800_assert_en();
+  delay_us(1);
+  disp6800_deassert_en();
   disp6800_deassert_cs();
 }
 
 void disp6800_begin_tx_data() {
-  disp6800_assert_en();
   disp6800_data();
   disp6800_write();
 }
@@ -234,8 +248,11 @@ void disp6800_end_tx_data() {
 }
 
 void disp6800_tx_data(uint8_t d) {
-  disp6800_assert_cs();
   disp6800_set_data_port(d);
+  disp6800_assert_cs();
+  disp6800_assert_en();
+  delay_us(1);
+  disp6800_deassert_en();
   disp6800_deassert_cs();
 }
 
@@ -243,8 +260,6 @@ void disp6800_set_data_port(uint8_t d) {
   uint32_t dd = d;
   dd = ((~dd << 16) & 0x00ff0000) | dd;
   DISP6800_DATA->BSRR = dd;
-  disp6800_deassert_en();
-  disp6800_assert_en();
 }
 
 void disp6800_set_display_onoff(uint8_t onoff) {

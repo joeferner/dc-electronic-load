@@ -47,7 +47,7 @@
 #define DEBUG_USART_DR_BASE     ((uint32_t)&USART1->DR)
 
 #ifdef DISP6800_ENABLE
-#define DISP6800_RCC            RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD
+#define DISP6800_RCC            RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD
 
 #define DISP6800_DATA           GPIOB
 #define DISP6800_DATA0_PIN      GPIO_Pin_0

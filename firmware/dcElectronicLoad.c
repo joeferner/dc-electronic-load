@@ -485,6 +485,11 @@ PROCESS_THREAD(debug_process, ev, data) {
         debug_write_line("!set name,dc-electronic-load");
         debug_write_line("!set description,'DC Electonic Load'");
       }
+      
+      else if (strcmp(line, "!RESET\n") == 0) {
+        debug_write_line("+OK");
+        NVIC_SystemReset();
+      }
 
 #ifdef ADC_ENABLE
       else if (strcmp(line, "!ADCLAST\n") == 0) {
